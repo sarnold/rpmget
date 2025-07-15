@@ -1,0 +1,147 @@
+[build-system]
+requires = [
+    "setuptools>= 61.0.0",
+    "setuptools_scm[toml]>=7.0",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simple"
+description = "A simple project template using setuptools and setuptools-scm"
+dynamic = ["version"]
+readme = "README.rst"
+license = "MIT"
+
+authors = [
+    {name = "Tracy Developer"},
+    {email = "developer@some.domain"},
+]
+
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3",
+    "Topic :: Documentation",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development :: Testing",
+]
+
+dependencies = [
+    'importlib-resources; python_version < "3.10"',
+    "munch[yaml]",
+]
+
+requires-python = ">=3.9"
+
+[project.optional-dependencies]
+dev = [
+    "flake8",
+    "isort",
+    "mypy>=0.990",
+    "black >= 22.3.0",
+    "pylint >= 3.1.0",
+]
+cov = [
+    "covdefaults",
+    "coverage[toml]",
+]
+doc = [
+    "sphinx",
+    "sphinxcontrib.apidoc",
+    "sphinx_git",
+    "myst-parser",
+    "sphinxcontrib.mermaid",
+    "sphinx_rtd_theme<3.0",  # for the version display
+    "sphinx-nefertiti",
+]
+test = [
+    "pytest",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/sarnold/simple-python-project"
+Repository = "https://github.com/sarnold/simple-python-project.git"
+Issues = "https://github.com/sarnold/simple-python-project/issues"
+Changelog = "https://github.com/sarnold/simple-python-project/blob/main/CHANGELOG.rst"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools_scm]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+testpaths = ["tests",]
+log_cli =  true
+doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE",]
+addopts = "--strict-markers"
+markers = "subscript"
+
+[tool.coverage.run]
+branch = true
+source_pkgs = ["src"]
+omit = [
+    "setup.py",
+    "scripts",
+    "docs",
+    ".tox",
+]
+
+[tool.coverage.paths]
+source = ["src"]
+
+[tool.coverage.report]
+fail_under = 75
+show_missing = true
+ignore_errors = true
+exclude_lines = [
+    "pragma: no cover",
+    "raise NotImplementedError",
+    "raise AssertionError",
+    "if typing.TYPE_CHECKING:",
+    "if TYPE_CHECKING:",
+]
+
+[tool.black]
+line-length = 90
+skip-string-normalization = true
+include = '\.py$'
+exclude = '''
+/(
+    \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | _build
+  | build
+  | docs
+  | dist
+  | edm1-captures
+  | tests
+)/
+'''
+
+[tool.pycln]
+all = true
+
+[tool.isort]
+line_length = 72
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.bandit]
+exclude_dirs = ["docs", "tests",]
+#skips = ["B101"]
+
+[tool.mypy]
+exclude =  [".tox"]

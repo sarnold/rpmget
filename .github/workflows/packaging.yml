@@ -1,0 +1,63 @@
+name: Packaging
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  package_checks:
+
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    defaults:
+      run:
+        shell: bash
+    env:
+      OS: ${{ matrix.os }}
+      PYTHON: ${{ matrix.python-version }}
+      PYTHONIOENCODING: utf-8
+      PIP_DOWNLOAD_CACHE: ${{ github.workspace }}/../.pip_download_cache
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, ubuntu-24.04]
+        python-version: [3.9, '3.10', '3.11', '3.12', '3.13']
+    steps:
+    - name: Set git crlf/eol
+      run: |
+        git config --global core.autocrlf false
+        git config --global core.eol lf
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Deps for display
+      run: |
+        sudo apt-get -qq update
+        sudo apt-get install -yqq libegl1
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install tox
+
+    - name: Build dist pkgs
+      run: |
+        tox -e build,check
+
+    - name: Upload artifacts
+      if: matrix.python-version == 3.9 && matrix.os == 'ubuntu-22.04'
+      uses: actions/upload-artifact@v4
+      with:
+        name: packages
+        path: dist
