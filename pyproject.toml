@@ -1,20 +1,20 @@
 [build-system]
 requires = [
-    "setuptools>= 61.0.0",
-    "setuptools_scm[toml]>=7.0",
+    "setuptools>=45",
+    "setuptools_scm[toml]>=6.0",
 ]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "simple"
-description = "A simple project template using setuptools and setuptools-scm"
+name = "rpmget"
+description = "A workflow helper to manage random sets of RPM package deps."
 dynamic = ["version"]
 readme = "README.rst"
 license = "MIT"
 
 authors = [
-    {name = "Tracy Developer"},
-    {email = "developer@some.domain"},
+    {name = "Stephen Arnold"},
+    {email = "nerdboy@gentoo.org"},
 ]
 
 classifiers = [
@@ -24,27 +24,22 @@ classifiers = [
     "Operating System :: POSIX :: Linux",
     "Operating System :: Unix",
     "Programming Language :: Python :: 3",
-    "Topic :: Documentation",
-    "Topic :: Multimedia :: Graphics",
-    "Topic :: Software Development :: Libraries",
-    "Topic :: Software Development :: Documentation",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Embedded Systems",
     "Topic :: Software Development :: Testing",
 ]
 
-dependencies = [
-    'importlib-resources; python_version < "3.10"',
-    "munch[yaml]",
-]
+dependencies = []
 
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 
 [project.optional-dependencies]
 dev = [
     "flake8",
     "isort",
     "mypy>=0.990",
-    "black >= 22.3.0",
-    "pylint >= 3.1.0",
+    "black>=22.3.0",
+    "pylint>=3.1.0",
 ]
 cov = [
     "covdefaults",
@@ -56,8 +51,7 @@ doc = [
     "sphinx_git",
     "myst-parser",
     "sphinxcontrib.mermaid",
-    "sphinx_rtd_theme<3.0",  # for the version display
-    "sphinx-nefertiti",
+    "sphinx_rtd_theme<3.0",
 ]
 test = [
     "pytest",
@@ -65,15 +59,16 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sarnold/simple-python-project"
-Repository = "https://github.com/sarnold/simple-python-project.git"
-Issues = "https://github.com/sarnold/simple-python-project/issues"
-Changelog = "https://github.com/sarnold/simple-python-project/blob/main/CHANGELOG.rst"
+Homepage = "https://github.com/VCTLabs/rpmget"
+Repository = "https://github.com/VCTLabs/rpmget.git"
+Issues = "https://github.com/VCTLabs/rpmget/issues"
+Changelog = "https://github.com/VCTLabs/rpmget/blob/main/CHANGELOG.rst"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
 
 [tool.setuptools_scm]
+version_scheme = "post-release"
 
 [tool.pytest.ini_options]
 minversion = "6.0"

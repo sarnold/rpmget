@@ -1,4 +1,4 @@
-Simple API and SW Docs
+RPMGet API and SW Docs
 ======================
 
 .. git_commit_detail::
