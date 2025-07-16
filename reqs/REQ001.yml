@@ -1,0 +1,34 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.0
+links: []
+normative: false
+ref: ''
+reviewed: 1SNJfZHsWrLaR8fntFT0DPvGKxJaITR-XKj0Q0NZb3c=
+short-name: reqs_overview
+text: |
+  Requirements
+
+  Functional/feature bits should include:
+
+  * python configparser sample config
+  * download rpms to a directory (flat)
+  * download rpms to the usual files tree
+
+  If creatrepo is available
+
+  * create rpm repo from files tree
+
+  If RHEL environment
+
+  * install rpms from local files
+  * install rpms on-the-fly from URLs

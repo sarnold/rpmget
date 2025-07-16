@@ -1,7 +1,9 @@
 RPMGet
 ======
 
-What is this?
+Use (Python) ini-style config to manage an arbitrary set of development
+dependencies as RPM packages. Install these packages in RHEL development
+environment or create a local package repo.
 
 |ci| |wheels| |bandit| |release|
 
@@ -9,67 +11,16 @@ What is this?
 
 |tag| |license| |reuse| |python|
 
-More about what this is, quick start, etc.
+Things you do:
 
-Github workflows and setuptools_scm
------------------------------------
-
-This project uses setuptools_scm_ for dynamic versioning, therefor some
-of the (github) workflows will look for a git tag to set the version in
-CI. If there are no tags, this will result in some failed workflow runs.
-There are several options to make them succeed:
-
-* create a base tag, eg ``git tag -a 0.0.0``
-* set SETUPTOOLS_SCM_PRETEND_VERSION to the above value in the workflow env
-* disable failing workflows in the Github Actions tab
-* delete any workflows you don't need
-
-
-Github workflows and repo settings
-----------------------------------
-
-Some of the automation workflows may also fail without some non-default
-repository settings; the following changes are required to allow these
-workflows to run.
-
-Go to the repository Settings tab and scroll to the bottom of the General
-settings and enable these checkboxes under Pull Requests:
-
-* Always suggest updating pull request branches (optional)
-* Allow auto-merge (required)
-* Automatically delete head branches (optional)
-
-Next, in the left-hand menu under the Settings tab, click Actions, then General,
-then scroll to Workflow permissions:
-
-* make sure *Read repository contents and packages permissions* is selected
-* enable the *Allow GitHub Actions to create and approve pull requests* checkbox,
-  then click Save
-
-In addition, the provided dependabot config expects some issue labels, so open the
-project URL below (using your new project name) and add the following new labels:
-
-**https://github.com/<your_name>/<project_name>/issues/labels**
-
-* actions
-* dependencies
-* packaging
-
-
-Github best practices
----------------------
-
-Finally, best practices for public repositories should include the following
-extra features:
-
-* under Advanced Security enable Code Scanning, Dependabot, Private
-  Vulnerability Reporting, and (default) Codeql config
-* under Rules => Rulesets add some branch protection rules with required
-  status checks
+* download configured rpm files to a directory
+* create an rpm repository from downloaded rpm files
+* install configured rpm files on-the-fly
+* dump a sample config file
 
 
 Dev tools
-=========
+~~~~~~~~~
 
 Local tool dependencies to aid in development; install them for
 maximum enjoyment.
@@ -85,8 +36,8 @@ dependencies and run the specified commands, eg:
 
 ::
 
-  $ git clone https://github.com/sarnold/doorstop-to-mermaid
-  $ cd doorstop-to-mermaid/
+  $ git clone https://github.com/sarnold/rpmget
+  $ cd rpmget/
   $ tox -e py
 
 The above will run the default test command using the (local) default
@@ -150,8 +101,8 @@ something like::
 
 then install it into the repo you just cloned::
 
-  $ git clone git@github.com:sarnold/doorstop-to-mermaid.git
-  $ cd radar-test-gui/
+  $ git clone git@github.com:sarnold/rpmget.git
+  $ cd rpmget/
   $ pre-commit install
 
 It's usually a good idea to update the hooks to the latest version::
@@ -160,7 +111,7 @@ It's usually a good idea to update the hooks to the latest version::
 
 
 SBOM and license info
-=====================
+~~~~~~~~~~~~~~~~~~~~~
 
 This project is now compliant with the REUSE Specification Version 3.3, so the
 corresponding license information for all files can be found in the ``REUSE.toml``
@@ -200,40 +151,40 @@ specifications.
 .. _setuptools_scm: https://setuptools-scm.readthedocs.io/en/stable/
 
 
-.. |ci| image:: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/ci.yml/badge.svg
-    :target: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/ci.yml
+.. |ci| image:: https://github.com/sarnold/rpmget/actions/workflows/ci.yml/badge.svg
+    :target: https://github.com/sarnold/rpmget/actions/workflows/ci.yml
     :alt: CI Status
 
-.. |wheels| image:: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/wheels.yml/badge.svg
-    :target: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/wheels.yml
+.. |wheels| image:: https://github.com/sarnold/rpmget/actions/workflows/wheels.yml/badge.svg
+    :target: https://github.com/sarnold/rpmget/actions/workflows/wheels.yml
     :alt: Wheel Status
 
-.. |badge| image:: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/pylint.yml/badge.svg
-    :target: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/pylint.yml
+.. |badge| image:: https://github.com/sarnold/rpmget/actions/workflows/pylint.yml/badge.svg
+    :target: https://github.com/sarnold/rpmget/actions/workflows/pylint.yml
     :alt: Pylint Status
 
-.. |release| image:: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/release.yml/badge.svg
-    :target: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/release.yml
+.. |release| image:: https://github.com/sarnold/rpmget/actions/workflows/release.yml/badge.svg
+    :target: https://github.com/sarnold/rpmget/actions/workflows/release.yml
     :alt: Release Status
 
-.. |bandit| image:: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/bandit.yml/badge.svg
-    :target: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/bandit.yml
+.. |bandit| image:: https://github.com/sarnold/rpmget/actions/workflows/bandit.yml/badge.svg
+    :target: https://github.com/sarnold/rpmget/actions/workflows/bandit.yml
     :alt: Security check - Bandit
 
-.. |cov| image:: https://raw.githubusercontent.com/sarnold/doorstop-to-mermaid/badges/main/test-coverage.svg
-    :target: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/coverage.yml
+.. |cov| image:: https://raw.githubusercontent.com/sarnold/rpmget/badges/main/test-coverage.svg
+    :target: https://github.com/sarnold/rpmget/actions/workflows/coverage.yml
     :alt: Test coverage
 
-.. |pylint| image:: https://raw.githubusercontent.com/sarnold/doorstop-to-mermaid/badges/main/pylint-score.svg
-    :target: https://github.com/sarnold/doorstop-to-mermaid/actions/workflows/pylint.yml
+.. |pylint| image:: https://raw.githubusercontent.com/sarnold/rpmget/badges/main/pylint-score.svg
+    :target: https://github.com/sarnold/rpmget/actions/workflows/pylint.yml
     :alt: Pylint Score
 
 .. |license| image:: https://img.shields.io/badge/license-MIT-blue
-    :target: https://github.com/sarnold/doorstop-to-mermaid/blob/main/LICENSE
+    :target: https://github.com/sarnold/rpmget/blob/main/LICENSE
     :alt: License
 
-.. |tag| image:: https://img.shields.io/github/v/tag/sarnold/doorstop-to-mermaid?color=green&include_prereleases&label=latest%20release
-    :target: https://github.com/sarnold/doorstop-to-mermaid/releases
+.. |tag| image:: https://img.shields.io/github/v/tag/sarnold/rpmget?color=green&include_prereleases&label=latest%20release
+    :target: https://github.com/sarnold/rpmget/releases
     :alt: GitHub tag
 
 .. |python| image:: https://img.shields.io/badge/python-3.9+-blue.svg
