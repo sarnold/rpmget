@@ -1,0 +1,7 @@
+rpmget
+======
+
+.. toctree::
+   :maxdepth: 4
+
+   rpmget
