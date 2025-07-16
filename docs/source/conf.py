@@ -3,16 +3,13 @@ import sys
 
 from datetime import datetime
 
-if sys.version_info < (3, 8):
-    from importlib_metadata import version
-else:
-    from importlib.metadata import version
+from importlib.metadata import version
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 # -- Project information -----------------------------------------------------
 
-proj_name = 'simple'
+proj_name = 'rpmget'
 # The full version, including alpha/beta/rc tags with setuptols-scm
 # workaround for extra-long dirty version string
 release = version(proj_name).split("+")[0]
@@ -20,14 +17,14 @@ release = version(proj_name).split("+")[0]
 version = release
 
 project = proj_name
-author = 'Tracy Developer'
-copyright = str(datetime.now().year) + f' {author}'
+author = 'Stephen Arnold'
+copyright = f'{str(datetime.now().year)}' + f' {author}'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-description = 'A foo that bars with a quux'
+description = 'A workflow helper to manage random sets of RPM package deps.'
 
 # -- General configuration ------------------------------------------------
 
@@ -127,7 +124,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'simpledoc'
+htmlhelp_basename = 'rpmgetdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -154,7 +151,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'simple.tex', 'simple Documentation',
+    (master_doc, 'rpmget.tex', 'rpmget Documentation',
      [author], 'manual'),
 ]
 
@@ -164,7 +161,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'simple', 'simple Documentation',
+    (master_doc, 'rpmget', 'rpmget Documentation',
      [author], 1)
 ]
 
@@ -175,7 +172,7 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'simple', 'simple Documentation',
-     [author], 'simple', description,
+    (master_doc, 'rpmget', 'rpmget Documentation',
+     [author], 'rpmget', description,
      'Miscellaneous'),
 ]

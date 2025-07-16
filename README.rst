@@ -1,12 +1,7 @@
-Simple Python Project
-=====================
+RPMGet
+======
 
-Python project using simple setuptools project config; note package
-data, scripts, entry points, etc, **all still work** using pyproject.toml
-per `setuptools documentation`_.
-
-To create a new repository using this template, click the button labeled
-**Use this template** and select **Create a new repository**.
+What is this?
 
 |ci| |wheels| |bandit| |release|
 
@@ -14,29 +9,7 @@ To create a new repository using this template, click the button labeled
 
 |tag| |license| |reuse| |python|
 
-After creating your repository, replace the example project name "simple"
-with your own:
-
-* change the project name at the top of ``pyproject.toml``
-* change the project name in ``docs/source/conf.py`` *and* ``docs/source/index.rst``
-* change the author details in ``pyproject.toml`` *and* ``docs/source/conf.py``
-* change the package directory name under the ``src`` folder
-* change the github URL paths in ``pyproject.toml``
-
-Make a ``badges`` branch
-------------------------
-
-Create an orphan branch for Pylint and Coverage workflows. In a fresh
-checkout, run the following commands::
-
-  $ git checkout --orphan badges
-  $ git reset --hard
-  $ git commit --allow-empty -m "Initializing badges branch"
-  $ git push origin badges
-  $ git checkout main
-
-
-.. _setuptools documentation: https://setuptools.pypa.io/en/latest/userguide/package_discovery.html
+More about what this is, quick start, etc.
 
 Github workflows and setuptools_scm
 -----------------------------------
