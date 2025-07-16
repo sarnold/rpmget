@@ -1,0 +1,22 @@
+settings:
+  digits: 3
+  itemformat: yaml
+  prefix: REQ
+  sep: ''
+attributes:
+  reviewed:
+    - short-name
+  defaults:
+    short-name: ''
+    doc:
+      name: rpmget
+      title: Requirements for _rpmget_
+      ref: ''
+      by: sarnold
+      major: '1'
+      minor: A
+      copyright: sarnold
+  publish:
+    - commentary
+    - rationale
+    - normative
