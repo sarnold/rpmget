@@ -1,9 +1,8 @@
 """
 Utility functions.
 """
-import logging
-import sys
 
+import logging
 from pathlib import Path
 from typing import List
 from urllib.parse import urlparse
@@ -34,7 +33,7 @@ def download_progress_bin(url: str, dst: str, timeout: float = 10.0) -> str:
     return download_file.name
 
 
-def get_filelist(dirname: str, filepattern: str ='*.rpm') -> List[str]:
+def get_filelist(dirname: str, filepattern: str = '*.rpm') -> List[str]:
     """
     Get path objects matching ``filepattern`` starting at ``dirname`` and
     return a list of matching paths for any files found.
