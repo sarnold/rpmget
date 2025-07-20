@@ -80,7 +80,14 @@ testpaths = ["tests",]
 log_cli =  true
 doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE",]
 addopts = "--strict-markers"
-markers = "subscript"
+markers = [
+    "network: marks tests as network (deselect with '-m \"not network\"')",
+    "serial",
+]
+filterwarnings = [
+    "ignore:currentThread:DeprecationWarning",
+    "ignore:co_lnotab:DeprecationWarning",
+]
 
 [tool.coverage.run]
 branch = true

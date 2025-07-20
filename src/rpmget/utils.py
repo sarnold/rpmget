@@ -4,11 +4,26 @@ Utility functions.
 
 import logging
 from pathlib import Path
+from shutil import which
 from typing import List
 from urllib.parse import urlparse
 
 import httpx
 from tqdm import tqdm
+
+
+def check_for_rpm(pgm: str = 'rpm') -> str:
+    """
+    Make sure we can find the ``rpm`` binary in the user environment
+    and return a path string.
+
+    :returns: program path string
+    """
+    rpm_path = which(pgm)
+    if not rpm_path:
+        print('Cannot continue, no path found for rpm')
+        raise FileNotFoundError("rpm not found in PATH")
+    return rpm_path
 
 
 def download_progress_bin(url: str, dst: str, timeout: float = 10.0) -> str:
