@@ -11,7 +11,7 @@ environment or create a local package repo.
 
 |tag| |license| |reuse| |python|
 
-Things you do:
+Things you can do:
 
 * download configured rpm files to a directory
 * create an rpm repository from downloaded rpm files
