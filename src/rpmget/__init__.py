@@ -8,4 +8,50 @@ __version__ = version('rpmget')
 
 __all__ = [
     "__version__",
+    "CFG",
 ]
+
+CFG = """
+[Common]
+top_dir = rpms
+pkg_manager = rpm
+
+url_type = https
+host = github.com
+owner = VCTLabs
+repo = el9-rpm-toolbox
+
+arch = noarch
+dist = el9
+ext = rpm
+release = 1
+
+url_base = ${url_type}://${host}/${owner}/${repo}/releases/download
+url_post = ${release}.${dist}.${arch}.${ext}
+
+[Toolbox]
+atftp_tag = py3tftp-1.3.0
+tftp_tag = tftpy-0.8.6.1
+dc_tag = diskcache-4.1.0
+dae_tag = daemonizer-1.1.3
+hon_tag = honcho-2.0.0.1
+proc_tag = procman-0.6.0
+pyg_tag = pygtail-0.14.0.2
+ctl_tag = pyprctrl-0.1.3
+tc_tag = timed-count-2.0.0
+tui_tag = picotui-1.2.3
+stop_tag = stoppy-1.0.5
+
+tb_rpms =
+  ${Common:url_base}/${atftp_tag}/python3-${atftp_tag}-${Common:url_post}
+  ${Common:url_base}/${tftp_tag}/python3-${tftp_tag}-${Common:url_post}
+  ${Common:url_base}/${dc_tag}/python3-${dc_tag}-${Common:url_post}
+  ${Common:url_base}/${dae_tag}/python3-${dae_tag}-${Common:url_post}
+  ${Common:url_base}/${hon_tag}/python3-${hon_tag}-${Common:url_post}
+  ${Common:url_base}/${proc_tag}/python3-${proc_tag}-${Common:url_post}
+  ${Common:url_base}/${pyg_tag}/python3-${pyg_tag}-${Common:url_post}
+  ${Common:url_base}/${ctl_tag}/python3-${ctl_tag}-${Common:url_post}
+  ${Common:url_base}/${tc_tag}/python3-${tc_tag}-${Common:url_post}
+  ${Common:url_base}/${tui_tag}/python3-${tui_tag}-${Common:url_post}
+  ${Common:url_base}/${stop_tag}/python3-${stop_tag}-${Common:url_post}
+"""

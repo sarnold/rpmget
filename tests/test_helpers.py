@@ -1,10 +1,12 @@
 import os
+import sys
 from pathlib import Path
 
 import pytest
 
-from rpmget import version
+from rpmget import CFG, __version__
 from rpmget.utils import (
+    CfgParser,
     check_for_rpm,
     download_progress_bin,
     get_filelist,
@@ -14,6 +16,24 @@ GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1
 NAME = 'python3-py3tftp-1.3.0-1.el9.noarch.rpm'
 
 
+def test_cfg_parser():
+    parser = CfgParser()
+    assert hasattr(parser, '_empty_lines_in_values')
+    assert parser._empty_lines_in_values == False
+
+
+def test_def_config():
+    parser = CfgParser()
+    parser.read_string(CFG)
+    rpms_str = parser["Toolbox"]["tb_rpms"]
+    assert isinstance(rpms_str, str)
+    rpms = [x for x in rpms_str.splitlines() if x != '']
+    print(f'size: {len(rpms)}')
+    print(f'type: {type(rpms)}')
+    print(rpms)
+
+
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
 def test_check_for_rpm():
     rpm_path = check_for_rpm()
     print(rpm_path)
@@ -22,6 +42,7 @@ def test_check_for_rpm():
     assert isinstance(rpm_path, str)
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
 def test_check_for_rpm_bogus(monkeypatch, capfd):
     monkeypatch.setenv("PATH", "/usr/local/bin")
     with pytest.raises(FileNotFoundError) as excinfo:

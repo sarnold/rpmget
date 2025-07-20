@@ -3,6 +3,7 @@ Utility functions.
 """
 
 import logging
+from configparser import ConfigParser, ExtendedInterpolation
 from pathlib import Path
 from shutil import which
 from typing import List
@@ -10,6 +11,24 @@ from urllib.parse import urlparse
 
 import httpx
 from tqdm import tqdm
+
+
+class CfgParser(ConfigParser):
+    """
+    Simple subclass with extended interpolation and no empty lines in
+    values.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+        Init with specific non-default options.
+        """
+        super().__init__(
+            *args,
+            **kwargs,
+            interpolation=ExtendedInterpolation(),
+            empty_lines_in_values=False,
+        )
 
 
 def check_for_rpm(pgm: str = 'rpm') -> str:
