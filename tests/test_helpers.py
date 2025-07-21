@@ -1,11 +1,79 @@
+import os
+import sys
 from pathlib import Path
 
 import pytest
 
-from rpmget import version
+from rpmget import CFG, __version__
+from rpmget.utils import (
+    CfgParser,
+    check_for_rpm,
+    download_progress_bin,
+    get_filelist,
+)
+
+GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm'
+NAME = 'python3-py3tftp-1.3.0-1.el9.noarch.rpm'
 
 
-def test_nothing(capfd):
-    print('yup, that just happened')
-    out, err = capfd.readouterr()
-    assert 'yup' in out
+def test_cfg_parser():
+    parser = CfgParser()
+    assert hasattr(parser, '_empty_lines_in_values')
+    assert parser._empty_lines_in_values == False
+
+
+def test_def_config():
+    parser = CfgParser()
+    parser.read_string(CFG)
+    rpms_str = parser["Toolbox"]["tb_rpms"]
+    assert isinstance(rpms_str, str)
+    rpms = [x for x in rpms_str.splitlines() if x != '']
+    print(f'size: {len(rpms)}')
+    print(f'type: {type(rpms)}')
+    print(rpms)
+
+
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_check_for_rpm():
+    rpm_path = check_for_rpm()
+    print(rpm_path)
+    assert 'rpm' in rpm_path
+    assert 'bin' in rpm_path
+    assert isinstance(rpm_path, str)
+
+
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_check_for_rpm_bogus(monkeypatch, capfd):
+    monkeypatch.setenv("PATH", "/usr/local/bin")
+    with pytest.raises(FileNotFoundError) as excinfo:
+        _ = check_for_rpm()
+    print(str(excinfo.value))
+    assert "rpm not found in PATH" in str(excinfo.value)
+
+
+@pytest.mark.dependency()
+@pytest.mark.network()
+def test_download_progress_bin(tmpdir_session):
+    dst_dir = tmpdir_session / 'rpms'
+    test_file_name = download_progress_bin(GH_URL, dst_dir)
+    assert test_file_name == NAME
+
+
+@pytest.mark.dependency(depends=["test_download_progress_bin"])
+def test_get_filelist_down(tmpdir_session):
+    dst_dir = tmpdir_session / 'rpms'
+    files = get_filelist(dst_dir)
+    print(files)
+    assert len(files) == 1
+    assert files[0].endswith(NAME)
+
+
+def test_get_filelist(tmp_path):
+    dst_dir = tmp_path / 'rpms'
+    dst_dir.mkdir()
+    p = dst_dir / "test1.rpm"
+    p.write_bytes(os.urandom(1024))
+    files = get_filelist(dst_dir)
+    print(files)
+    for file in files:
+        assert Path(file).suffix == '.rpm'

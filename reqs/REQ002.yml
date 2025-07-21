@@ -13,10 +13,11 @@ level: 1.1
 links: []
 normative: true
 ref: ''
-reviewed: Wk-jXOMb8jdHoh0CgCvWCfL4j3iALiqG_bx9LAI-xX0=
+reviewed: Y6LBZxaWdF35sCkI9fM2shtNAZ4MVx9hVcMfx4uChlc=
 short-name: cfg_defaults
 text: |
   The software **Shall** provide the follwing ConfigParser defaults.
 
   * interpolation = ExtendedInterpolation
   * inline_comment_prefixes = None
+  * empty_lines_in_values = False
