@@ -7,9 +7,11 @@ import pytest
 from rpmget import CFG, __version__
 from rpmget.utils import (
     CfgParser,
+    FileTypeError,
     check_for_rpm,
     download_progress_bin,
     get_filelist,
+    load_config,
 )
 
 GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm'
@@ -31,6 +33,34 @@ def test_def_config():
     print(f'size: {len(rpms)}')
     print(f'type: {type(rpms)}')
     print(rpms)
+
+
+def test_load_config_default():
+    popts, pfile = load_config()
+
+    assert pfile is None or isinstance(pfile, Path)
+    print(repr(popts))
+    assert isinstance(popts, CfgParser)
+
+
+def test_load_config_file(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test.ini"
+    p.write_text(CFG, encoding="utf-8")
+
+    popts, pfile = load_config(str(p))
+
+    assert isinstance(pfile, Path)
+    assert isinstance(popts, CfgParser)
+
+
+def test_load_config_bogus(monkeypatch):
+    monkeypatch.setenv("RPMGET_CFG", "testme.txt")
+    with pytest.raises(FileTypeError) as excinfo:
+        _, pfile = load_config()
+    assert 'Invalid file extension' in str(excinfo.value)
+    assert 'testme.txt' in str(excinfo.value)
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")

@@ -3,14 +3,29 @@ Utility functions.
 """
 
 import logging
+import os
 from configparser import ConfigParser, ExtendedInterpolation
 from pathlib import Path
 from shutil import which
-from typing import List
+from typing import List, Optional, Tuple
 from urllib.parse import urlparse
 
 import httpx
 from tqdm import tqdm
+
+from . import CFG
+
+logger = logging.getLogger('rpmget')
+
+
+class FileTypeError(Exception):
+    """
+    Raise when the file extension is not in the allowed extensions list::
+
+      ['.ini', '.cfg', '.conf']
+    """
+
+    __module__ = Exception.__module__
 
 
 class CfgParser(ConfigParser):
@@ -55,7 +70,7 @@ def download_progress_bin(url: str, dst: str, timeout: float = 10.0) -> str:
 
     with httpx.stream("GET", url, timeout=timeout, follow_redirects=True) as response:
         total = int(response.headers["Content-Length"])
-        print(f'size: {total}')
+        logger.debug('File size: %s', total)
 
         with tqdm(total=total, unit_scale=True, unit_divisor=1024, unit="B") as progress:
             num_bytes_downloaded = response.num_bytes_downloaded
@@ -80,5 +95,35 @@ def get_filelist(dirname: str, filepattern: str = '*.rpm') -> List[str]:
     filenames = Path(dirname).rglob(filepattern)
     for pfile in list(filenames):
         file_list.append(str(pfile))
-    logging.info('Found rpm files: %s', file_list)
+    logger.info('Found rpm files: %s', file_list)
     return file_list
+
+
+def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
+    """
+    Read the configuration file and load the data. If ENV path or local
+    file is not found in current directory, the default cfg will be loaded.
+    Note that passing ``ufile`` as a parameter overrides the above default.
+
+    :param ufile: path string for config file
+    :returns: cfg parser and file Path-or-None
+    :raises FileTypeError: if the input file is not in the allowed list
+                           ['.ini', '.cfg', '.conf']
+    """
+    extensions = ['.ini', '.cfg', '.conf']
+    ucfg = os.getenv('RPMGET_CFG', default='')
+
+    cfgfile = Path(ucfg) if ucfg else Path(ufile) if ufile else None
+
+    if cfgfile and cfgfile.suffix not in extensions:
+        msg = f'Invalid file extension: {cfgfile.name}'
+        raise FileTypeError(msg)
+
+    config = CfgParser()
+    if not cfgfile:
+        config.read_string(CFG)
+    else:
+        config.read_file(open(cfgfile))
+        logging.debug('Using config: %s', str(cfgfile.resolve()))
+
+    return config, cfgfile
