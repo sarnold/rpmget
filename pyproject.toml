@@ -72,6 +72,9 @@ Repository = "https://github.com/VCTLabs/rpmget.git"
 Issues = "https://github.com/VCTLabs/rpmget/issues"
 Changelog = "https://github.com/VCTLabs/rpmget/blob/main/CHANGELOG.rst"
 
+[project.scripts]
+rpmget = "rpmget.rpmget:main"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 

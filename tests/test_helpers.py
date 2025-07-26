@@ -4,14 +4,17 @@ from pathlib import Path
 
 import pytest
 
-from rpmget import CFG, __version__
-from rpmget.utils import (
+from rpmget import (
+    CFG,
     CfgParser,
     FileTypeError,
+    __version__,
+    load_config,
+)
+from rpmget.utils import (
     check_for_rpm,
     download_progress_bin,
     get_filelist,
-    load_config,
 )
 
 GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm'

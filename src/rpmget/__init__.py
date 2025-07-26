@@ -1,14 +1,22 @@
 """
-rpmget workflow helper via requests and configparser.
+rpmget workflow helper via httpx and configparser.
 """
 
+import logging
+import os
+from configparser import ConfigParser, ExtendedInterpolation
 from importlib.metadata import version
+from pathlib import Path
+from typing import Optional, Tuple
 
 __version__ = version('rpmget')
 
 __all__ = [
     "__version__",
     "CFG",
+    "FileTypeError",
+    "CfgParser",
+    "load_config",
 ]
 
 CFG = """
@@ -32,7 +40,7 @@ url_post = ${release}.${dist}.${arch}.${ext}
 
 [Toolbox]
 dae_tag = daemonizer-1.1.3
-dc_tag = diskcache-4.1.0
+dc_tag = diskcache-5.6.3
 hex_tag = hexdump-3.5.2
 hon_tag = honcho-2.0.0.1
 tui_tag = picotui-1.2.3.1
@@ -60,3 +68,61 @@ tb_rpms =
   ${Common:url_base}/${stop_tag}/python3-${stop_tag}-${Common:url_post}
   ${Common:url_base}/${serv_tag}/python3-${serv_tag}-${Common:url_post}
 """
+
+
+class FileTypeError(Exception):
+    """
+    Raise when the file extension is not in the allowed extensions list::
+
+      ['.ini', '.cfg', '.conf']
+    """
+
+    __module__ = Exception.__module__
+
+
+class CfgParser(ConfigParser):
+    """
+    Simple subclass with extended interpolation and no empty lines in
+    values.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """
+        Init with specific non-default options.
+        """
+        super().__init__(
+            *args,
+            **kwargs,
+            interpolation=ExtendedInterpolation(),
+            empty_lines_in_values=False,
+        )
+
+
+def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
+    """
+    Read the configuration file and load the data. If ENV path or local
+    file is not found in current directory, the default cfg will be loaded.
+    Note that passing ``ufile`` as a parameter overrides the above default.
+
+    :param ufile: path string for config file
+    :returns: cfg parser and file Path-or-None
+    :raises FileTypeError: if the input file is not in the allowed list
+                           ['.ini', '.cfg', '.conf']
+    """
+    extensions = ['.ini', '.cfg', '.conf']
+    ucfg = os.getenv('RPMGET_CFG', default='')
+
+    cfgfile = Path(ucfg) if ucfg else Path(ufile) if ufile else None
+
+    if cfgfile and cfgfile.suffix not in extensions:
+        msg = f'Invalid file extension: {cfgfile.name}'
+        raise FileTypeError(msg)
+
+    config = CfgParser()
+    if not cfgfile:
+        config.read_string(CFG)
+    else:
+        config.read_file(open(cfgfile))
+        logging.debug('Using config: %s', str(cfgfile.resolve()))
+
+    return config, cfgfile

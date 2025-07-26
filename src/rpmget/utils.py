@@ -3,47 +3,15 @@ Utility functions.
 """
 
 import logging
-import os
-from configparser import ConfigParser, ExtendedInterpolation
 from pathlib import Path
 from shutil import which
-from typing import List, Optional, Tuple
+from typing import List
 from urllib.parse import urlparse
 
 import httpx
 from tqdm import tqdm
 
-from . import CFG
-
-logger = logging.getLogger('rpmget')
-
-
-class FileTypeError(Exception):
-    """
-    Raise when the file extension is not in the allowed extensions list::
-
-      ['.ini', '.cfg', '.conf']
-    """
-
-    __module__ = Exception.__module__
-
-
-class CfgParser(ConfigParser):
-    """
-    Simple subclass with extended interpolation and no empty lines in
-    values.
-    """
-
-    def __init__(self, *args, **kwargs):
-        """
-        Init with specific non-default options.
-        """
-        super().__init__(
-            *args,
-            **kwargs,
-            interpolation=ExtendedInterpolation(),
-            empty_lines_in_values=False,
-        )
+logger = logging.getLogger('rpmget.utils')
 
 
 def check_for_rpm(pgm: str = 'rpm') -> str:
@@ -55,7 +23,7 @@ def check_for_rpm(pgm: str = 'rpm') -> str:
     """
     rpm_path = which(pgm)
     if not rpm_path:
-        print('Cannot continue, no path found for rpm')
+        logger.error('Cannot continue, no path found for rpm')
         raise FileNotFoundError("rpm not found in PATH")
     return rpm_path
 
@@ -97,33 +65,3 @@ def get_filelist(dirname: str, filepattern: str = '*.rpm') -> List[str]:
         file_list.append(str(pfile))
     logger.info('Found rpm files: %s', file_list)
     return file_list
-
-
-def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
-    """
-    Read the configuration file and load the data. If ENV path or local
-    file is not found in current directory, the default cfg will be loaded.
-    Note that passing ``ufile`` as a parameter overrides the above default.
-
-    :param ufile: path string for config file
-    :returns: cfg parser and file Path-or-None
-    :raises FileTypeError: if the input file is not in the allowed list
-                           ['.ini', '.cfg', '.conf']
-    """
-    extensions = ['.ini', '.cfg', '.conf']
-    ucfg = os.getenv('RPMGET_CFG', default='')
-
-    cfgfile = Path(ucfg) if ucfg else Path(ufile) if ufile else None
-
-    if cfgfile and cfgfile.suffix not in extensions:
-        msg = f'Invalid file extension: {cfgfile.name}'
-        raise FileTypeError(msg)
-
-    config = CfgParser()
-    if not cfgfile:
-        config.read_string(CFG)
-    else:
-        config.read_file(open(cfgfile))
-        logging.debug('Using config: %s', str(cfgfile.resolve()))
-
-    return config, cfgfile
