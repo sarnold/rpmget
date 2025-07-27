@@ -14,17 +14,18 @@ __version__ = version('rpmget')
 __all__ = [
     "__version__",
     "CFG",
-    "FileTypeError",
     "CfgParser",
+    "FileTypeError",
     "load_config",
 ]
 
 CFG = """
-[Common]
+[DEFAULT]
 top_dir = rpms
-pkg_tool = rpm
 flat_layout = true
+pkg_tool = rpm
 
+[Common]
 url_type = https
 host = github.com
 owner = VCTLabs
@@ -88,7 +89,7 @@ class CfgParser(ConfigParser):
 
     def __init__(self, *args, **kwargs):
         """
-        Init with specific non-default options.
+        Init with required non-default options.
         """
         super().__init__(
             *args,

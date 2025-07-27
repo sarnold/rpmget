@@ -30,6 +30,7 @@ def test_cfg_parser():
 def test_def_config():
     parser = CfgParser()
     parser.read_string(CFG)
+    print(list(parser.items()))
     rpms_str = parser["Toolbox"]["tb_rpms"]
     assert isinstance(rpms_str, str)
     rpms = [x for x in rpms_str.splitlines() if x != '']
