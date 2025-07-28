@@ -5,6 +5,7 @@ __pycache__/
 
 # user-generated
 docs/source/api
+/*.cfg
 
 # C extensions
 *.so

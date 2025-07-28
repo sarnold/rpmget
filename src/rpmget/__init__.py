@@ -7,22 +7,32 @@ import os
 from configparser import ConfigParser, ExtendedInterpolation
 from importlib.metadata import version
 from pathlib import Path
-from typing import Optional, Tuple
+from typing import Dict, Optional, Tuple
+
+from cerberus import Validator
 
 __version__ = version('rpmget')
 
 __all__ = [
     "__version__",
     "CFG",
+    "SCHEMA",
     "CfgParser",
     "FileTypeError",
     "load_config",
+    "validate_config",
 ]
+
+SCHEMA = {
+    'top_dir': {'type': 'string'},
+    'layout': {'type': 'string'},
+    'pkg_tool': {'type': 'string'},
+}
 
 CFG = """
 [DEFAULT]
 top_dir = rpms
-flat_layout = true
+layout = flat
 pkg_tool = rpm
 
 [Common]
@@ -73,9 +83,24 @@ tb_rpms =
 
 class FileTypeError(Exception):
     """
-    Raise when the file extension is not in the allowed extensions list::
+    Raise if the file extension is not in the allowed extensions list::
 
       ['.ini', '.cfg', '.conf']
+    """
+
+    __module__ = Exception.__module__
+
+
+class CfgSectionError(Exception):
+    """
+    Raise if the config section DEFAULT does not exist, normally at
+    the top of the config file. This section must exist and contain
+    the required options::
+
+      ['DEFAULT']
+      top_dir = rpms
+      flat_layout = true
+      pkg_tool = rpm
     """
 
     __module__ = Exception.__module__
@@ -123,7 +148,44 @@ def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
     if not cfgfile:
         config.read_string(CFG)
     else:
-        config.read_file(open(cfgfile))
+        with open(cfgfile, 'r') as configfile:  # pylint: disable=unspecified-encoding
+            config.read_file(configfile)
         logging.debug('Using config: %s', str(cfgfile.resolve()))
 
     return config, cfgfile
+
+
+def validate_config(config: CfgParser, schema: Dict) -> bool:
+    """
+    Validate minimum config sections and make sure DEFAULT section exists
+    with required options.
+
+    :param cfg_parse: loaded CfgParser instance
+    :param schema: cerberus schema dict
+    """
+    is_valid = False
+    if not config.defaults():
+        msg = f'Config section [DEFAULT] is required: {config.defaults()}'
+        raise CfgSectionError(msg)
+
+    data = config.defaults()
+    v = Validator()
+    v.allow_unknown = True
+    v.require_all = True
+    default_is_valid = v.validate(data, schema)
+
+    if not default_is_valid:
+        msg = f'Validation errors found in defaults: {v.errors}'
+        raise CfgSectionError(msg)
+
+    for section in config.sections():
+        for option in config.options(section):
+            if '.rpm' in config[section][option] and 'http' in config[section][option]:
+                is_valid = True
+                break
+
+    if not is_valid:
+        msg = 'At least one value must contian a valid URL ending in .rpm'
+        raise CfgSectionError(msg)
+
+    return is_valid

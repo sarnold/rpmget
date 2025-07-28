@@ -10,14 +10,20 @@ import warnings
 from pathlib import Path
 from typing import Optional
 
-from . import __version__, load_config
+from . import (
+    SCHEMA,
+    CfgSectionError,
+    __version__,
+    load_config,
+    validate_config,
+)
 
 # from logging_tree import printout  # debug logger environment
 
 
 def self_test(fname: Optional[Path]):
     """
-    Basic sanity check using ``import_module``.
+    Basic sanity check using ``import_module`` and ``load_config``.
     """
     print("Python version:", sys.version)
     print("-" * 80)
@@ -32,7 +38,13 @@ def self_test(fname: Optional[Path]):
         except (NameError, KeyError, ModuleNotFoundError) as exc:
             logging.error("FAILED: %s", repr(exc))
 
-    _, cfg_file = load_config(str(fname)) if fname else load_config()
+    cfg, cfg_file = load_config(str(fname)) if fname else load_config()
+    try:
+        res = validate_config(cfg, SCHEMA)
+        logging.info("cfg valid: %s", res)
+    except CfgSectionError:
+        logging.error("cfg valid: False")
+
     print(f"file: {cfg_file}")
     if not cfg_file:
         warnings.warn(f"Cannot verify user file {cfg_file}", RuntimeWarning, stacklevel=2)
@@ -53,7 +65,7 @@ def show_paths(fname: Optional[Path]):
         print(mod.__doc__)
 
         print("User cfg file:")
-        ucfg, cfg = mod.load_config(str(fname)) if fname else mod.load_config()
+        _, cfg = mod.load_config(str(fname)) if fname else mod.load_config()
         cfgfile = cfg.resolve() if cfg else None
         print(f'  {cfgfile}')
 
@@ -78,6 +90,12 @@ def main(argv=None):  # pragma: no cover
     parser.add_argument('--version', action="version", version=f"%(prog)s {__version__}")
     parser.add_argument('-S', '--show', help='display user config', action='store_true')
     parser.add_argument('-t', '--test', help='run sanity checks', action='store_true')
+    parser.add_argument(
+        '-v',
+        '--validate',
+        help='run schema validation on active config',
+        action='store_true',
+    )
     parser.add_argument(
         "-d",
         "--debug",
@@ -129,6 +147,12 @@ def main(argv=None):  # pragma: no cover
     if args.dump:
         ucfg.write(sys.stdout)
         sys.exit(0)
+    if args.validate:
+        try:
+            res = validate_config(ucfg, SCHEMA)
+            logger.info('User config is valid: %s', res)
+        except CfgSectionError as exc:
+            logger.error('%s', repr(exc))
 
     if len(argv) == 1 and (ufile is None or not ufile.exists()):
         logger.error('No cfg file found; use the --dump arg or create a cfg file')

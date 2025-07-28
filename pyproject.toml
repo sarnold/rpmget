@@ -33,6 +33,7 @@ classifiers = [
 ]
 
 dependencies = [
+    "cerberus",
     "httpx",
     "munch",
     "tqdm",
@@ -42,6 +43,7 @@ requires-python = ">=3.8"
 
 [project.optional-dependencies]
 dev = [
+    "doorstop",
     "flake8",
     "isort",
     "mypy>=0.990",
@@ -67,10 +69,10 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/VCTLabs/rpmget"
-Repository = "https://github.com/VCTLabs/rpmget.git"
-Issues = "https://github.com/VCTLabs/rpmget/issues"
-Changelog = "https://github.com/VCTLabs/rpmget/blob/main/CHANGELOG.rst"
+Homepage = "https://github.com/sarnold/rpmget"
+Repository = "https://github.com/sarnold/rpmget.git"
+Issues = "https://github.com/sarnold/rpmget/issues"
+Changelog = "https://github.com/sarnold/rpmget/blob/main/CHANGELOG.rst"
 
 [project.scripts]
 rpmget = "rpmget.rpmget:main"
