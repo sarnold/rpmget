@@ -100,7 +100,7 @@ filterwarnings = [
 
 [tool.coverage.run]
 branch = true
-source_pkgs = ["src"]
+source_pkgs = ["src/rpmget"]
 omit = [
     "setup.py",
     "scripts",

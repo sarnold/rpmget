@@ -162,6 +162,7 @@ def validate_config(config: CfgParser, schema: Dict) -> bool:
 
     :param cfg_parse: loaded CfgParser instance
     :param schema: cerberus schema dict
+    :returns: boolean ``is_valid`` flag
     """
     is_valid = False
     if not config.defaults():

@@ -23,14 +23,19 @@ def check_for_rpm(pgm: str = 'rpm') -> str:
     """
     rpm_path = which(pgm)
     if not rpm_path:
-        logger.error('Cannot continue, no path found for rpm')
-        raise FileNotFoundError("rpm not found in PATH")
+        logger.error('Cannot continue, no path found for %s', pgm)
+        raise FileNotFoundError("program not found in PATH")
     return rpm_path
 
 
 def download_progress_bin(url: str, dst: str, timeout: float = 10.0) -> str:
     """
     Download a single binary with progress meter.
+
+    :param url: URL to download
+    :param dst: destination directory
+    :param timeout: httpx client timeout
+    :returns: name of downloaded file
     """
     rpm_file: str = urlparse(url).path.rsplit("/", maxsplit=1)[1]
     download_file: Path = Path(dst) / rpm_file

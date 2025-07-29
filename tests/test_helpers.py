@@ -82,7 +82,7 @@ def test_check_for_rpm_bogus(monkeypatch, capfd):
     with pytest.raises(FileNotFoundError) as excinfo:
         _ = check_for_rpm()
     print(str(excinfo.value))
-    assert "rpm not found in PATH" in str(excinfo.value)
+    assert "program not found in PATH" in str(excinfo.value)
 
 
 @pytest.mark.dependency()
