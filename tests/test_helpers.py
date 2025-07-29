@@ -4,9 +4,14 @@ from pathlib import Path
 
 import pytest
 
-from rpmget import CFG, __version__
-from rpmget.utils import (
+from rpmget import (
+    CFG,
     CfgParser,
+    FileTypeError,
+    __version__,
+    load_config,
+)
+from rpmget.utils import (
     check_for_rpm,
     download_progress_bin,
     get_filelist,
@@ -25,12 +30,41 @@ def test_cfg_parser():
 def test_def_config():
     parser = CfgParser()
     parser.read_string(CFG)
+    print(list(parser.items()))
     rpms_str = parser["Toolbox"]["tb_rpms"]
     assert isinstance(rpms_str, str)
     rpms = [x for x in rpms_str.splitlines() if x != '']
     print(f'size: {len(rpms)}')
     print(f'type: {type(rpms)}')
     print(rpms)
+
+
+def test_load_config_default():
+    popts, pfile = load_config()
+
+    assert pfile is None or isinstance(pfile, Path)
+    print(repr(popts))
+    assert isinstance(popts, CfgParser)
+
+
+def test_load_config_file(tmp_path):
+    d = tmp_path / "sub"
+    d.mkdir()
+    p = d / "test.ini"
+    p.write_text(CFG, encoding="utf-8")
+
+    popts, pfile = load_config(str(p))
+
+    assert isinstance(pfile, Path)
+    assert isinstance(popts, CfgParser)
+
+
+def test_load_config_bogus(monkeypatch):
+    monkeypatch.setenv("RPMGET_CFG", "testme.txt")
+    with pytest.raises(FileTypeError) as excinfo:
+        _, pfile = load_config()
+    assert 'Invalid file extension' in str(excinfo.value)
+    assert 'testme.txt' in str(excinfo.value)
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
@@ -48,7 +82,7 @@ def test_check_for_rpm_bogus(monkeypatch, capfd):
     with pytest.raises(FileNotFoundError) as excinfo:
         _ = check_for_rpm()
     print(str(excinfo.value))
-    assert "rpm not found in PATH" in str(excinfo.value)
+    assert "program not found in PATH" in str(excinfo.value)
 
 
 @pytest.mark.dependency()

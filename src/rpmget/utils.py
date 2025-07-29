@@ -3,7 +3,6 @@ Utility functions.
 """
 
 import logging
-from configparser import ConfigParser, ExtendedInterpolation
 from pathlib import Path
 from shutil import which
 from typing import List
@@ -12,23 +11,7 @@ from urllib.parse import urlparse
 import httpx
 from tqdm import tqdm
 
-
-class CfgParser(ConfigParser):
-    """
-    Simple subclass with extended interpolation and no empty lines in
-    values.
-    """
-
-    def __init__(self, *args, **kwargs):
-        """
-        Init with specific non-default options.
-        """
-        super().__init__(
-            *args,
-            **kwargs,
-            interpolation=ExtendedInterpolation(),
-            empty_lines_in_values=False,
-        )
+logger = logging.getLogger('rpmget.utils')
 
 
 def check_for_rpm(pgm: str = 'rpm') -> str:
@@ -40,14 +23,19 @@ def check_for_rpm(pgm: str = 'rpm') -> str:
     """
     rpm_path = which(pgm)
     if not rpm_path:
-        print('Cannot continue, no path found for rpm')
-        raise FileNotFoundError("rpm not found in PATH")
+        logger.error('Cannot continue, no path found for %s', pgm)
+        raise FileNotFoundError("program not found in PATH")
     return rpm_path
 
 
 def download_progress_bin(url: str, dst: str, timeout: float = 10.0) -> str:
     """
     Download a single binary with progress meter.
+
+    :param url: URL to download
+    :param dst: destination directory
+    :param timeout: httpx client timeout
+    :returns: name of downloaded file
     """
     rpm_file: str = urlparse(url).path.rsplit("/", maxsplit=1)[1]
     download_file: Path = Path(dst) / rpm_file
@@ -55,7 +43,7 @@ def download_progress_bin(url: str, dst: str, timeout: float = 10.0) -> str:
 
     with httpx.stream("GET", url, timeout=timeout, follow_redirects=True) as response:
         total = int(response.headers["Content-Length"])
-        print(f'size: {total}')
+        logger.debug('File size: %s', total)
 
         with tqdm(total=total, unit_scale=True, unit_divisor=1024, unit="B") as progress:
             num_bytes_downloaded = response.num_bytes_downloaded
@@ -80,5 +68,5 @@ def get_filelist(dirname: str, filepattern: str = '*.rpm') -> List[str]:
     filenames = Path(dirname).rglob(filepattern)
     for pfile in list(filenames):
         file_list.append(str(pfile))
-    logging.info('Found rpm files: %s', file_list)
+    logger.info('Found rpm files: %s', file_list)
     return file_list

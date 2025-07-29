@@ -20,17 +20,22 @@ authors = [
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
+    "Framework :: tox",
     "Intended Audience :: Developers",
+    "Natural Language :: English",
     "Operating System :: POSIX :: Linux",
     "Operating System :: Unix",
     "Programming Language :: Python :: 3",
+    "Topic :: Internet :: WWW/HTTP",
     "Topic :: Software Development",
-    "Topic :: Software Development :: Embedded Systems",
     "Topic :: Software Development :: Testing",
+    "Topic :: Utilities",
 ]
 
 dependencies = [
+    "cerberus",
     "httpx",
+    "munch",
     "tqdm",
 ]
 
@@ -38,6 +43,7 @@ requires-python = ">=3.8"
 
 [project.optional-dependencies]
 dev = [
+    "doorstop",
     "flake8",
     "isort",
     "mypy>=0.990",
@@ -63,10 +69,13 @@ test = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/VCTLabs/rpmget"
-Repository = "https://github.com/VCTLabs/rpmget.git"
-Issues = "https://github.com/VCTLabs/rpmget/issues"
-Changelog = "https://github.com/VCTLabs/rpmget/blob/main/CHANGELOG.rst"
+Homepage = "https://github.com/sarnold/rpmget"
+Repository = "https://github.com/sarnold/rpmget.git"
+Issues = "https://github.com/sarnold/rpmget/issues"
+Changelog = "https://github.com/sarnold/rpmget/blob/main/CHANGELOG.rst"
+
+[project.scripts]
+rpmget = "rpmget.rpmget:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -77,7 +86,7 @@ version_scheme = "post-release"
 [tool.pytest.ini_options]
 minversion = "6.0"
 testpaths = ["tests",]
-log_cli =  true
+log_cli =  false
 doctest_optionflags = ["ELLIPSIS", "NORMALIZE_WHITESPACE",]
 addopts = "--strict-markers"
 markers = [
@@ -91,7 +100,7 @@ filterwarnings = [
 
 [tool.coverage.run]
 branch = true
-source_pkgs = ["src"]
+source_pkgs = ["src/rpmget"]
 omit = [
     "setup.py",
     "scripts",
