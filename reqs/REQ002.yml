@@ -16,7 +16,7 @@ ref: ''
 reviewed: Y6LBZxaWdF35sCkI9fM2shtNAZ4MVx9hVcMfx4uChlc=
 short-name: cfg_defaults
 text: |
-  The software **Shall** provide the follwing ConfigParser defaults.
+  The software **Shall** provide the following ConfigParser defaults.
 
   * interpolation = ExtendedInterpolation
   * inline_comment_prefixes = None

@@ -13,11 +13,15 @@ RPMGet API and SW Docs
     :maxdepth: 1
     :caption: Contents:
 
+    ds/reqs_tree
+    ds/sw_design
+    ds/unit_tests
     README
     api/modules
     dev/generate-changelog
     dev/pre-commit-config
     dev/pre-commit-usage
+    CHANGELOG
 
 Recent changes
 ==============

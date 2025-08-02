@@ -1,0 +1,19 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.2
+links: []
+normative: true
+ref: ''
+reviewed: 5vVFNPzSAK51Ahg5AJHX-N3ORd_H902hVi5p8kv5IQw=
+short-name: ''
+text: |
+  The software **Shall** self-validate the active configuration.

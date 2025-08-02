@@ -1,0 +1,29 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.3
+links: []
+normative: true
+ref: ''
+reviewed: gx2_Sz2KcZSNqaDaGCg6GbIW0ScW4gPiQl8hpKnITPc=
+short-name: ''
+text: |
+  The software **Shall** consider a configuration valid when it passes
+  the following minimum rule criteria.
+
+  * the DEFAULT section must be present
+  * the DEFAULT section must contain at least the three baseline keys
+    * 'top_dir'
+    * 'layout'
+    * 'pkg_tool'
+  * there must be at least one value containing two required strings
+    * 'http'
+    * '.rpm'
