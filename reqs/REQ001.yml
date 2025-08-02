@@ -18,9 +18,9 @@ short-name: reqs_overview
 text: |
   Requirements
 
-  Functional/feature bits should include:
+  Functional/feature bits should include the following items.
 
-  * python configparser sample config
+  * Python ConfigParser sample config
   * download rpms to a directory (flat)
   * download rpms to the usual files tree
 
