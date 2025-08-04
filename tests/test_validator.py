@@ -13,21 +13,21 @@ from rpmget import (
 )
 
 DEFCFG = """
-[DEFAULT]
+[rpmget]
 top_dir = rpms
 layout = true
 pkg_tool = rpm
 """
 
 NOTCFG = """
-[DEFAULT]
+[rpmget]
 top_dir = rpms
 layout = true
 rpm_tool = dnf
 """
 
 NOURL = """
-[DEFAULT]
+[rpmget]
 top_dir = rpms
 layout = true
 pkg_tool = rpm
@@ -36,8 +36,18 @@ pkg_tool = rpm
 file = this/is/not/a/url.txt
 """
 
+BADURL = """
+[rpmget]
+top_dir = rpms
+layout = true
+pkg_tool = rpm
+
+[stuff]
+file = https:/someplace.it/rpms/fake.rpm
+"""
+
 HASRPM = """
-[DEFAULT]
+[rpmget]
 top_dir = rpms
 layout = true
 pkg_tool = rpm
@@ -99,7 +109,7 @@ def test_cfg_no_default_section():
     parser.read_string(USRCFG)
     with pytest.raises(CfgSectionError) as excinfo:
         res = validate_config(parser, SCHEMA)
-    assert 'Config section [DEFAULT]' in str(excinfo.value)
+    assert 'Config section [rpmget]' in str(excinfo.value)
 
 
 def test_cfg_missing_required_default():
@@ -120,6 +130,15 @@ def test_cfg_no_valid_url():
     assert 'must contian a valid URL' in str(excinfo.value)
 
 
+def test_cfg_bad_valid_url():
+    parser = CfgParser()
+    cfg_str = BADURL
+    parser.read_string(cfg_str)
+    with pytest.raises(CfgSectionError) as excinfo:
+        res = validate_config(parser, SCHEMA)
+    assert 'Invalid URL scheme' in str(excinfo.value)
+
+
 def test_cfg_minimum_valid_url():
     parser = CfgParser()
     cfg_str = HASRPM
@@ -130,6 +149,6 @@ def test_cfg_minimum_valid_url():
 
 def test_cfg_valid_default_config():
     config, _ = load_config()
-    print(config.defaults())
+    print(config.sections())
     res = validate_config(config, SCHEMA)
     assert res is True

@@ -8,6 +8,7 @@ from configparser import ConfigParser, ExtendedInterpolation
 from importlib.metadata import version
 from pathlib import Path
 from typing import Dict, Optional, Tuple
+from urllib.parse import urlparse
 
 from cerberus import Validator
 
@@ -15,9 +16,8 @@ __version__ = version('rpmget')
 
 __all__ = [
     "__version__",
-    "CFG",
-    "SCHEMA",
     "CfgParser",
+    "CfgSectionError",
     "FileTypeError",
     "load_config",
     "validate_config",
@@ -30,7 +30,7 @@ SCHEMA = {
 }
 
 CFG = """
-[DEFAULT]
+[rpmget]
 top_dir = rpms
 layout = flat
 pkg_tool = rpm
@@ -97,9 +97,9 @@ class CfgSectionError(Exception):
     the top of the config file. This section must exist and contain
     the required options::
 
-      ['DEFAULT']
+      [rpmget]
       top_dir = rpms
-      flat_layout = true
+      layout = true
       pkg_tool = rpm
     """
 
@@ -109,7 +109,7 @@ class CfgSectionError(Exception):
 class CfgParser(ConfigParser):
     """
     Simple subclass with extended interpolation and no empty lines in
-    values.
+    values (see design item SDD002).
     """
 
     def __init__(self, *args, **kwargs):
@@ -157,19 +157,19 @@ def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
 
 def validate_config(config: CfgParser, schema: Dict) -> bool:
     """
-    Validate minimum config sections and make sure DEFAULT section exists
-    with required options.
+    Validate minimum config sections and make sure [rpmget] section exists
+    with required options (see design item SDD003).
 
     :param cfg_parse: loaded CfgParser instance
     :param schema: cerberus schema dict
     :returns: boolean ``is_valid`` flag
     """
     is_valid = False
-    if not config.defaults():
-        msg = f'Config section [DEFAULT] is required: {config.defaults()}'
+    if 'rpmget' not in config.sections():
+        msg = f'Config section [rpmget] is required: {config.sections()}'
         raise CfgSectionError(msg)
 
-    data = config.defaults()
+    data = config['rpmget']
     v = Validator()
     v.allow_unknown = True
     v.require_all = True
@@ -181,9 +181,17 @@ def validate_config(config: CfgParser, schema: Dict) -> bool:
 
     for section in config.sections():
         for option in config.options(section):
-            if '.rpm' in config[section][option] and 'http' in config[section][option]:
-                is_valid = True
-                break
+            if '.rpm' in config[section][option]:
+                if 'http' in config[section][option]:
+                    try:
+                        parsed_url = urlparse(config[section][option])
+                        if not all([parsed_url.scheme, parsed_url.netloc]):
+                            msg = f'Invalid URL scheme or address in {parsed_url}'
+                            raise CfgSectionError(msg)
+                        is_valid = True
+                        # break
+                    except ValueError:
+                        logging.error("Must be a valid URL")
 
     if not is_valid:
         msg = 'At least one value must contian a valid URL ending in .rpm'
