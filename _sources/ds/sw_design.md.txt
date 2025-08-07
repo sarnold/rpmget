@@ -1,0 +1,99 @@
+# 1.0 Design Elements {#SDD001}
+
+The rpmget package provides a convenient baseline configuration and
+example for managing an arbitrary set of binary rpm packages with
+optional support for creating the canonical rpm build tree and pkg
+repository.
+
+## SW Dependencies
+
+The primary runtime dependencies are munch, httpx, tqdm, and cerberus,
+where cerberus provides the runtime validation for the active user
+configuration file. Complete package dependencies are shown in the
+figure below:
+
+```{figure} assets/rpmget_dependency_graph.svg
+:width: 90 %
+:align: center
+:alt: rpmget software units
+
+Rpmget Software Units (captured from mermaid to SVG or PNG).
+```
+
+<details>
+  <summary>rpmget_dependency_graph source</summary>
+  rpmget dependency graph showing primary software units.
+
+```
+  graph TB
+    subgraph id1[rpmget Dependencies]
+      subgraph id2[Python Packages]
+        A(rpmget)
+        B(httpx)
+        C(tqdm)
+        D{cerberus}
+        E(munch)
+      end
+    end
+    A ==> B & C & E
+    A -.-> D
+    D -.-> A
+```
+</details>
+
+## Design decisions
+
+Higher-level API approach (httpx and tqdm) first, minimizing LoC where
+possible. Maximize use of the ConfigParser ExtendedInterpolation and
+custom validator.
+
+* flexible ConfigParser configuration format
+- baseline config file validation via argument
+* httpx download client with progress display
+
+Make sure self-test and user-initiated validation always tries to use
+provided configuration first, before falling back to the builtin example.
+
+
+## 1.1 SDD002 {#SDD002}
+
+### Configuration Format
+
+Any INI structured text file acceptable to ConfigParser and within the
+following constraints. See the default config for examples.
+
+- Extended Interpolation is enabled, variable style is ${VAR}
+- Empty lines in values are NOT supported
+- Inline comments are also NOT supported
+
+The current design supports *only* URLs starting with http|https and
+ending with '.rpm'.
+
+The downloader should iterate over any URL values that match this
+definition.
+
+> `src/rpmget/__init__.py` (line 112)
+
+*Parent links: REQ002*
+
+
+## 1.2 SDD003 {#SDD003}
+
+### Validation Rules
+
+In addition to the ConfigParser checks, all configurations should be checked
+by the validate function using a simple validation schema and URL parsing
+based on the following rules. See the default config for an example.
+
+- the [rpmget] section must exist, any others are optional
+- the [rpmget] section must contain at least the required keys
+  - 'top_dir': the directory where rpms are downloaded
+  - 'layout': either 'flat' (single directory) or 'tree'
+  - 'pkg_tool': either 'rpm', 'yum', or 'dnf'
+- the config must contain at least one valid URL string value ending with '.rpm'
+
+> `src/rpmget/__init__.py` (line 161)
+
+*Parent links: REQ004*
+
+
