@@ -53,7 +53,9 @@ apidoc_module_dir = f'../../src/{project}'
 apidoc_output_dir = 'api'
 apidoc_excluded_paths = ['scripts', 'tests']
 apidoc_module_first = True
+apidoc_include_private = True
 apidoc_separate_modules = True
+
 autodoc_typehints = 'description'
 
 # Add any paths that contain templates here, relative to this directory.

@@ -1,11 +1,19 @@
 import logging
+import sys
 import warnings
+from argparse import ArgumentParser
+from shlex import split
 
 import pytest
 
 import rpmget
-from rpmget import CFG
-from rpmget.rpmget import self_test, show_paths
+from rpmget import CFG, __version__
+from rpmget.rpmget import (
+    main_arg_parser,
+    parse_command_line,
+    self_test,
+    show_paths,
+)
 
 NOTCFG = """
 [DEFAULT]
@@ -13,6 +21,22 @@ top_dir = rpms
 layout = true
 rpm_tool = dnf
 """
+
+
+def test_parse_command_line(capsys):
+    cmd_str = 'rpmget --version'
+    argv = split(cmd_str)
+    with pytest.raises(SystemExit):
+        arguments = parse_command_line(argv)
+        print(arguments)
+        assert __version__ in arguments
+
+
+def test_main_arg_parser(capsys):
+    parser = main_arg_parser()
+    print(parser)
+    assert isinstance(parser, ArgumentParser)
+    assert "Download manager for rpm files" in parser.description
 
 
 def test_self_test(capfd, tmp_path):

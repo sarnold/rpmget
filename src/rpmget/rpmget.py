@@ -75,14 +75,13 @@ def show_paths(fname: Optional[Path]):
     print("-" * 80)
 
 
-def main(argv=None):  # pragma: no cover
+def main_arg_parser() -> argparse.ArgumentParser:
     """
-    Collect and process command options/arguments and init app dirs,
-    then launch the file manager.
-    """
-    if argv is None:
-        argv = sys.argv
+    Function to parse command line arguments
 
+    :param args: list of argument strings to parse
+    :returns: parsed arguments
+    """
     parser = argparse.ArgumentParser(
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
         description='Download manager for rpm files',
@@ -119,7 +118,30 @@ def main(argv=None):  # pragma: no cover
         help="path to ini-style configuration file",
     )
 
-    args = parser.parse_args()
+    return parser
+
+
+def parse_command_line(argv):
+    """
+    Parse command line arguments. See -h option
+
+    :param argv: arguments on the command line include caller file name
+    :return arguments: parsed command line arguments
+    """
+    parser = main_arg_parser()
+    arguments = parser.parse_args(argv[1:])
+
+    return arguments
+
+
+def main() -> None:  # pragma: no cover
+    """
+    Collect and process command options/arguments and setup logging,
+    check for user config, then launch the file/download manager.
+
+    :param args: argument
+    """
+    args = parse_command_line(sys.argv)
 
     # basic logging setup must come before any other logging calls
     log_level = logging.DEBUG if args.debug else logging.INFO
@@ -138,6 +160,10 @@ def main(argv=None):  # pragma: no cover
     else:
         ucfg, ufile = load_config()
 
+    if len(sys.argv) == 1 and (ufile is None or not ufile.exists()):
+        logger.error('No cfg file found; use the --dump arg or create a cfg file')
+        sys.exit(1)
+
     if args.test:
         self_test(ufile)
         sys.exit(0)
@@ -153,10 +179,6 @@ def main(argv=None):  # pragma: no cover
             logger.info('User config is valid: %s', res)
         except CfgSectionError as exc:
             logger.error('%s', repr(exc))
-
-    if len(argv) == 1 and (ufile is None or not ufile.exists()):
-        logger.error('No cfg file found; use the --dump arg or create a cfg file')
-        sys.exit(1)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,20 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.4
+links: []
+normative: true
+ref: ''
+reviewed: QIaIaQ4iqbgPWBpyU1VcntgSnj3q4-qhkxJZCdyxy4E=
+short-name: ''
+text: |
+  The software **Shall** provide a command-line argument to run the
+  validation checks.
