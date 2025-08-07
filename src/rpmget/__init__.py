@@ -185,6 +185,7 @@ def validate_config(config: CfgParser, schema: Dict) -> bool:
                 if 'http' in config[section][option]:
                     try:
                         parsed_url = urlparse(config[section][option])
+                        logging.debug('Parsed URL: %s', repr(parsed_url))
                         if not all([parsed_url.scheme, parsed_url.netloc]):
                             msg = f'Invalid URL scheme or address in {parsed_url}'
                             raise CfgSectionError(msg)
