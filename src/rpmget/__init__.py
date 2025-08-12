@@ -24,9 +24,9 @@ __all__ = [
 ]
 
 SCHEMA = {
-    'top_dir': {'type': 'string'},
-    'layout': {'type': 'string'},
-    'pkg_tool': {'type': 'string'},
+    'top_dir': {'type': 'string', 'empty': False},
+    'layout': {'type': 'string', 'anyof_regex': ['^flat', '^tree']},
+    'pkg_tool': {'type': 'string', 'anyof_regex': ['^rpm', '^yum', '^dnf']},
 }
 
 CFG = """
@@ -80,6 +80,8 @@ tb_rpms =
   ${Common:url_base}/${serv_tag}/python3-${serv_tag}-${Common:url_post}
 """
 
+RPM_TREE = ["BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS"]
+
 
 class FileTypeError(Exception):
     """
@@ -101,6 +103,8 @@ class CfgSectionError(Exception):
       top_dir = rpms
       layout = true
       pkg_tool = rpm
+
+    Also raised for invalid or missing URL in any section.
     """
 
     __module__ = Exception.__module__
@@ -122,6 +126,22 @@ class CfgParser(ConfigParser):
             interpolation=ExtendedInterpolation(),
             empty_lines_in_values=False,
         )
+
+
+def create_layout(topdir: str, layout: str):
+    """
+    Create layout for destination directory based on the ``layout`` cfg
+    parameter, either flat or the standard RPM tree.
+
+    :param topdir: destination directory for downloaded rpms
+    :param layout: type of destination directory layout
+    """
+    if layout == 'flat':
+        Path(topdir).mkdir(parents=True, exist_ok=True)
+    if layout == 'tree':
+        for name in RPM_TREE:
+            path = Path(topdir) / name
+            path.mkdir(parents=True, exist_ok=True)
 
 
 def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
