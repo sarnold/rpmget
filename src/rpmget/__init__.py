@@ -31,7 +31,7 @@ SCHEMA = {
 
 CFG = """
 [rpmget]
-top_dir = rpms
+top_dir = rpmbuild
 layout = flat
 pkg_tool = rpm
 
