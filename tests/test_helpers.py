@@ -11,6 +11,7 @@ from rpmget import (
     FileTypeError,
     __version__,
     create_layout,
+    create_macros,
     load_config,
 )
 from rpmget.utils import (
@@ -21,6 +22,13 @@ from rpmget.utils import (
 
 GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm'
 NAME = 'python3-py3tftp-1.3.0-1.el9.noarch.rpm'
+
+
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_create_macros():
+    res = create_macros("rpmbuild")
+    print(res)
+    assert "%packager" in res
 
 
 def test_cfg_parser():

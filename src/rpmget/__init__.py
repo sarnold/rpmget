@@ -7,6 +7,7 @@ import os
 from configparser import ConfigParser, ExtendedInterpolation
 from importlib.metadata import version
 from pathlib import Path
+from string import Template
 from typing import Dict, Optional, Tuple
 from urllib.parse import urlparse
 
@@ -19,6 +20,7 @@ __all__ = [
     "CfgParser",
     "CfgSectionError",
     "FileTypeError",
+    "create_macros",
     "load_config",
     "validate_config",
 ]
@@ -82,6 +84,31 @@ tb_rpms =
 
 RPM_TREE = ["BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS"]
 
+RPM_TPL = """%packager ${user}
+%_topdir ${home}/${top_dir}
+%_tmppath ${home}/${top_dir}/tmp
+"""
+
+CTX = {
+    'home': '',
+    'user': '',
+    'top_dir': '',
+}
+
+
+def create_macros(topdir: str) -> str:
+    """
+    Render a string template.
+    """
+    CTX.update(
+        {
+            'home': str(Path.home()),
+            'user': Path.home().stem,
+            'top_dir': os.path.relpath(Path(topdir), str(Path.home())),
+        }
+    )
+    return Template(RPM_TPL).substitute(CTX)
+
 
 class FileTypeError(Exception):
     """
@@ -139,9 +166,12 @@ def create_layout(topdir: str, layout: str):
     if layout == 'flat':
         Path(topdir).mkdir(parents=True, exist_ok=True)
     if layout == 'tree':
+        macros = Path(topdir) / '.rpmmacros'
         for name in RPM_TREE:
             path = Path(topdir) / name
             path.mkdir(parents=True, exist_ok=True)
+        text = create_macros(topdir)
+        macros.write_text(text)
 
 
 def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
