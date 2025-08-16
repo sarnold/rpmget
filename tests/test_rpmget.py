@@ -18,7 +18,7 @@ from rpmget.rpmget import (
 NOTCFG = """
 [DEFAULT]
 top_dir = rpms
-layout = true
+layout = tree
 rpm_tool = dnf
 """
 

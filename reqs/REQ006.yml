@@ -1,0 +1,20 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.5
+links: []
+normative: true
+ref: ''
+reviewed: 5Fxk64LKeomPFcEtpFNQSrBU-Pytr5QgA2QXQ-XSd2E=
+short-name: ''
+text: |
+  The software **Shall** support both a flat layout and the rpmdev-setuptree
+  layout, according to the cfg `layout` values `flat` or `tree`.

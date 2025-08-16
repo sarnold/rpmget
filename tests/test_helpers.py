@@ -6,9 +6,12 @@ import pytest
 
 from rpmget import (
     CFG,
+    RPM_TREE,
     CfgParser,
     FileTypeError,
     __version__,
+    create_layout,
+    create_macros,
     load_config,
 )
 from rpmget.utils import (
@@ -19,6 +22,13 @@ from rpmget.utils import (
 
 GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm'
 NAME = 'python3-py3tftp-1.3.0-1.el9.noarch.rpm'
+
+
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_create_macros():
+    res = create_macros("rpmbuild")
+    print(res)
+    assert "%packager" in res
 
 
 def test_cfg_parser():
@@ -100,6 +110,26 @@ def test_get_filelist_down(tmpdir_session):
     print(files)
     assert len(files) == 1
     assert files[0].endswith(NAME)
+
+
+def test_create_layout_flat(tmp_path):
+    d = tmp_path / 'rpmbuild'
+    create_layout(str(d), 'flat')
+    print(d)
+    for root, dirs, files in os.walk(str(d)):
+        print(root)
+        assert dirs == []
+        assert files == []
+
+
+def test_create_layout_tree(tmp_path):
+    d = tmp_path / 'rpmbuild'
+    create_layout(str(d), 'tree')
+    print(d)
+    for root, dirs, files in os.walk(str(d)):
+        print(root)
+        print(dirs)
+        print(files)
 
 
 def test_get_filelist(tmp_path):

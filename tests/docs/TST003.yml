@@ -1,0 +1,26 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: REQ Integration and Unit Tests
+header: ''
+level: 1.2
+links:
+- REQ003: 5vVFNPzSAK51Ahg5AJHX-N3ORd_H902hVi5p8kv5IQw=
+- REQ004: 0VA0u4y8psLGS5qjnfN4_rStpJkwMsJ7d7prMulL81k=
+normative: true
+ref: ''
+references:
+- keyword: validate_config
+  path: tests/test_validator.py
+  sha: af571228e3ef92ec62f89a0a0aa08f1ce3affdb5f1afe7b141c5c2db7ddd11dd
+  type: file
+reviewed: EzcYCypIKpyZKCIHy3fvzuBUe7kH51lFbQWmsCwwCig=
+short-name: ''
+text: |
+  Test config validation:

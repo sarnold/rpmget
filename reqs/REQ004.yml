@@ -13,17 +13,17 @@ level: 1.3
 links: []
 normative: true
 ref: ''
-reviewed: riCTOG_ee-eONgz_dre3HyBKgrIwWnMtnRpXtsxDhsA=
+reviewed: 0VA0u4y8psLGS5qjnfN4_rStpJkwMsJ7d7prMulL81k=
 short-name: ''
 text: |
   The software **Shall** consider a configuration valid when it passes
   the following minimum rule criteria.
 
-  * the rpmget section must be present
-  * the rpmget section must contain at least the three baseline keys
-    * 'top_dir'
-    * 'layout'
-    * 'pkg_tool'
+  * the rpmget section must be present and contain at least the following
+    three baseline keys and their allowed values
+    * 'top_dir': 'any'
+    * 'layout': ['flat', 'tree']
+    * 'pkg_tool': ['rpm', 'yum', 'dnf']
   * there must be at least one value containing two required strings
     * 'http'
     * '.rpm'

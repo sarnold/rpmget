@@ -40,7 +40,7 @@ def self_test(fname: Optional[Path]):
 
     cfg, cfg_file = load_config(str(fname)) if fname else load_config()
     try:
-        res = validate_config(cfg, SCHEMA)
+        res = validate_config(cfg, SCHEMA)  # SDD004
         logging.info("cfg valid: %s", res)
     except CfgSectionError:
         logging.error("cfg valid: False")

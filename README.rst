@@ -13,9 +13,9 @@ environment or create a local package repo.
 
 Things you can do:
 
-* download configured rpm files to a directory
-* create an rpm repository from downloaded rpm files
-* install configured rpm files on-the-fly
+* validate user configuration files
+* download configured rpm files to a directory or rpm tree
+* create an rpm repository from rpm tree
 * dump a sample config file
 
 
@@ -24,6 +24,50 @@ Dev tools
 
 Local tool dependencies to aid in development; install them for
 maximum enjoyment.
+
+Doorstop
+--------
+
+Document configurations and corresponding YAML or markdown items are
+maintained in the following directory structure::
+
+  $ tree reqs/ docs/swd/ tests/docs/
+  reqs/
+  ├── .doorstop.yml
+  └── REQ001.yml
+  docs/swd/
+  ├── assets
+  │   ├── .gitkeep
+  │   └── rpmget_dependency_graph.svg
+  ├── .doorstop.yml
+  └── SDD001.md
+  tests/docs/
+  ├── .doorstop.yml
+  └── TST001.yml
+
+The doorstop tool has been added to project [dev] "extras" as well as the
+tox dev and docs environments. If a doorstop package is not available for
+your environment, then use the "dev" environment for working with doorstop_
+documents, eg::
+
+  tox -e dev
+  source .venv/bin/activate
+  (.venv) doorstop
+  building tree...
+  loading documents...
+  validating items...
+
+  REQ
+  │
+  ├── TST
+  │
+  └── SDD
+
+Please see the doorstop Quick Start for an overview of the relevant doorstop
+commands.
+
+.. _doorstop Quick Start: https://doorstop.readthedocs.io/en/latest/getting-started/quickstart.html
+.. _doorstop: https://doorstop.readthedocs.io/en/latest/index.html
 
 Tox
 ---

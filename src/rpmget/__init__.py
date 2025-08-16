@@ -7,6 +7,7 @@ import os
 from configparser import ConfigParser, ExtendedInterpolation
 from importlib.metadata import version
 from pathlib import Path
+from string import Template
 from typing import Dict, Optional, Tuple
 from urllib.parse import urlparse
 
@@ -19,19 +20,20 @@ __all__ = [
     "CfgParser",
     "CfgSectionError",
     "FileTypeError",
+    "create_macros",
     "load_config",
     "validate_config",
 ]
 
 SCHEMA = {
-    'top_dir': {'type': 'string'},
-    'layout': {'type': 'string'},
-    'pkg_tool': {'type': 'string'},
+    'top_dir': {'type': 'string', 'empty': False},
+    'layout': {'type': 'string', 'anyof_regex': ['^flat', '^tree']},
+    'pkg_tool': {'type': 'string', 'anyof_regex': ['^rpm', '^yum', '^dnf']},
 }
 
 CFG = """
 [rpmget]
-top_dir = rpms
+top_dir = rpmbuild
 layout = flat
 pkg_tool = rpm
 
@@ -80,6 +82,33 @@ tb_rpms =
   ${Common:url_base}/${serv_tag}/python3-${serv_tag}-${Common:url_post}
 """
 
+RPM_TREE = ["BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS"]
+
+RPM_TPL = """%packager ${user}
+%_topdir ${home}/${top_dir}
+%_tmppath ${home}/${top_dir}/tmp
+"""
+
+CTX = {
+    'home': '',
+    'user': '',
+    'top_dir': '',
+}
+
+
+def create_macros(topdir: str) -> str:
+    """
+    Render a string template.
+    """
+    CTX.update(
+        {
+            'home': str(Path.home()),
+            'user': Path.home().stem,
+            'top_dir': os.path.relpath(Path(topdir), str(Path.home())),
+        }
+    )
+    return Template(RPM_TPL).substitute(CTX)
+
 
 class FileTypeError(Exception):
     """
@@ -101,6 +130,8 @@ class CfgSectionError(Exception):
       top_dir = rpms
       layout = true
       pkg_tool = rpm
+
+    Also raised for invalid or missing URL in any section.
     """
 
     __module__ = Exception.__module__
@@ -122,6 +153,26 @@ class CfgParser(ConfigParser):
             interpolation=ExtendedInterpolation(),
             empty_lines_in_values=False,
         )
+
+
+def create_layout(topdir: str, layout: str):
+    """
+    Create layout for destination directory based on the ``layout`` cfg
+    parameter, either flat or the standard RPM tree. Satisfies both
+    REQ006 and REQ007.
+
+    :param topdir: destination directory for downloaded rpms
+    :param layout: type of destination directory layout
+    """
+    if layout == 'flat':
+        Path(topdir).mkdir(parents=True, exist_ok=True)
+    if layout == 'tree':
+        macros = Path(topdir) / '.rpmmacros'
+        for name in RPM_TREE:
+            path = Path(topdir) / name
+            path.mkdir(parents=True, exist_ok=True)
+        text = create_macros(topdir)
+        macros.write_text(text)
 
 
 def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:

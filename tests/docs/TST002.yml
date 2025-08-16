@@ -1,0 +1,25 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: REQ Integration and Unit Tests
+header: ''
+level: 1.1
+links:
+- REQ002: w6nN8EOsVyyKtASg_22TLwUTygYBlA7esjfWjJt-Iuw=
+normative: true
+ref: ''
+references:
+- keyword: parser
+  path: tests/test_helpers.py
+  sha: 90c091c0aaf16250b969e29435d7dff9ae3e69ea0ab7840821ee38c9004d7727
+  type: file
+reviewed: GHjbHxs6AvCd6QaycQZ4AQOpjtzSfeEK5JoLhIWBH8E=
+short-name: ''
+text: |
+  Test config handling:

@@ -15,7 +15,7 @@ from rpmget import (
 DEFCFG = """
 [rpmget]
 top_dir = rpms
-layout = true
+layout = flat
 pkg_tool = rpm
 """
 
@@ -29,7 +29,7 @@ rpm_tool = dnf
 NOURL = """
 [rpmget]
 top_dir = rpms
-layout = true
+layout = tree
 pkg_tool = rpm
 
 [stuff]
@@ -39,17 +39,28 @@ file = this/is/not/a/url.txt
 BADURL = """
 [rpmget]
 top_dir = rpms
-layout = true
+layout = tree
 pkg_tool = rpm
 
 [stuff]
 file = https:/someplace.it/rpms/fake.rpm
 """
 
-HASRPM = """
+BADLAYOUT = """
 [rpmget]
 top_dir = rpms
 layout = true
+pkg_tool = rpm
+
+[stuff]
+file = http://somewhere.over/the/rainbow.rpm
+other = not_a_url
+"""
+
+HASRPM = """
+[rpmget]
+top_dir = rpms
+layout = flat
 pkg_tool = rpm
 
 [stuff]
@@ -102,6 +113,16 @@ tb_rpms =
   ${Common:url_base}/${stop_tag}/python3-${stop_tag}-${Common:url_post}
   ${Common:url_base}/${serv_tag}/python3-${serv_tag}-${Common:url_post}
 """
+
+
+def test_cfg_bad_layout():
+    parser = CfgParser()
+    cfg_str = BADLAYOUT
+    parser.read_string(cfg_str)
+    with pytest.raises(CfgSectionError) as excinfo:
+        res = validate_config(parser, SCHEMA)
+    print(excinfo.value)
+    assert 'Validation errors found in defaults' in str(excinfo.value)
 
 
 def test_cfg_no_default_section():
