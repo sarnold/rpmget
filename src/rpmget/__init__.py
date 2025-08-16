@@ -158,7 +158,8 @@ class CfgParser(ConfigParser):
 def create_layout(topdir: str, layout: str):
     """
     Create layout for destination directory based on the ``layout`` cfg
-    parameter, either flat or the standard RPM tree.
+    parameter, either flat or the standard RPM tree. Satisfies both
+    REQ006 and REQ007.
 
     :param topdir: destination directory for downloaded rpms
     :param layout: type of destination directory layout
