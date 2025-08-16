@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rpmget &mdash; rpmget 0.0.0.post30 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=e01060f9"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            rpmget
+          </a>
+              <div class="version">
+                0.0.0.post30
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ds/reqs_tree.html">1.0 Requirements {#REQ001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/sw_design.html">1.0 Design Elements {#SDD001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/unit_tests.html">1.0 Automated Tests {#TST001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">RPMGet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">rpmget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/generate-changelog.html">Changelog Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/pre-commit-config.html">Contents of the <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/pre-commit-usage.html">Using Pre-Commit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">rpmget</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">rpmget</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rpmget</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">rpmget workflow helper via httpx and configparser.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configparser</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigParser</span><span class="p">,</span> <span class="n">ExtendedInterpolation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">string</span><span class="w"> </span><span class="kn">import</span> <span class="n">Template</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">cerberus</span><span class="w"> </span><span class="kn">import</span> <span class="n">Validator</span>
+
+<span class="n">__version__</span> <span class="o">=</span> <span class="n">version</span><span class="p">(</span><span class="s1">&#39;rpmget&#39;</span><span class="p">)</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;__version__&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CfgParser&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CfgSectionError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;FileTypeError&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;create_macros&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;load_config&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;validate_config&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">SCHEMA</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;top_dir&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;empty&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">},</span>
+    <span class="s1">&#39;layout&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;anyof_regex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;^flat&#39;</span><span class="p">,</span> <span class="s1">&#39;^tree&#39;</span><span class="p">]},</span>
+    <span class="s1">&#39;pkg_tool&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;type&#39;</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span> <span class="s1">&#39;anyof_regex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;^rpm&#39;</span><span class="p">,</span> <span class="s1">&#39;^yum&#39;</span><span class="p">,</span> <span class="s1">&#39;^dnf&#39;</span><span class="p">]},</span>
+<span class="p">}</span>
+
+<span class="n">CFG</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">[rpmget]</span>
+<span class="s2">top_dir = rpmbuild</span>
+<span class="s2">layout = flat</span>
+<span class="s2">pkg_tool = rpm</span>
+
+<span class="s2">[Common]</span>
+<span class="s2">url_type = https</span>
+<span class="s2">host = github.com</span>
+<span class="s2">owner = VCTLabs</span>
+<span class="s2">repo = el9-rpm-toolbox</span>
+
+<span class="s2">arch = noarch</span>
+<span class="s2">dist = el9</span>
+<span class="s2">ext = rpm</span>
+<span class="s2">release = 1</span>
+
+<span class="s2">url_base = $</span><span class="si">{url_type}</span><span class="s2">://$</span><span class="si">{host}</span><span class="s2">/$</span><span class="si">{owner}</span><span class="s2">/$</span><span class="si">{repo}</span><span class="s2">/releases/download</span>
+<span class="s2">url_post = $</span><span class="si">{release}</span><span class="s2">.$</span><span class="si">{dist}</span><span class="s2">.$</span><span class="si">{arch}</span><span class="s2">.$</span><span class="si">{ext}</span>
+
+<span class="s2">[Toolbox]</span>
+<span class="s2">dae_tag = daemonizer-1.1.3</span>
+<span class="s2">dc_tag = diskcache-5.6.3</span>
+<span class="s2">hex_tag = hexdump-3.5.2</span>
+<span class="s2">hon_tag = honcho-2.0.0.1</span>
+<span class="s2">tui_tag = picotui-1.2.3.1</span>
+<span class="s2">proc_tag = procman-0.6.0</span>
+<span class="s2">atftp_tag = py3tftp-1.3.0</span>
+<span class="s2">pyg_tag = pygtail-0.14.0.2</span>
+<span class="s2">ctl_tag = pyprctrl-0.1.3</span>
+<span class="s2">serv_tag = pyserv-1.8.4</span>
+<span class="s2">stop_tag = stoppy-1.0.5</span>
+<span class="s2">tftp_tag = tftpy-0.8.6.1</span>
+<span class="s2">tc_tag = timed-count-2.0.0</span>
+
+<span class="s2">tb_rpms =</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{atftp_tag}</span><span class="s2">/python3-$</span><span class="si">{atftp_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{tftp_tag}</span><span class="s2">/python3-$</span><span class="si">{tftp_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{dc_tag}</span><span class="s2">/python3-$</span><span class="si">{dc_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{dae_tag}</span><span class="s2">/python3-$</span><span class="si">{dae_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{hex_tag}</span><span class="s2">/python3-$</span><span class="si">{hex_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{hon_tag}</span><span class="s2">/python3-$</span><span class="si">{hon_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{proc_tag}</span><span class="s2">/python3-$</span><span class="si">{proc_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{pyg_tag}</span><span class="s2">/python3-$</span><span class="si">{pyg_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{ctl_tag}</span><span class="s2">/python3-$</span><span class="si">{ctl_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{tc_tag}</span><span class="s2">/python3-$</span><span class="si">{tc_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{tui_tag}</span><span class="s2">/python3-$</span><span class="si">{tui_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{stop_tag}</span><span class="s2">/python3-$</span><span class="si">{stop_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">  ${Common:url_base}/$</span><span class="si">{serv_tag}</span><span class="s2">/python3-$</span><span class="si">{serv_tag}</span><span class="s2">-${Common:url_post}</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">RPM_TREE</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;BUILD&quot;</span><span class="p">,</span> <span class="s2">&quot;BUILDROOT&quot;</span><span class="p">,</span> <span class="s2">&quot;RPMS&quot;</span><span class="p">,</span> <span class="s2">&quot;SOURCES&quot;</span><span class="p">,</span> <span class="s2">&quot;SPECS&quot;</span><span class="p">,</span> <span class="s2">&quot;SRPMS&quot;</span><span class="p">]</span>
+
+<span class="n">RPM_TPL</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;%packager $</span><span class="si">{user}</span>
+<span class="s2">%_topdir $</span><span class="si">{home}</span><span class="s2">/$</span><span class="si">{top_dir}</span>
+<span class="s2">%_tmppath $</span><span class="si">{home}</span><span class="s2">/$</span><span class="si">{top_dir}</span><span class="s2">/tmp</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">CTX</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;home&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;top_dir&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="create_macros">
+<a class="viewcode-back" href="../api/rpmget.html#rpmget.create_macros">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_macros</span><span class="p">(</span><span class="n">topdir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Render a string template.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">CTX</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+        <span class="p">{</span>
+            <span class="s1">&#39;home&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()),</span>
+            <span class="s1">&#39;user&#39;</span><span class="p">:</span> <span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">()</span><span class="o">.</span><span class="n">stem</span><span class="p">,</span>
+            <span class="s1">&#39;top_dir&#39;</span><span class="p">:</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">topdir</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="o">.</span><span class="n">home</span><span class="p">())),</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">RPM_TPL</span><span class="p">)</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">CTX</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">FileTypeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise if the file extension is not in the allowed extensions list::</span>
+
+<span class="sd">      [&#39;.ini&#39;, &#39;.cfg&#39;, &#39;.conf&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__module__</span> <span class="o">=</span> <span class="ne">Exception</span><span class="o">.</span><span class="vm">__module__</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">CfgSectionError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise if the config section DEFAULT does not exist, normally at</span>
+<span class="sd">    the top of the config file. This section must exist and contain</span>
+<span class="sd">    the required options::</span>
+
+<span class="sd">      [rpmget]</span>
+<span class="sd">      top_dir = rpms</span>
+<span class="sd">      layout = true</span>
+<span class="sd">      pkg_tool = rpm</span>
+
+<span class="sd">    Also raised for invalid or missing URL in any section.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="vm">__module__</span> <span class="o">=</span> <span class="ne">Exception</span><span class="o">.</span><span class="vm">__module__</span>
+
+
+<div class="viewcode-block" id="CfgParser">
+<a class="viewcode-back" href="../api/rpmget.html#rpmget.CfgParser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CfgParser</span><span class="p">(</span><span class="n">ConfigParser</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Simple subclass with extended interpolation and no empty lines in</span>
+<span class="sd">    values (see design item SDD002).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Init with required non-default options.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="o">*</span><span class="n">args</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+            <span class="n">interpolation</span><span class="o">=</span><span class="n">ExtendedInterpolation</span><span class="p">(),</span>
+            <span class="n">empty_lines_in_values</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_layout</span><span class="p">(</span><span class="n">topdir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create layout for destination directory based on the ``layout`` cfg</span>
+<span class="sd">    parameter, either flat or the standard RPM tree. Satisfies both</span>
+<span class="sd">    REQ006 and REQ007.</span>
+
+<span class="sd">    :param topdir: destination directory for downloaded rpms</span>
+<span class="sd">    :param layout: type of destination directory layout</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">layout</span> <span class="o">==</span> <span class="s1">&#39;flat&#39;</span><span class="p">:</span>
+        <span class="n">Path</span><span class="p">(</span><span class="n">topdir</span><span class="p">)</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">layout</span> <span class="o">==</span> <span class="s1">&#39;tree&#39;</span><span class="p">:</span>
+        <span class="n">macros</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">topdir</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;.rpmmacros&#39;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">RPM_TREE</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">topdir</span><span class="p">)</span> <span class="o">/</span> <span class="n">name</span>
+            <span class="n">path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">create_macros</span><span class="p">(</span><span class="n">topdir</span><span class="p">)</span>
+        <span class="n">macros</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="load_config">
+<a class="viewcode-back" href="../api/rpmget.html#rpmget.load_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_config</span><span class="p">(</span><span class="n">ufile</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">CfgParser</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read the configuration file and load the data. If ENV path or local</span>
+<span class="sd">    file is not found in current directory, the default cfg will be loaded.</span>
+<span class="sd">    Note that passing ``ufile`` as a parameter overrides the above default.</span>
+
+<span class="sd">    :param ufile: path string for config file</span>
+<span class="sd">    :returns: cfg parser and file Path-or-None</span>
+<span class="sd">    :raises FileTypeError: if the input file is not in the allowed list</span>
+<span class="sd">                           [&#39;.ini&#39;, &#39;.cfg&#39;, &#39;.conf&#39;]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">extensions</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;.ini&#39;</span><span class="p">,</span> <span class="s1">&#39;.cfg&#39;</span><span class="p">,</span> <span class="s1">&#39;.conf&#39;</span><span class="p">]</span>
+    <span class="n">ucfg</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;RPMGET_CFG&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="n">cfgfile</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">ucfg</span><span class="p">)</span> <span class="k">if</span> <span class="n">ucfg</span> <span class="k">else</span> <span class="n">Path</span><span class="p">(</span><span class="n">ufile</span><span class="p">)</span> <span class="k">if</span> <span class="n">ufile</span> <span class="k">else</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">cfgfile</span> <span class="ow">and</span> <span class="n">cfgfile</span><span class="o">.</span><span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Invalid file extension: </span><span class="si">{</span><span class="n">cfgfile</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="n">FileTypeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">config</span> <span class="o">=</span> <span class="n">CfgParser</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">cfgfile</span><span class="p">:</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">read_string</span><span class="p">(</span><span class="n">CFG</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">cfgfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">configfile</span><span class="p">:</span>  <span class="c1"># pylint: disable=unspecified-encoding</span>
+            <span class="n">config</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">configfile</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Using config: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cfgfile</span><span class="o">.</span><span class="n">resolve</span><span class="p">()))</span>
+
+    <span class="k">return</span> <span class="n">config</span><span class="p">,</span> <span class="n">cfgfile</span></div>
+
+
+
+<div class="viewcode-block" id="validate_config">
+<a class="viewcode-back" href="../api/rpmget.html#rpmget.validate_config">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">validate_config</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">CfgParser</span><span class="p">,</span> <span class="n">schema</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate minimum config sections and make sure [rpmget] section exists</span>
+<span class="sd">    with required options (see design item SDD003).</span>
+
+<span class="sd">    :param cfg_parse: loaded CfgParser instance</span>
+<span class="sd">    :param schema: cerberus schema dict</span>
+<span class="sd">    :returns: boolean ``is_valid`` flag</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">is_valid</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="s1">&#39;rpmget&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Config section [rpmget] is required: </span><span class="si">{</span><span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="n">CfgSectionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="n">data</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;rpmget&#39;</span><span class="p">]</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">Validator</span><span class="p">()</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">allow_unknown</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">v</span><span class="o">.</span><span class="n">require_all</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">default_is_valid</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">default_is_valid</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Validation errors found in defaults: </span><span class="si">{</span><span class="n">v</span><span class="o">.</span><span class="n">errors</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="k">raise</span> <span class="n">CfgSectionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">sections</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="n">config</span><span class="o">.</span><span class="n">options</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
+            <span class="k">if</span> <span class="s1">&#39;.rpm&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">option</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="s1">&#39;http&#39;</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">option</span><span class="p">]:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">parsed_url</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="n">section</span><span class="p">][</span><span class="n">option</span><span class="p">])</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Parsed URL: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">parsed_url</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">([</span><span class="n">parsed_url</span><span class="o">.</span><span class="n">scheme</span><span class="p">,</span> <span class="n">parsed_url</span><span class="o">.</span><span class="n">netloc</span><span class="p">]):</span>
+                            <span class="n">msg</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;Invalid URL scheme or address in </span><span class="si">{</span><span class="n">parsed_url</span><span class="si">}</span><span class="s1">&#39;</span>
+                            <span class="k">raise</span> <span class="n">CfgSectionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+                        <span class="n">is_valid</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="c1"># break</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Must be a valid URL&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="s1">&#39;At least one value must contian a valid URL ending in .rpm&#39;</span>
+        <span class="k">raise</span> <span class="n">CfgSectionError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">is_valid</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 Stephen Arnold.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

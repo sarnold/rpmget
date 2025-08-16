@@ -1,0 +1,103 @@
+# 1.0 Requirements {#REQ001}
+
+Requirements
+
+Functional/feature bits should include the following items.
+
+* Python ConfigParser sample config
+* download rpms to a directory (flat)
+* download rpms to the usual files tree
+
+If creatrepo is available
+
+* create rpm repo from files tree
+
+If RHEL environment
+
+* install rpms from local files
+* install rpms on-the-fly from URLs
+
+
+## 1.1 REQ002 {#REQ002}
+
+The software **Shall** provide the following ConfigParser defaults.
+
+* interpolation = ExtendedInterpolation
+* inline_comment_prefixes = None
+* empty_lines_in_values = False
+
+*Child links: SDD002, TST002*
+
+| Attribute | Value |
+| --------- | ----- |
+| normative | True |
+
+
+## 1.2 REQ003 {#REQ003}
+
+The software **Shall** self-validate the active configuration.
+
+*Child links: TST003, SDD004*
+
+| Attribute | Value |
+| --------- | ----- |
+| normative | True |
+
+
+## 1.3 REQ004 {#REQ004}
+
+The software **Shall** consider a configuration valid when it passes
+the following minimum rule criteria.
+
+* the rpmget section must be present and contain at least the following
+  three baseline keys and their allowed values
+  * 'top_dir': 'any'
+  * 'layout': ['flat', 'tree']
+  * 'pkg_tool': ['rpm', 'yum', 'dnf']
+* there must be at least one value containing two required strings
+  * 'http'
+  * '.rpm'
+
+*Child links: SDD003, TST003*
+
+| Attribute | Value |
+| --------- | ----- |
+| normative | True |
+
+
+## 1.4 REQ005 {#REQ005}
+
+The software **Shall** provide a command-line argument to run the
+validation checks.
+
+*Child links: SDD004*
+
+| Attribute | Value |
+| --------- | ----- |
+| normative | True |
+
+
+## 1.5 REQ006 {#REQ006}
+
+The software **Shall** support both a flat layout and the rpmdev-setuptree
+layout, according to the cfg `layout` values `flat` or `tree`.
+
+*Child links: SDD003, SDD005*
+
+| Attribute | Value |
+| --------- | ----- |
+| normative | True |
+
+
+## 1.6 REQ007 {#REQ007}
+
+The software **Shall** also create a default `.rpmmacros` file when the
+layout type is 'tree'.
+
+*Child links: SDD005*
+
+| Attribute | Value |
+| --------- | ----- |
+| normative | True |
+
+
