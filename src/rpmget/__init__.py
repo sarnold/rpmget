@@ -206,6 +206,26 @@ def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
     return config, cfgfile
 
 
+def url_is_valid(rpm_url: str) -> bool:
+    """
+    Validate rpm URL string using urlparse and rpm extension check.
+
+    ;param rpm_url: full url string ending in .rpm
+    :returns: True if checks pass
+    """
+    url_valid: bool = False
+    try:
+        parsed_url = urlparse(rpm_url)
+        logging.debug('Parsed URL: %s', repr(parsed_url))
+        if not all([parsed_url.scheme, parsed_url.netloc, rpm_url.endswith('.rpm')]):
+            msg = f'Invalid URL scheme, address, or file target in {parsed_url}'
+            raise CfgSectionError(msg)
+        url_valid = True
+    except ValueError:
+        logging.error("Must be a valid URL ending in .rpm: %s", rpm_url)
+    return url_valid
+
+
 def validate_config(config: CfgParser, schema: Dict) -> bool:
     """
     Validate minimum config sections and make sure [rpmget] section exists
@@ -232,21 +252,18 @@ def validate_config(config: CfgParser, schema: Dict) -> bool:
 
     for section in config.sections():
         for option in config.options(section):
-            if '.rpm' in config[section][option]:
-                if 'http' in config[section][option]:
-                    try:
-                        parsed_url = urlparse(config[section][option])
-                        logging.debug('Parsed URL: %s', repr(parsed_url))
-                        if not all([parsed_url.scheme, parsed_url.netloc]):
-                            msg = f'Invalid URL scheme or address in {parsed_url}'
-                            raise CfgSectionError(msg)
-                        is_valid = True
-                        # break
-                    except ValueError:
-                        logging.error("Must be a valid URL")
+            value = config.get(section, option)
+            if 'http' in value:
+                if '.rpm' in value:
+                    string_val = config[section][option]
+                    urls = [x for x in string_val.splitlines() if x != '']
+                    for url in urls:
+                        is_valid = url_is_valid(url)
+                        if not is_valid:
+                            break
 
     if not is_valid:
-        msg = 'At least one value must contian a valid URL ending in .rpm'
+        msg = 'At least one URL string failed to validate'
         raise CfgSectionError(msg)
 
     return is_valid

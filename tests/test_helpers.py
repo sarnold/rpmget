@@ -43,6 +43,7 @@ def test_def_config():
     print(list(parser.items()))
     rpms_str = parser["Toolbox"]["tb_rpms"]
     assert isinstance(rpms_str, str)
+    print(rpms_str)
     rpms = [x for x in rpms_str.splitlines() if x != '']
     print(f'size: {len(rpms)}')
     print(f'type: {type(rpms)}')
