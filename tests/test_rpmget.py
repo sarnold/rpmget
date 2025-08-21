@@ -12,6 +12,7 @@ from rpmget import (
     CfgParser,
     CfgSectionError,
     __version__,
+    find_rpm_urls,
     url_is_valid,
 )
 from rpmget.rpmget import (
@@ -128,3 +129,14 @@ def test_show_paths(capfd):
     out, err = capfd.readouterr()
     print(f'out: {out}')
     assert "rpmget" in out
+
+
+def test_find_rpm_urls():
+    parser = CfgParser()
+    cfg_str = CFG
+    parser.read_string(cfg_str)
+    res = find_rpm_urls(parser)
+    print(res)
+    assert len(res) == 4
+    for url in res:
+        assert url_is_valid(url)

@@ -26,6 +26,9 @@ NAME = 'python3-py3tftp-1.3.0-1.el9.noarch.rpm'
 
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
 def test_create_macros():
+    """
+    Test macro string contents as part of REQ007 validation.
+    """
     res = create_macros("rpmbuild")
     print(res)
     assert "%packager" in res
@@ -100,7 +103,7 @@ def test_check_for_rpm_bogus(monkeypatch, capfd):
 @pytest.mark.network()
 def test_download_progress_bin(tmpdir_session):
     dst_dir = tmpdir_session / 'rpms'
-    test_file_name = download_progress_bin(GH_URL, dst_dir)
+    test_file_name = download_progress_bin(GH_URL, dst_dir, 'flat')
     assert test_file_name == NAME
 
 
@@ -113,7 +116,28 @@ def test_get_filelist_down(tmpdir_session):
     assert files[0].endswith(NAME)
 
 
+@pytest.mark.dependency()
+@pytest.mark.network()
+def test_download_progress_tree(tmpdir_session):
+    dst_dir = tmpdir_session / 'rpmbuild'
+    create_layout(str(dst_dir), 'tree')
+    test_file_name = download_progress_bin(GH_URL, dst_dir, 'tree')
+    assert test_file_name == NAME
+
+
+@pytest.mark.dependency(depends=["test_download_progress_tree"])
+def test_get_filelist_tree(tmpdir_session):
+    dst_dir = tmpdir_session / 'rpmbuild'
+    files = get_filelist(dst_dir)
+    print(files)
+    assert len(files) == 1
+    assert files[0].endswith(NAME)
+
+
 def test_create_layout_flat(tmp_path):
+    """
+    Test layout = tree as part of REQ006 validation.
+    """
     d = tmp_path / 'rpmbuild'
     create_layout(str(d), 'flat')
     print(d)
@@ -124,13 +148,23 @@ def test_create_layout_flat(tmp_path):
 
 
 def test_create_layout_tree(tmp_path):
+    """
+    Test layout = tree as part of REQ006, REQ007, and REQ008 validation.
+    """
     d = tmp_path / 'rpmbuild'
     create_layout(str(d), 'tree')
     print(d)
-    for root, dirs, files in os.walk(str(d)):
-        print(root)
-        print(dirs)
-        print(files)
+    files = sorted(os.listdir(str(d)))
+    print(files)
+    assert files == [
+        '.rpmmacros',
+        'BUILD',
+        'BUILDROOT',
+        'RPMS',
+        'SOURCES',
+        'SPECS',
+        'SRPMS',
+    ]
 
 
 def test_get_filelist(tmp_path):

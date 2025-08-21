@@ -43,7 +43,7 @@ layout = tree
 pkg_tool = rpm
 
 [stuff]
-file = http://someplace.it/rpms/fake.rpm2
+file = http:xxxx://someplace.it/rpms/fake.rpm
 """
 
 BADURL = """

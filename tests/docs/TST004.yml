@@ -1,0 +1,35 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: REQ Integration and Unit Tests
+header: ''
+level: 1.3
+links:
+- REQ006: 5Fxk64LKeomPFcEtpFNQSrBU-Pytr5QgA2QXQ-XSd2E=
+- REQ007: xvcTAOESd6zyAQ2FechvD7Pn9E4L5Pqsp6ke9ithKZs=
+- REQ008: Nxf5bXUEEgnBWE4MBJLx9Yw-BHoHyVr1dZxiNeUxMA8=
+normative: true
+ref: ''
+references:
+- keyword: REQ006
+  path: tests/test_helpers.py
+  sha: 40a7cdf74d20b4575b9d87b03013f7bff2359803e9e976649783970499a05b52
+  type: file
+- keyword: REQ007
+  path: tests/test_helpers.py
+  sha: 40a7cdf74d20b4575b9d87b03013f7bff2359803e9e976649783970499a05b52
+  type: file
+- keyword: .rpmmacros
+  path: tests/test_helpers.py
+  sha: 40a7cdf74d20b4575b9d87b03013f7bff2359803e9e976649783970499a05b52
+  type: file
+reviewed: qRHu-O0KwA37fapr87l5lXZ4Q0njFol5qD0RlQTBNOQ=
+short-name: ''
+text: |
+  Test layout artifacts:
