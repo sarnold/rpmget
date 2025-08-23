@@ -28,18 +28,22 @@ def check_for_rpm(pgm: str = 'rpm') -> str:
     return rpm_path
 
 
-def download_progress_bin(url: str, dst: str, timeout: float = 10.0) -> str:
+def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0) -> str:
     """
     Download a single binary with progress meter.
 
     :param url: URL to download
-    :param dst: destination directory
+    :param dst: top-level destination directory
     :param timeout: httpx client timeout
     :returns: name of downloaded file
     """
+    arch_path: str = ''
     rpm_file: str = urlparse(url).path.rsplit("/", maxsplit=1)[1]
-    download_file: Path = Path(dst) / rpm_file
-    Path(dst).mkdir(parents=True, exist_ok=True)
+    rpm_arch: str = rpm_file.rsplit('.', maxsplit=2)[-2]
+    if layout == "tree":
+        arch_path = 'SRPMS' if rpm_arch == 'src' else f'RPMS/{rpm_arch}'
+    download_file: Path = Path(dst) / arch_path / rpm_file
+    download_file.parent.mkdir(parents=True, exist_ok=True)
 
     with httpx.stream("GET", url, timeout=timeout, follow_redirects=True) as response:
         total = int(response.headers["Content-Length"])

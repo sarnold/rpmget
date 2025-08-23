@@ -45,7 +45,7 @@ maintained in the following directory structure::
   ├── .doorstop.yml
   └── TST001.yml
 
-The doorstop tool has been added to project [dev] "extras" as well as the
+The doorstop_ tool has been added to project [dev] "extras" as well as the
 tox dev and docs environments. If a doorstop package is not available for
 your environment, then use the "dev" environment for working with doorstop_
 documents, eg::
@@ -63,8 +63,8 @@ documents, eg::
   │
   └── SDD
 
-Please see the doorstop Quick Start for an overview of the relevant doorstop
-commands.
+Please see the `doorstop Quick Start`_ for an overview of the relevant
+doorstop commands.
 
 .. _doorstop Quick Start: https://doorstop.readthedocs.io/en/latest/getting-started/quickstart.html
 .. _doorstop: https://doorstop.readthedocs.io/en/latest/index.html

@@ -8,7 +8,7 @@ from configparser import ConfigParser, ExtendedInterpolation
 from importlib.metadata import version
 from pathlib import Path
 from string import Template
-from typing import Dict, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 from cerberus import Validator
@@ -20,8 +20,11 @@ __all__ = [
     "CfgParser",
     "CfgSectionError",
     "FileTypeError",
+    "check_url_str",
     "create_macros",
+    "find_rpm_urls",
     "load_config",
+    "url_is_valid",
     "validate_config",
 ]
 
@@ -52,34 +55,16 @@ url_base = ${url_type}://${host}/${owner}/${repo}/releases/download
 url_post = ${release}.${dist}.${arch}.${ext}
 
 [Toolbox]
-dae_tag = daemonizer-1.1.3
 dc_tag = diskcache-5.6.3
 hex_tag = hexdump-3.5.2
 hon_tag = honcho-2.0.0.1
-tui_tag = picotui-1.2.3.1
 proc_tag = procman-0.6.0
-atftp_tag = py3tftp-1.3.0
-pyg_tag = pygtail-0.14.0.2
-ctl_tag = pyprctrl-0.1.3
-serv_tag = pyserv-1.8.4
-stop_tag = stoppy-1.0.5
-tftp_tag = tftpy-0.8.6.1
-tc_tag = timed-count-2.0.0
 
 tb_rpms =
-  ${Common:url_base}/${atftp_tag}/python3-${atftp_tag}-${Common:url_post}
-  ${Common:url_base}/${tftp_tag}/python3-${tftp_tag}-${Common:url_post}
   ${Common:url_base}/${dc_tag}/python3-${dc_tag}-${Common:url_post}
-  ${Common:url_base}/${dae_tag}/python3-${dae_tag}-${Common:url_post}
   ${Common:url_base}/${hex_tag}/python3-${hex_tag}-${Common:url_post}
   ${Common:url_base}/${hon_tag}/python3-${hon_tag}-${Common:url_post}
   ${Common:url_base}/${proc_tag}/python3-${proc_tag}-${Common:url_post}
-  ${Common:url_base}/${pyg_tag}/python3-${pyg_tag}-${Common:url_post}
-  ${Common:url_base}/${ctl_tag}/python3-${ctl_tag}-${Common:url_post}
-  ${Common:url_base}/${tc_tag}/python3-${tc_tag}-${Common:url_post}
-  ${Common:url_base}/${tui_tag}/python3-${tui_tag}-${Common:url_post}
-  ${Common:url_base}/${stop_tag}/python3-${stop_tag}-${Common:url_post}
-  ${Common:url_base}/${serv_tag}/python3-${serv_tag}-${Common:url_post}
 """
 
 RPM_TREE = ["BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS"]
@@ -122,16 +107,16 @@ class FileTypeError(Exception):
 
 class CfgSectionError(Exception):
     """
-    Raise if the config section DEFAULT does not exist, normally at
+    Raise if the config section [rpmget] does not exist, normally at
     the top of the config file. This section must exist and contain
-    the required options::
+    the required keys and valid values::
 
       [rpmget]
       top_dir = rpms
-      layout = true
+      layout = tree
       pkg_tool = rpm
 
-    Also raised for invalid or missing URL in any section.
+    Also raised for invalid URL errors.
     """
 
     __module__ = Exception.__module__
@@ -155,11 +140,18 @@ class CfgParser(ConfigParser):
         )
 
 
+def check_url_str(str_val: str) -> bool:
+    """
+    Simple string check for http ... .rpm
+    """
+    return str_val.startswith('http') and str_val.endswith('.rpm')
+
+
 def create_layout(topdir: str, layout: str):
     """
     Create layout for destination directory based on the ``layout`` cfg
-    parameter, either flat or the standard RPM tree. Satisfies both
-    REQ006 and REQ007.
+    parameter, either flat or the standard RPM tree. Satisfies all of
+    the current layout items: REQ006, REQ007, and REQ008.
 
     :param topdir: destination directory for downloaded rpms
     :param layout: type of destination directory layout
@@ -173,6 +165,22 @@ def create_layout(topdir: str, layout: str):
             path.mkdir(parents=True, exist_ok=True)
         text = create_macros(topdir)
         macros.write_text(text)
+
+
+def find_rpm_urls(config: CfgParser) -> List[str]:
+    """
+    Find all the (hopefully valid) URLs.
+    """
+    valid_urls: List = []
+    sections: List[str] = config.sections()
+    sections.append("DEFAULT")
+    for section in sections:
+        for _, value in config.items(section):
+            urls = [x for x in value.splitlines() if x != '']
+            for url in urls:
+                if check_url_str(url) and url_is_valid(url):
+                    valid_urls.append(url)
+    return valid_urls
 
 
 def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
@@ -206,7 +214,29 @@ def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
     return config, cfgfile
 
 
-def validate_config(config: CfgParser, schema: Dict) -> bool:
+def url_is_valid(rpm_url: str) -> bool:
+    """
+    Validate rpm URL string using urlparse and rpm extension check.
+
+    ;param rpm_url: full url string ending in .rpm
+    :returns: True if checks pass
+    """
+    url_valid: bool = False
+    try:
+        parsed_url = urlparse(rpm_url)
+        logging.debug('Parsed URL: %s', repr(parsed_url))
+        if not all([parsed_url.scheme, parsed_url.netloc]):
+            msg = f'Invalid URL scheme, address, or file target in {parsed_url}'
+            raise CfgSectionError(msg)
+        url_valid = True
+    except ValueError:
+        logging.error("Must be a valid URL ending in .rpm: %s", rpm_url)
+    return url_valid
+
+
+def validate_config(
+    config: CfgParser, schema: Dict = SCHEMA, stop_on_error: bool = True
+) -> bool:
     """
     Validate minimum config sections and make sure [rpmget] section exists
     with required options (see design item SDD003).
@@ -232,21 +262,18 @@ def validate_config(config: CfgParser, schema: Dict) -> bool:
 
     for section in config.sections():
         for option in config.options(section):
-            if '.rpm' in config[section][option]:
-                if 'http' in config[section][option]:
-                    try:
-                        parsed_url = urlparse(config[section][option])
-                        logging.debug('Parsed URL: %s', repr(parsed_url))
-                        if not all([parsed_url.scheme, parsed_url.netloc]):
-                            msg = f'Invalid URL scheme or address in {parsed_url}'
-                            raise CfgSectionError(msg)
-                        is_valid = True
-                        # break
-                    except ValueError:
-                        logging.error("Must be a valid URL")
+            value = config.get(section, option)
+            if 'http' in value:
+                if '.rpm' in value:
+                    string_val = config[section][option]
+                    urls = [x for x in string_val.splitlines() if x != '']
+                    for url in urls:
+                        is_valid = check_url_str(url) and url_is_valid(url)
+                        if not is_valid and stop_on_error:
+                            break
 
     if not is_valid:
-        msg = 'At least one value must contian a valid URL ending in .rpm'
+        msg = 'At least one URL string failed to validate'
         raise CfgSectionError(msg)
 
     return is_valid

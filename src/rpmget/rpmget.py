@@ -129,9 +129,8 @@ def parse_command_line(argv):
     :return arguments: parsed command line arguments
     """
     parser = main_arg_parser()
-    arguments = parser.parse_args(argv[1:])
 
-    return arguments
+    return parser.parse_args(argv[1:])
 
 
 def main() -> None:  # pragma: no cover
@@ -155,8 +154,8 @@ def main() -> None:  # pragma: no cover
         logger.error('Input file %s not found!', infile)
         sys.exit(1)
     if infile:
-        ufile = Path(infile)
         ucfg, _ = load_config(ufile=infile)
+        ufile = Path(infile)
     else:
         ucfg, ufile = load_config()
 

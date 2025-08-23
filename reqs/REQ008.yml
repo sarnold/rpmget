@@ -9,12 +9,12 @@ doc:
   ref: ''
   title: Requirements for _rpmget_
 header: ''
-level: 1.6
+level: 1.7
 links: []
 normative: true
 ref: ''
-reviewed: xvcTAOESd6zyAQ2FechvD7Pn9E4L5Pqsp6ke9ithKZs=
+reviewed: Nxf5bXUEEgnBWE4MBJLx9Yw-BHoHyVr1dZxiNeUxMA8=
 short-name: ''
 text: |
-  The software **Shall** also create a default `.rpmmacros` file in top_dir
-  when the layout type is 'tree'.
+  The software **Shall** create a layout compatible with `rpmdev-setuptree`
+  when the user-requested layout is 'tree'.

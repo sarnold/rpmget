@@ -55,8 +55,6 @@ repos:
       additional_dependencies:
         - "cerberus"
         - "httpx"
-        - "munch"
-        - "munch-stubs"
         - "tqdm"
       files: src/
 

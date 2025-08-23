@@ -36,6 +36,16 @@ pkg_tool = rpm
 file = this/is/not/a/url.txt
 """
 
+BADEND = """
+[rpmget]
+top_dir = rpms
+layout = tree
+pkg_tool = rpm
+
+[stuff]
+file = http:xxxx://someplace.it/rpms/fake.rpm
+"""
+
 BADURL = """
 [rpmget]
 top_dir = rpms
@@ -43,7 +53,7 @@ layout = tree
 pkg_tool = rpm
 
 [stuff]
-file = https:/someplace.it/rpms/fake.rpm
+file = https://some[place.it/rpms/fake.rpm
 """
 
 BADLAYOUT = """
@@ -148,16 +158,27 @@ def test_cfg_no_valid_url():
     parser.read_string(cfg_str)
     with pytest.raises(CfgSectionError) as excinfo:
         res = validate_config(parser, SCHEMA)
-    assert 'must contian a valid URL' in str(excinfo.value)
+    assert 'At least one URL string failed to validate' in str(excinfo.value)
 
 
 def test_cfg_bad_valid_url():
+    parser = CfgParser()
+    cfg_str = BADEND
+    parser.read_string(cfg_str)
+    with pytest.raises(CfgSectionError) as excinfo:
+        res = validate_config(parser, SCHEMA)
+    print(excinfo)
+    assert 'Invalid URL scheme, address, or file target' in str(excinfo.value)
+
+
+def test_cfg_bad_url_file():
     parser = CfgParser()
     cfg_str = BADURL
     parser.read_string(cfg_str)
     with pytest.raises(CfgSectionError) as excinfo:
         res = validate_config(parser, SCHEMA)
-    assert 'Invalid URL scheme' in str(excinfo.value)
+    print(excinfo)
+    assert 'At least one URL string failed to validate' in str(excinfo.value)
 
 
 def test_cfg_minimum_valid_url():
