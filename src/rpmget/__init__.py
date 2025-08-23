@@ -107,16 +107,16 @@ class FileTypeError(Exception):
 
 class CfgSectionError(Exception):
     """
-    Raise if the config section DEFAULT does not exist, normally at
+    Raise if the config section [rpmget] does not exist, normally at
     the top of the config file. This section must exist and contain
-    the required options::
+    the required keys and valid values::
 
       [rpmget]
       top_dir = rpms
-      layout = true
+      layout = tree
       pkg_tool = rpm
 
-    Also raised for invalid or missing URL in any section.
+    Also raised for invalid URL errors.
     """
 
     __module__ = Exception.__module__
@@ -169,7 +169,7 @@ def create_layout(topdir: str, layout: str):
 
 def find_rpm_urls(config: CfgParser) -> List[str]:
     """
-    Find all the (possibly valid) URLs.
+    Find all the (hopefully valid) URLs.
     """
     valid_urls: List = []
     sections: List[str] = config.sections()

@@ -13,7 +13,7 @@ level: 1.3
 links: []
 normative: true
 ref: ''
-reviewed: 0VA0u4y8psLGS5qjnfN4_rStpJkwMsJ7d7prMulL81k=
+reviewed: 456kfouECW1zjLg7gX0t03Ic_CD_b1wpIQX1wq2XGbg=
 short-name: ''
 text: |
   The software **Shall** consider a configuration valid when it passes
@@ -24,6 +24,6 @@ text: |
     * 'top_dir': 'any'
     * 'layout': ['flat', 'tree']
     * 'pkg_tool': ['rpm', 'yum', 'dnf']
-  * there must be at least one value containing two required strings
-    * 'http'
-    * '.rpm'
+  * there must be at least one string value matching the following criteria
+    * starts with 'http'
+    * ends with '.rpm'
