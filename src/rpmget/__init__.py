@@ -81,20 +81,6 @@ CTX = {
 }
 
 
-def create_macros(topdir: str) -> str:
-    """
-    Render a string template.
-    """
-    CTX.update(
-        {
-            'home': str(Path.home()),
-            'user': Path.home().stem,
-            'top_dir': os.path.relpath(Path(topdir), str(Path.home())),
-        }
-    )
-    return Template(RPM_TPL).substitute(CTX)
-
-
 class FileTypeError(Exception):
     """
     Raise if the file extension is not in the allowed extensions list::
@@ -165,6 +151,20 @@ def create_layout(topdir: str, layout: str):
             path.mkdir(parents=True, exist_ok=True)
         text = create_macros(topdir)
         macros.write_text(text)
+
+
+def create_macros(topdir: str) -> str:
+    """
+    Render a string template.
+    """
+    CTX.update(
+        {
+            'home': str(Path.home()),
+            'user': Path.home().stem,
+            'top_dir': os.path.relpath(Path(topdir), str(Path.home())),
+        }
+    )
+    return Template(RPM_TPL).substitute(CTX)
 
 
 def find_rpm_urls(config: CfgParser) -> List[str]:

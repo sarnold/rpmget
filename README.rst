@@ -1,9 +1,10 @@
 RPMGet
 ======
 
-Use (Python) ini-style config to manage an arbitrary set of development
-dependencies as RPM packages. Install these packages in RHEL development
-environment or create a local package repo.
+RPMGet uses an ini-style config file to manage an arbitrary set of
+development dependencies or releases as RPM packages. Either install
+these packages in RHEL development environment or create a local
+package repo.
 
 |ci| |wheels| |bandit| |release|
 
@@ -11,12 +12,84 @@ environment or create a local package repo.
 
 |tag| |license| |reuse| |python|
 
-Things you can do:
+Things you can do now:
 
-* validate user configuration files
-* download configured rpm files to a directory or rpm tree
-* create an rpm repository from rpm tree
+* validate configuration files and URLs
+* download configured rpm files to a single directory or rpm tree
 * dump a sample config file
+* create an rpm repository from rpm tree (Not Implemented Yet)
+
+As stated above, the intended use cases (in the `user experience sense`_)
+are geared towards managing/using a set of RPMs in development workflows
+intended for older-but-still-supported Enterprise Linux environments, eg,
+RHEL9 or similar. That said, the initial packaging for RPMGet itself is
+not quite compatible (yet) with el9 packaging tools when using the newer
+pyproject macros.
+
+.. _user experience sense: https://en.wikipedia.org/wiki/Use_case#Definition
+
+Quick Start
+~~~~~~~~~~~
+
+* Install from GH release page, eg in a Tox file or venv
+* Clone from GH and install in a venv
+
+See the Tox_ section below *and* the ``tox.ini`` file for more details.
+
+Command Interface
+-----------------
+
+The minimum usage requirement is an INI-style configuration file with URLs
+pointing to RPM_ files. Use the ``--dump`` argument shown below for a small
+example config. Note each of the rpm URLs in the example point to GitHub
+release pages. The CLI uses the standard Python ``argparse`` module::
+
+  $ tox -e dev
+  $ source .venv/bin/activate
+  $ rpmget -h
+  usage: rpmget [-h] [--version] [-S] [-t] [-v] [-d] [-D] [-c FILE]
+
+  Download manager for rpm files
+
+  options:
+    -h, --help            show this help message and exit
+    --version             show program's version number and exit
+    -S, --show            display user config (default: False)
+    -t, --test            run sanity checks (default: False)
+    -v, --validate        run schema validation on active config (default:
+                          False)
+    -d, --debug           display more processing info (default: False)
+    -D, --dump-config     dump active configuration to stdout (default: False)
+    -c, --configfile FILE
+                          path to ini-style configuration file (default: None)
+
+The example config uses extended interpolation using ${VAR} style notation
+but the simplest example config requires only an option with a URL string.
+
+A simple example might look something like this::
+
+  [rpmget]
+  top_dir = rpms
+  layout = flat
+  pkg_tool = yum
+
+  [stuff]
+  files =
+      https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/procman-0.6.2/python3-procman-0.6.2-1.el9.noarch.rpm
+      https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/honcho-2.0.0.2/python3-honcho-2.0.0.2-1.el9.noarch.rpm
+      https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/hexdump-3.5.3/python3-hexdump-3.5.3-1.el9.noarch.rpm
+      https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/diskcache-5.6.3/python3-diskcache-5.6.3-2.el9.noarch.rpm
+
+To install the above downloaded rpms in a RockyLinux9 environment, run
+something like the following::
+
+  $ sudo dnf install -y rpms/*.rpm
+
+Note the above example could easily use a separate option-key for each URL
+but the default configparser allows multiline strings, so we take advantage
+of that.
+
+.. _RPM: https://en.wikipedia.org/wiki/RPM_Package_Manager#Binary_format
 
 
 Dev tools

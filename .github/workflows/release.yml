@@ -39,6 +39,9 @@ jobs:
 
       # download all artifacts to project dir
       - uses: actions/download-artifact@v5
+        with:
+          name: packages
+          path: packages
 
       - name: check artifacts
         run: |

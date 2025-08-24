@@ -33,9 +33,9 @@ classifiers = [
 ]
 
 dependencies = [
-    "cerberus",
-    "httpx",
-    "tqdm",
+    "cerberus>=1.3.4",
+    "httpx>=0.23.0",
+    "tqdm>=4.59.0",
 ]
 
 requires-python = ">=3.8"

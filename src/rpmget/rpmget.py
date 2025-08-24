@@ -8,15 +8,18 @@ import logging
 import sys
 import warnings
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from . import (
     SCHEMA,
+    CfgParser,
     CfgSectionError,
     __version__,
+    find_rpm_urls,
     load_config,
     validate_config,
 )
+from .utils import download_progress_bin
 
 # from logging_tree import printout  # debug logger environment
 
@@ -133,6 +136,38 @@ def parse_command_line(argv):
     return parser.parse_args(argv[1:])
 
 
+def process_config_loop(config: CfgParser, temp_path: Optional[Path] = None) -> List[str]:
+    """
+    Main processing loop for user config data; enables self-validation and
+    partial config parsing before processing urls.
+
+    :param config: loaded CfgParser
+    :param temp_path: temp Path to be prepended to top_dir
+
+    :returns: list of downloaded filenames
+    """
+    files: List = []
+    urls: List = []
+
+    try:
+        res = validate_config(config, stop_on_error=False)
+        logging.debug('Current config is valid: %s', res)
+    except CfgSectionError as exc:
+        logging.error('%s', repr(exc))
+
+    cfg_top = config['rpmget']['top_dir']
+    top_dir = str(temp_path / cfg_top) if temp_path else cfg_top
+    layout = config['rpmget']['layout']
+
+    urls = find_rpm_urls(config)
+    for url in urls:
+        fname = download_progress_bin(url, top_dir, layout)
+        files.append(fname)
+    logging.debug('Downloaded files: %s', files)
+    logging.info('Downloaded %d files', len(files))
+    return files
+
+
 def main() -> None:  # pragma: no cover
     """
     Collect and process command options/arguments and setup logging,
@@ -143,6 +178,8 @@ def main() -> None:  # pragma: no cover
     args = parse_command_line(sys.argv)
 
     # basic logging setup must come before any other logging calls
+    httpx_level = logging.DEBUG if args.debug else logging.WARNING
+    logging.getLogger('httpx').setLevel(httpx_level)
     log_level = logging.DEBUG if args.debug else logging.INFO
     logging.basicConfig(stream=sys.stdout, level=log_level)
     logger = logging.getLogger('rpmget')
@@ -162,6 +199,7 @@ def main() -> None:  # pragma: no cover
     if len(sys.argv) == 1 and (ufile is None or not ufile.exists()):
         logger.error('No cfg file found; use the --dump arg or create a cfg file')
         sys.exit(1)
+    logger.debug('Using input file %s', ufile)
 
     if args.test:
         self_test(ufile)
@@ -178,6 +216,8 @@ def main() -> None:  # pragma: no cover
             logger.info('User config is valid: %s', res)
         except CfgSectionError as exc:
             logger.error('%s', repr(exc))
+
+    _ = process_config_loop(ucfg)
 
 
 if __name__ == "__main__":

@@ -18,6 +18,7 @@ from rpmget import (
 from rpmget.rpmget import (
     main_arg_parser,
     parse_command_line,
+    process_config_loop,
     self_test,
     show_paths,
 )
@@ -51,6 +52,15 @@ pkg_tool = rpm
 [stuff]
 file = https://some[place.it/rpms/fake.rpm
 """
+
+
+def test_process_config_loop(tmp_path):
+    parser = CfgParser()
+    cfg_str = RPMFILES
+    parser.read_string(cfg_str)
+    d = tmp_path / "sub"
+    res = process_config_loop(config=parser, temp_path=d)
+    print(res)
 
 
 def test_url_is_valid():
