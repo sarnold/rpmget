@@ -2,11 +2,21 @@ Changelog
 =========
 
 
-0.0.1.dev15+g99b8538.d20250802
-------------------------------
+0.0.1.dev38+g8b49ab3d8.d20250824
+--------------------------------
 
 New
 ~~~
+- Add processing loop function with a test, review SDD diagram chg.
+  [Stephen L Arnold]
+
+  * set minimum dep versions equal to el9 package versions
+  * fix release workflow, flesh out readme
+  * cleanup some config bits and doc strings
+- Create directory layout based on config options. [Stephen L Arnold]
+
+  * update validation schema to include allowed values
+  * add tests for create_layout
 - Add config file validation in self-test and commandline arg. [Stephen
   L Arnold]
 
@@ -27,6 +37,41 @@ New
 
 Changes
 ~~~~~~~
+- Add full example cfg for toolbox repo, cleanup reqs text. [Stephen L
+  Arnold]
+
+  * remove unused dependency from packaging and swd doc
+  * (re)render dependency diagram and cleanup some doc strings
+- Add more cfg/url handling and tests, update doorstop docs. [Stephen L
+  Arnold]
+- Refactor validation bits and tests. [Stephen L Arnold]
+
+  * factor out url validation into its own function
+  * update tests and test data
+- Add more doorstop doc items, document layout reqs. [Stephen L Arnold]
+- Add macros file creation in rpm tree mode. [Stephen L Arnold]
+
+  * mark create_macros test as linux only
+- Add/update more doorstop doc items and readme. [Stephen L Arnold]
+- Expand reqs and swd docs, update sources for traceability. [Stephen L
+  Arnold]
+- Refactor argparse bits for testability, update docs. [Stephen L
+  Arnold]
+- Flesh out basic design items, link core bits to parent. [Stephen L
+  Arnold]
+- Required section name is now rpmget, update src and tests. [Stephen L
+  Arnold]
+
+  * we only validate [rpmget] section and any found URL values
+  * whether to use DEFAULT section is now a user choice
+- Close initial diagram PR and recycle for diagram updates. [Stephen L
+  Arnold]
+
+  * (re)review doorstop doc updates
+- Add more doorstop bits, flesh out doc tree. [Stephen L Arnold]
+
+  * add the doc and diagram processing scripts and target assets dirs
+  * update doc sources and tox, correct some typos, generate changelog
 - Cleanup some docstrings and log messages, update project files.
   [Stephen L Arnold]
 - Cleanup entrypoint and type hints, add tests. [Stephen L Arnold]
@@ -44,15 +89,8 @@ Changes
 
 Other
 ~~~~~
-- Merge pull request #6 from sarnold/entrypoint. [Steve Arnold]
-
-  configs and entrypoint
-- Merge pull request #5 from sarnold/new-project-bits. [Steve Arnold]
-
-  New project bits
-- Merge pull request #3 from sarnold/new-project-bits. [Steve Arnold]
-
-  workflows
+- [create-pull-request] automated change. [github-actions[bot]]
+- [create-pull-request] automated change. [github-actions[bot]]
 
 
 0.0.0 (2025-07-16)
@@ -65,7 +103,6 @@ Changes
 
 Other
 ~~~~~
-- Merge pull request #1 from VCTLabs/untemplate-bits. [Steve Arnold]
-
-  initial project bits
 - Initial commit. [Steve Arnold]
+
+
