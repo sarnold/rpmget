@@ -30,7 +30,8 @@ def check_for_rpm(pgm: str = 'rpm') -> str:
 
 def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0) -> str:
     """
-    Download a single binary with progress meter.
+    Download a single binary with progress meter and default timeout.
+    Create arch dir or top_dir depending on layout setting
 
     :param url: URL to download
     :param dst: top-level destination directory
