@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>1.0 Design Elements {#SDD001} &mdash; rpmget 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../_static/documentation_options.js?v=01f34227"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="1.0 Automated Tests {#TST001}" href="unit_tests.html" />
+    <link rel="prev" title="1.0 Requirements {#REQ001}" href="reqs_tree.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            rpmget
+          </a>
+              <div class="version">
+                0.1.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="reqs_tree.html">1.0 Requirements {#REQ001}</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1.0 Design Elements {#SDD001}</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#sw-dependencies">SW Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#design-decisions">Design decisions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sdd002-sdd002">1.1 SDD002 {#SDD002}</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-format">Configuration Format</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sdd003-sdd003">1.2 SDD003 {#SDD003}</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#validation-rules">Validation Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sdd004-sdd004">1.3 SDD004 {#SDD004}</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#initiating-validation-checks">Initiating Validation Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sdd005-sdd005">1.4 SDD005 {#SDD005}</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#downloaded-artifact-layouts">Downloaded artifact layouts</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#sdd006-sdd006">1.5 SDD006 {#SDD006}</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-processing-flow">Main processing flow</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="unit_tests.html">1.0 Automated Tests {#TST001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">RPMGet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">rpmget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/generate-changelog.html">Changelog Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/pre-commit-config.html">Contents of the <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/pre-commit-usage.html">Using Pre-Commit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">rpmget</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">1.0 Design Elements {#SDD001}</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ds/sw_design.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="design-elements-sdd001">
+<h1>1.0 Design Elements {#SDD001}<a class="headerlink" href="#design-elements-sdd001" title="Link to this heading"></a></h1>
+<p>The rpmget package provides a convenient baseline configuration and
+example for managing an arbitrary set of binary rpm packages with
+optional support for creating the canonical rpm build tree and pkg
+repository.</p>
+<section id="sw-dependencies">
+<h2>SW Dependencies<a class="headerlink" href="#sw-dependencies" title="Link to this heading"></a></h2>
+<p>The primary runtime dependencies are httpx, tqdm, and cerberus,
+where cerberus provides the runtime validation for the active user
+configuration file. Complete package dependencies are shown in the
+figure below:</p>
+<figure class="align-center" id="id1">
+<a class="reference internal image-reference" href="../_images/rpmget_dependency_graph.svg"><img alt="rpmget software units" src="../_images/rpmget_dependency_graph.svg" style="width: 90%;" /></a>
+<figcaption>
+<p><span class="caption-text">Rpmget Software Units (captured from mermaid to SVG or PNG).</span><a class="headerlink" href="#id1" title="Link to this image"></a></p>
+</figcaption>
+</figure>
+<details>
+  <summary>rpmget_dependency_graph source</summary>
+  rpmget dependency graph showing primary software units.
+<div class="highlight-mermaid notranslate"><div class="highlight"><pre><span></span>  graph TB
+    subgraph id1[rpmget Dependencies]
+      subgraph id2[Python Packages]
+        A(rpmget)
+        B(httpx)
+        C(tqdm)
+        D{cerberus}
+      end
+    end
+    A ==&gt; B &amp; C
+    A -.-&gt; D
+    D -.-&gt; A
+</pre></div>
+</div>
+</details>
+</section>
+<section id="design-decisions">
+<h2>Design decisions<a class="headerlink" href="#design-decisions" title="Link to this heading"></a></h2>
+<p>Higher-level API approach (httpx and tqdm) first, minimizing LoC where
+possible. Maximize use of the ConfigParser ExtendedInterpolation and
+custom validator.</p>
+<ul class="simple">
+<li><p>flexible ConfigParser configuration format</p></li>
+</ul>
+<ul class="simple">
+<li><p>baseline config file validation via argument</p></li>
+</ul>
+<ul class="simple">
+<li><p>httpx download client with progress display</p></li>
+</ul>
+<p>Make sure self-test and user-initiated validation always tries to use
+provided configuration first, before falling back to the builtin example.</p>
+</section>
+<section id="sdd002-sdd002">
+<h2>1.1 SDD002 {#SDD002}<a class="headerlink" href="#sdd002-sdd002" title="Link to this heading"></a></h2>
+<section id="configuration-format">
+<h3>Configuration Format<a class="headerlink" href="#configuration-format" title="Link to this heading"></a></h3>
+<p>Any INI structured text file acceptable to ConfigParser and within the
+following constraints. See the default config for examples.</p>
+<ul class="simple">
+<li><p>Extended Interpolation is enabled, variable style is ${VAR}</p></li>
+<li><p>Empty lines in values are NOT supported</p></li>
+<li><p>Inline comments are also NOT supported</p></li>
+</ul>
+<p>The current design supports <em>only</em> URLs starting with http|https and
+ending with ‘.rpm’.</p>
+<p>The downloader should iterate over any URL values that match this
+definition.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">src/rpmget/__init__.py</span></code> (line 114)</p>
+</div></blockquote>
+<p><em>Parent links: REQ002</em></p>
+</section>
+</section>
+<section id="sdd003-sdd003">
+<h2>1.2 SDD003 {#SDD003}<a class="headerlink" href="#sdd003-sdd003" title="Link to this heading"></a></h2>
+<section id="validation-rules">
+<h3>Validation Rules<a class="headerlink" href="#validation-rules" title="Link to this heading"></a></h3>
+<p>In addition to the ConfigParser checks, all configurations should be checked
+by the validate function using a simple validation schema and URL parsing
+based on the following rules. See the default config for an example.</p>
+<ul class="simple">
+<li><p>the [rpmget] section must exist, any others are optional</p></li>
+<li><p>the [rpmget] section must contain at least the required keys</p>
+<ul>
+<li><p>‘top_dir’: the directory where rpms are downloaded</p></li>
+<li><p>‘layout’: either ‘flat’ (single directory) or ‘tree’</p></li>
+<li><p>‘pkg_tool’: either ‘rpm’, ‘yum’, or ‘dnf’</p></li>
+</ul>
+</li>
+<li><p>the config must contain at least one valid URL string value ending with ‘.rpm’</p></li>
+</ul>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">src/rpmget/__init__.py</span></code> (line 242)</p>
+</div></blockquote>
+<p><em>Parent links: REQ004, REQ006</em></p>
+</section>
+</section>
+<section id="sdd004-sdd004">
+<h2>1.3 SDD004 {#SDD004}<a class="headerlink" href="#sdd004-sdd004" title="Link to this heading"></a></h2>
+<section id="initiating-validation-checks">
+<h3>Initiating Validation Checks<a class="headerlink" href="#initiating-validation-checks" title="Link to this heading"></a></h3>
+<p>User access to the validation checks should have multiple knobs, eg,
+a user-facing CLI argument, the existing self-test cmd, or prior to
+actually using a given configuration file.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">src/rpmget/rpmget.py</span></code> (line 46)
+<code class="docutils literal notranslate"><span class="pre">src/rpmget/rpmget.py</span></code> (line 97)</p>
+</div></blockquote>
+<p><em>Parent links: REQ003, REQ005</em></p>
+</section>
+</section>
+<section id="sdd005-sdd005">
+<h2>1.4 SDD005 {#SDD005}<a class="headerlink" href="#sdd005-sdd005" title="Link to this heading"></a></h2>
+<section id="downloaded-artifact-layouts">
+<h3>Downloaded artifact layouts<a class="headerlink" href="#downloaded-artifact-layouts" title="Link to this heading"></a></h3>
+<p>The software should provide at a minimum two choices how artifacts are
+arranged, starting with the following styles:</p>
+<ul class="simple">
+<li><p>flat: all rpm files in a single directory</p></li>
+<li><p>tree: the standard rpmbuild tree</p></li>
+</ul>
+<p>The latter rpmbuild layout should also contain the standard <code class="docutils literal notranslate"><span class="pre">.rpmmacros</span></code>
+file with default contents.</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">src/rpmget/__init__.py</span></code> (line 140)
+<code class="docutils literal notranslate"><span class="pre">src/rpmget/__init__.py</span></code> (line 148)</p>
+</div></blockquote>
+<p><em>Parent links: REQ006, REQ007</em></p>
+</section>
+</section>
+<section id="sdd006-sdd006">
+<h2>1.5 SDD006 {#SDD006}<a class="headerlink" href="#sdd006-sdd006" title="Link to this heading"></a></h2>
+<section id="main-processing-flow">
+<h3>Main processing flow<a class="headerlink" href="#main-processing-flow" title="Link to this heading"></a></h3>
+<p>Processing flow in pseudo-code:</p>
+<ul class="simple">
+<li><p>validate_config</p></li>
+<li><p>if not <code class="docutils literal notranslate"><span class="pre">top_dir</span></code> then create_layout</p></li>
+<li><p>find rpm urls in config</p></li>
+<li><p>for each valid url:</p>
+<ul>
+<li><p>make subdir from arch suffix</p></li>
+<li><p>download rpm to arch dir</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="reqs_tree.html" class="btn btn-neutral float-left" title="1.0 Requirements {#REQ001}" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="unit_tests.html" class="btn btn-neutral float-right" title="1.0 Automated Tests {#TST001}" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 Stephen Arnold.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
