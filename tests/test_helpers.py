@@ -99,6 +99,13 @@ def test_check_for_rpm_bogus(monkeypatch, capfd):
     assert "program not found in PATH" in str(excinfo.value)
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_check_for_rpm_other(capfd):
+    cr_path = check_for_rpm('createrepo_c')
+    print(cr_path)
+    assert 'createrepo_c' in cr_path
+
+
 @pytest.mark.dependency()
 @pytest.mark.network()
 def test_download_progress_bin(tmpdir_session):
@@ -167,10 +174,10 @@ def test_create_layout_tree(tmp_path):
     ]
 
 
-def test_get_filelist(tmp_path):
-    dst_dir = tmp_path / 'rpms'
-    dst_dir.mkdir()
-    p = dst_dir / "test1.rpm"
+def test_get_filelist(tmpdir_session):
+    dst_dir = tmpdir_session / 'rpmbuild/RPMS/noarch'
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    p = dst_dir / "test1.noarch.rpm"
     p.write_bytes(os.urandom(1024))
     files = get_filelist(dst_dir)
     print(files)

@@ -154,8 +154,8 @@ use_parentheses = true
 ensure_newline_before_comments = true
 
 [tool.bandit]
-exclude_dirs = ["docs", "tests",]
-#skips = ["B101"]
+exclude_dirs = ["docs"]
+skips = ["B603", "B404"]
 
 [tool.mypy]
 exclude =  [".tox"]

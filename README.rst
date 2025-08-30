@@ -34,20 +34,45 @@ Quick Start
 * Install from GH release page, eg in a Tox file or venv
 * Clone from GH and install in a venv
 
-See the Tox_ section below *and* the ``tox.ini`` file for more details.
+See the `Tox workflows`_ section below *and* the ``tox.ini`` file for more details.
+
+Install requirements
+--------------------
+
+Python and tox are required for development or testing workflows (the
+following Python dependencies are installed automatically).
+
+Python dependencies:
+
+* httpx
+* tqdm
+* Cerberus
+
+Non-Python dependencies:
+
+* at least one of ['rpm', 'yum', 'dnf'] is required to install rpms
+* ``createrepo_c`` is required to create/maintain a common metadata
+  repository from a tree of rpm packages
+
 
 Command Interface
 -----------------
 
 The minimum usage requirement is an INI-style configuration file with URLs
-pointing to RPM_ files. Use the ``--dump`` argument shown below for a small
-example config. Note each of the rpm URLs in the example point to GitHub
-release pages. The CLI uses the standard Python ``argparse`` module::
+pointing to RPM_ files. Use the ``--dump-config`` argument shown below for
+a small example config. You *must* provide your own config file, either via
+argument as shown below, or set in the RPMGET_CFG environment variable.
+
+Most of the arguments are orthogonal to the ``--configfile`` argument; you
+can even omit the latter argument if you set the environment variable.
+
+Note each of the rpm URLs in the example point to GitHub release pages.
+The CLI uses the standard Python ``argparse`` module::
 
   $ tox -e dev
   $ source .venv/bin/activate
   $ rpmget -h
-  usage: rpmget [-h] [--version] [-S] [-t] [-v] [-d] [-D] [-c FILE]
+  usage: rpmget [-h] [--version] [-S] [-t] [-u] [-v] [-d] [-D] [-c FILE]
 
   Download manager for rpm files
 
@@ -56,6 +81,7 @@ release pages. The CLI uses the standard Python ``argparse`` module::
     --version             show program's version number and exit
     -S, --show            display user config (default: False)
     -t, --test            run sanity checks (default: False)
+    -u, --update          update repos with createrepo (default: False)
     -v, --validate        run schema validation on active config (default:
                           False)
     -d, --debug           display more processing info (default: False)
@@ -63,22 +89,21 @@ release pages. The CLI uses the standard Python ``argparse`` module::
     -c, --configfile FILE
                           path to ini-style configuration file (default: None)
 
-The example config uses extended interpolation using ${VAR} style notation
-but the simplest example config requires only an option with a URL string.
+The example config uses extended interpolation and ${VAR} style notation
+but the simplest example config requires only an option value with a URL
+string.
 
 A simple example might look something like this::
 
   [rpmget]
+  repo_dir = ~/repo
   top_dir = rpms
   layout = flat
   pkg_tool = yum
 
   [stuff]
-  files =
-      https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/procman-0.6.2/python3-procman-0.6.2-1.el9.noarch.rpm
-      https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/honcho-2.0.0.2/python3-honcho-2.0.0.2-1.el9.noarch.rpm
+  hexdump =
       https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/hexdump-3.5.3/python3-hexdump-3.5.3-1.el9.noarch.rpm
-      https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/diskcache-5.6.3/python3-diskcache-5.6.3-2.el9.noarch.rpm
 
 To install the above downloaded rpms in a RockyLinux9 environment, run
 something like the following::
@@ -142,8 +167,8 @@ doorstop commands.
 .. _doorstop Quick Start: https://doorstop.readthedocs.io/en/latest/getting-started/quickstart.html
 .. _doorstop: https://doorstop.readthedocs.io/en/latest/index.html
 
-Tox
----
+Tox workflows
+-------------
 
 As long as you have git and at least Python 3.8, then you can install
 and use tox_.  After cloning the repository, you can run the repo
@@ -259,7 +284,7 @@ Be patient; the last command above may take several minutes. See the
 doc links above for more detailed information on the tools and
 specifications.
 
-.. _Tox: https://github.com/tox-dev/tox
+.. _tox: https://github.com/tox-dev/tox
 .. _reuse-tool: https://github.com/fsfe/reuse-tool
 .. _REUSE: https://reuse.software/spec-3.3/
 .. _sbom4python: https://github.com/anthonyharrison/sbom4python
@@ -308,8 +333,8 @@ specifications.
     :target: https://www.python.org/downloads/
     :alt: Python
 
-.. |reuse| image:: https://api.reuse.software/badge/git.fsfe.org/reuse/api
-    :target: https://api.reuse.software/info/git.fsfe.org/reuse/api
+.. |reuse| image:: https://img.shields.io/badge/REUSE-compliant-blue.svg
+    :target: https://reuse.software/spec-3.3/
     :alt: REUSE status
 
 .. |pre| image:: https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white

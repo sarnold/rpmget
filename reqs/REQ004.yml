@@ -13,14 +13,15 @@ level: 1.3
 links: []
 normative: true
 ref: ''
-reviewed: 456kfouECW1zjLg7gX0t03Ic_CD_b1wpIQX1wq2XGbg=
+reviewed: kCIDbnPj0FS8LbGHNFLt1UmapHPBCwtsx6w4Ei4XjBU=
 short-name: ''
 text: |
   The software **Shall** consider a configuration valid when it passes
   the following minimum rule criteria.
 
   * the rpmget section must be present and contain at least the following
-    three baseline keys and their allowed values
+    four baseline keys and their allowed values
+    * 'repo_dir': 'any'
     * 'top_dir': 'any'
     * 'layout': ['flat', 'tree']
     * 'pkg_tool': ['rpm', 'yum', 'dnf']
