@@ -61,6 +61,7 @@ file = https://some[place.it/rpms/fake.rpm
 
 @pytest.mark.dependency()
 @pytest.mark.network()
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
 def test_process_config_loop(tmpdir_session):
     parser = CfgParser()
     cfg_str = RPMFILES
@@ -72,6 +73,7 @@ def test_process_config_loop(tmpdir_session):
 
 
 @pytest.mark.dependency(depends=["test_process_config_loop"])
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
 def test_manage_repo(tmpdir_session):
     parser = CfgParser()
     cfg_str = RPMFILES

@@ -2,10 +2,8 @@
 Utility functions.
 """
 
-import glob
 import logging
 import os
-import re
 import subprocess as sp
 from pathlib import Path
 from shlex import split
@@ -37,10 +35,12 @@ def check_for_rpm(pgm: str = 'rpm') -> str:
 
 def copy_rpms(src_dir: str, dst_dir: str):
     """
-    Copy .rpm globs while preserving arch dirs.
+    Copy .rpm globs while preserving arch dirs. This now replicates what
+    glob.glob(root_dir=src_dir) does.
     """
-    for p in glob.glob('**', recursive=True, root_dir=src_dir):
-        if os.path.isfile(os.path.join(src_dir, p)) and re.search('\\.rpm', p):
+    for p in [str(Path(p).relative_to(src_dir)) for p in get_filelist(src_dir)]:
+        logger.debug('Found glob: %s', p)
+        if os.path.isfile(os.path.join(src_dir, p)):
             os.makedirs(os.path.join(dst_dir, os.path.dirname(p)), exist_ok=True)
             copy(os.path.join(src_dir, p), os.path.join(dst_dir, p))
 
@@ -90,7 +90,8 @@ def get_filelist(dirname: str, filepattern: str = '*.rpm') -> List[str]:
     filenames = Path(dirname).rglob(filepattern)
     for pfile in list(filenames):
         file_list.append(str(pfile))
-    logger.info('Found rpm files: %s', file_list)
+    logger.info('Found %d rpm files', len(file_list))
+    logger.debug('Found rpm files: %s', file_list)
     return file_list
 
 
