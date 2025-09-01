@@ -36,7 +36,11 @@ def check_for_rpm(pgm: str = 'rpm') -> str:
 def copy_rpms(src_dir: str, dst_dir: str):
     """
     Copy .rpm globs while preserving arch dirs. This now replicates what
-    glob.glob(root_dir=src_dir) does.
+    glob.glob(root_dir=src_dir) does. Stem directories are each rpm tree
+    with rpm files, ie SRPMS and RPMS.
+
+    :param src_dir: source dir is top_dir with stem
+    :param dst_dir: destination dir is repo_dir with stem
     """
     for p in [str(Path(p).relative_to(src_dir)) for p in get_filelist(src_dir)]:
         logger.debug('Found glob: %s', p)
@@ -100,13 +104,9 @@ def manage_repo(config: CfgParser, temp_path: Optional[Path] = None):
     Create or update rpm repository using createrepo tool. Requires an
     existing rpm tree with one or more packages.
     """
-    if config['rpmget']['repo_dir'] == '':
-        raise FileNotFoundError("repo_dir cannot be an empty string")
-
     cr_name = "createrepo_c"
-    cr_path = ""
     try:
-        cr_path = check_for_rpm(cr_name)
+        check_for_rpm(cr_name)
     except FileNotFoundError as exc:
         logger.error('%s', repr(exc))
         return
@@ -119,37 +119,28 @@ def manage_repo(config: CfgParser, temp_path: Optional[Path] = None):
     top_src = Path(top_path) / 'SRPMS'
     top_bin = Path(top_path) / 'RPMS'
 
-    if os.path.exists(top_src) and get_filelist(str(top_src)):
+    rpm_paths = [p for p in (top_src, top_bin) if p.exists() and get_filelist(str(p))]
+
+    for path in rpm_paths:
         copy_rpms(
-            os.path.join(top_path, 'SRPMS'),
-            os.path.join(os.path.join(repo_path, 'SRPMS'), 'Packages'),
+            str(path),
+            os.path.join(os.path.join(repo_path, path.stem), 'Packages'),
         )
 
-    if os.path.exists(top_bin) and get_filelist(str(top_bin)):
-        copy_rpms(
-            os.path.join(top_path, 'RPMS'),
-            os.path.join(os.path.join(repo_path, 'RPMS'), 'Packages'),
-        )
+    cr_srcs_path = Path(repo_path) / top_src.stem
+    cr_bins_path = Path(repo_path) / top_bin.stem
 
-    if cr_path:
-        cr_srcs_path = Path(repo_path) / 'SRPMS'
-        cr_bins_path = Path(repo_path) / 'RPMS'
-        cr_str = "--compatibility --verbose --update"
-        cr_srcs = f'{cr_name} {cr_str} {str(cr_srcs_path.absolute())}'
-        cr_bins = f'{cr_name} {cr_str} {str(cr_bins_path.absolute())}'
+    cr_paths = [p for p in (cr_srcs_path, cr_bins_path) if p.exists()]
 
-        if cr_srcs_path.resolve().exists():
-            try:
-                logger.debug('srcs cmdline: %s', cr_srcs)
-                res = sp.check_output(split(cr_srcs), stderr=sp.STDOUT, text=True)
-                logger.debug('srcs: %s', res)
-            except sp.CalledProcessError as exc:
-                logger.error('srcs: %s', exc)
+    for path in cr_paths:
+        cr_str = "--compatibility --verbose"
+        if path.joinpath('repodata', 'repomd.xml').exists():
+            cr_str = cr_str + " --update"
+        cr_cmd = f'{cr_name} {cr_str} {str(path.absolute())}'
 
-        if cr_bins_path.resolve().exists():
-            try:
-                logger.debug('bins cmdline: %s', cr_bins)
-                res = sp.check_output(split(cr_bins), stderr=sp.STDOUT, text=True)
-                logger.debug('bins: %s', res)
-            except sp.CalledProcessError as exc:
-                logger.error('bins: %s', exc)
+        try:
+            logger.debug('cmdline: %s', cr_cmd)
+            res = sp.check_output(split(cr_cmd), stderr=sp.STDOUT, text=True)
+            logger.debug('cmd result: %s', res)
+        except sp.CalledProcessError as exc:
+            logger.error('proc error: %s', exc)

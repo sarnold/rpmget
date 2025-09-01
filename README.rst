@@ -96,7 +96,7 @@ string.
 A simple example might look something like this::
 
   [rpmget]
-  repo_dir = ~/repo
+  repo_dir = ~/repos/el9
   top_dir = rpms
   layout = flat
   pkg_tool = yum

@@ -74,7 +74,7 @@ def test_process_config_loop(tmpdir_session):
 
 @pytest.mark.dependency(depends=["test_process_config_loop"])
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
-def test_manage_repo(tmpdir_session):
+def test_manage_repo(tmpdir_session, monkeypatch):
     parser = CfgParser()
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
@@ -83,6 +83,11 @@ def test_manage_repo(tmpdir_session):
     dirlist = os.listdir(d / 'rpmrepo/el9/RPMS')
     print(f'\nRPMS generated repodata: {dirlist}')
     assert 'repodata' in dirlist
+    manage_repo(config=parser, temp_path=d)
+    rpms = [f for f in get_filelist(d) if 'rpmrepo' in f]
+    print(rpms)
+    monkeypatch.setenv("PATH", "/usr/local/bin")
+    manage_repo(config=parser, temp_path=d)
 
 
 def test_url_is_valid():

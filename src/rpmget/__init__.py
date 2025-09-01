@@ -29,7 +29,7 @@ __all__ = [
 ]
 
 SCHEMA = {
-    'repo_dir': {'type': 'string'},
+    'repo_dir': {'type': 'string', 'empty': False},
     'top_dir': {'type': 'string', 'empty': False},
     'layout': {'type': 'string', 'anyof_regex': ['^flat', '^tree']},
     'pkg_tool': {'type': 'string', 'anyof_regex': ['^rpm', '^yum', '^dnf']},
@@ -100,7 +100,7 @@ class CfgSectionError(Exception):
     the required keys and valid values::
 
       [rpmget]
-      repo_dir
+      repo_dir =  ~/repos/el9
       top_dir = rpms
       layout = tree
       pkg_tool = rpm
