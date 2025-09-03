@@ -115,11 +115,15 @@ class CfgParser(ConfigParser):
     """
     Simple subclass with extended interpolation and no empty lines in
     values (see design item SDD002).
+
+    * interpolation = ExtendedInterpolation
+    * inline_comment_prefixes = None
+    * empty_lines_in_values = False
     """
 
     def __init__(self, *args, **kwargs):
         """
-        Init with required non-default options.
+        Init with the above required options.
         """
         super().__init__(
             *args,

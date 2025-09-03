@@ -63,6 +63,9 @@ file = https://some[place.it/rpms/fake.rpm
 @pytest.mark.network()
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
 def test_process_config_loop(tmpdir_session):
+    """
+    Tests implementation of main processing loop.
+    """
     parser = CfgParser()
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
@@ -75,6 +78,9 @@ def test_process_config_loop(tmpdir_session):
 @pytest.mark.dependency(depends=["test_process_config_loop"])
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
 def test_manage_repo(tmpdir_session, monkeypatch):
+    """
+    Verifies REQ009
+    """
     parser = CfgParser()
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
@@ -86,8 +92,19 @@ def test_manage_repo(tmpdir_session, monkeypatch):
     manage_repo(config=parser, temp_path=d)
     rpms = [f for f in get_filelist(d) if 'rpmrepo' in f]
     print(rpms)
+
+
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_manage_repo_no_bin(tmp_path, monkeypatch):
+    parser = CfgParser()
+    cfg_str = RPMFILES
+    parser.read_string(cfg_str)
+    d = tmp_path / "other"
     monkeypatch.setenv("PATH", "/usr/local/bin")
     manage_repo(config=parser, temp_path=d)
+    rpms = [f for f in get_filelist(d)]
+    print(rpms)
+    assert rpms == []
 
 
 def test_url_is_valid():

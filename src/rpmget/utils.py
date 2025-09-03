@@ -102,7 +102,7 @@ def get_filelist(dirname: str, filepattern: str = '*.rpm') -> List[str]:
 def manage_repo(config: CfgParser, temp_path: Optional[Path] = None):
     """
     Create or update rpm repository using createrepo tool. Requires an
-    existing rpm tree with one or more packages.
+    existing rpm tree with one or more packages. Satisfies REQ009.
     """
     cr_name = "createrepo_c"
     try:

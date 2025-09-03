@@ -13,8 +13,8 @@ level: 1.6
 links: []
 normative: true
 ref: ''
-reviewed: xvcTAOESd6zyAQ2FechvD7Pn9E4L5Pqsp6ke9ithKZs=
+reviewed: LjSh_TSWdHJUywlG-Q0HpBJmGA8a0nWglXuQXk2ZrF8=
 short-name: ''
 text: |
-  The software **Shall** also create a default `.rpmmacros` file in top_dir
-  when the layout type is 'tree'.
+  The software **Shall** create a default `.rpmmacros` file in top_dir when
+  the layout type is 'tree'.
