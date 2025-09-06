@@ -66,17 +66,26 @@ def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0
         arch_path = 'SRPMS' if rpm_arch == 'src' else f'RPMS/{rpm_arch}'
     download_file: Path = Path(dst) / arch_path / rpm_file
     download_file.parent.mkdir(parents=True, exist_ok=True)
+    client = httpx.Client(follow_redirects=True)
 
-    with httpx.stream("GET", url, timeout=timeout, follow_redirects=True) as response:
-        total = int(response.headers["Content-Length"])
-        logger.debug('File size: %s', total)
-
-        with tqdm(total=total, unit_scale=True, unit_divisor=1024, unit="B") as progress:
-            num_bytes_downloaded = response.num_bytes_downloaded
-            for chunk in response.iter_bytes():
-                download_file.write_bytes(chunk)
-                progress.update(response.num_bytes_downloaded - num_bytes_downloaded)
-                num_bytes_downloaded = response.num_bytes_downloaded
+    with download_file.open("wb") as file_handle:
+        with client.stream("GET", url, timeout=timeout) as response:
+            total = response.headers.get("Content-Length")
+            logger.info('%s size: %s', download_file.name, total)
+            if total is None:
+                content = response.content
+                file_handle.write(content)
+            else:
+                with tqdm(
+                    total=int(total), unit_scale=True, unit_divisor=1024, unit="B"
+                ) as progress:
+                    num_bytes_downloaded = response.num_bytes_downloaded
+                    for chunk in response.iter_bytes():
+                        file_handle.write(chunk)
+                        progress.update(
+                            response.num_bytes_downloaded - num_bytes_downloaded
+                        )
+                        num_bytes_downloaded = response.num_bytes_downloaded
 
     return download_file.name
 
