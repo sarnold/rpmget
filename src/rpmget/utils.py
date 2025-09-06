@@ -68,18 +68,13 @@ def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0
     download_file.parent.mkdir(parents=True, exist_ok=True)
     client = httpx.Client(follow_redirects=True)
 
-    while True:
-        remove_borked_file: bool = False
-        return_file_name: str = download_file.name
-        with download_file.open("wb") as file_handle:
-            with client.stream("GET", url, timeout=timeout) as response:
-                total = response.headers.get("Content-Length")
-                logger.info('%s size: %s', download_file.name, total)
-                if response.status_code != 200:
-                    logging.error("Failed to download %s", url)
-                    remove_borked_file = True
-                    return_file_name = "File Error"
-                    break
+    remove_borked_file: bool = False
+    return_file_name: str = download_file.name
+    with download_file.open("wb") as file_handle:
+        with client.stream("GET", url, timeout=timeout) as response:
+            total = response.headers.get("Content-Length")
+            logger.info('%s size: %s', download_file.name, total)
+            if response.status_code == 200:
                 if total is None:
                     content = response.content
                     file_handle.write(content)
@@ -94,10 +89,14 @@ def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0
                                 response.num_bytes_downloaded - num_bytes_downloaded
                             )
                             num_bytes_downloaded = response.num_bytes_downloaded
-            break
+            else:
+                logging.error("Failed to download %s", url)
+                remove_borked_file = True
+                return_file_name = "File Error"
 
     if remove_borked_file:
         download_file.unlink()
+
     return return_file_name
 
 
