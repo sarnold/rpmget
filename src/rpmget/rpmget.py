@@ -165,6 +165,8 @@ def process_config_loop(config: CfgParser, temp_path: Optional[Path] = None) -> 
     urls = find_rpm_urls(config)
     for url in urls:
         fname = download_progress_bin(url, top_dir, layout)
+        if fname == "File Error":
+            continue
         files.append(fname)
     logging.debug('Downloaded files: %s', files)
     logging.info('Downloaded %d files', len(files))

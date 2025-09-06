@@ -22,6 +22,7 @@ from rpmget.utils import (
 
 GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm'
 NAME = 'python3-py3tftp-1.3.0-1.el9.noarch.rpm'
+BAD_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/foobar-1.3.0/python3-foobar-1.3.0-1.el9.noarch.rpm'
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
@@ -139,6 +140,14 @@ def test_get_filelist_tree(tmpdir_session):
     print(files)
     assert len(files) == 1
     assert files[0].endswith(NAME)
+
+
+@pytest.mark.network()
+def test_download_progress_bogus(tmp_path):
+    dst_dir = tmp_path / 'rpmbuild'
+    create_layout(str(dst_dir), 'tree')
+    test_file_name = download_progress_bin(BAD_URL, dst_dir, 'tree')
+    assert test_file_name == "File Error"
 
 
 def test_create_layout_flat(tmp_path):
