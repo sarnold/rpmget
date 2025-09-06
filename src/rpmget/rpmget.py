@@ -5,13 +5,13 @@ rpmget main init, run, and self-test functions.
 import argparse
 import importlib
 import logging
+import os
 import sys
 import warnings
 from pathlib import Path
 from typing import List, Optional
 
 from . import (
-    SCHEMA,
     CfgParser,
     CfgSectionError,
     __version__,
@@ -19,7 +19,7 @@ from . import (
     load_config,
     validate_config,
 )
-from .utils import download_progress_bin
+from .utils import download_progress_bin, manage_repo
 
 # from logging_tree import printout  # debug logger environment
 
@@ -43,7 +43,7 @@ def self_test(fname: Optional[Path]):
 
     cfg, cfg_file = load_config(str(fname)) if fname else load_config()
     try:
-        res = validate_config(cfg, SCHEMA)  # SDD004
+        res = validate_config(cfg)  # SDD004
         logging.info("cfg valid: %s", res)
     except CfgSectionError:
         logging.error("cfg valid: False")
@@ -92,6 +92,9 @@ def main_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument('--version', action="version", version=f"%(prog)s {__version__}")
     parser.add_argument('-S', '--show', help='display user config', action='store_true')
     parser.add_argument('-t', '--test', help='run sanity checks', action='store_true')
+    parser.add_argument(
+        '-u', '--update', help='update repos with createrepo', action='store_true'
+    )
     parser.add_argument(
         '-v',
         '--validate',
@@ -155,13 +158,15 @@ def process_config_loop(config: CfgParser, temp_path: Optional[Path] = None) -> 
     except CfgSectionError as exc:
         logging.error('%s', repr(exc))
 
-    cfg_top = config['rpmget']['top_dir']
+    cfg_top = os.path.expanduser(config['rpmget']['top_dir'])
     top_dir = str(temp_path / cfg_top) if temp_path else cfg_top
     layout = config['rpmget']['layout']
 
     urls = find_rpm_urls(config)
     for url in urls:
         fname = download_progress_bin(url, top_dir, layout)
+        if fname == "File Error":
+            continue
         files.append(fname)
     logging.debug('Downloaded files: %s', files)
     logging.info('Downloaded %d files', len(files))
@@ -199,7 +204,7 @@ def main() -> None:  # pragma: no cover
     if len(sys.argv) == 1 and (ufile is None or not ufile.exists()):
         logger.error('No cfg file found; use the --dump arg or create a cfg file')
         sys.exit(1)
-    logger.debug('Using input file %s', ufile)
+    logger.info('Using input file %s', ufile)
 
     if args.test:
         self_test(ufile)
@@ -212,10 +217,14 @@ def main() -> None:  # pragma: no cover
         sys.exit(0)
     if args.validate:
         try:
-            res = validate_config(ucfg, SCHEMA)
+            res = validate_config(ucfg)
             logger.info('User config is valid: %s', res)
         except CfgSectionError as exc:
             logger.error('%s', repr(exc))
+
+    if args.update:
+        manage_repo(ucfg)
+        sys.exit(0)
 
     _ = process_config_loop(ucfg)
 

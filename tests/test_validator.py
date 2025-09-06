@@ -14,6 +14,7 @@ from rpmget import (
 
 DEFCFG = """
 [rpmget]
+repo_dir = ~/repos
 top_dir = rpms
 layout = flat
 pkg_tool = rpm
@@ -21,6 +22,7 @@ pkg_tool = rpm
 
 NOTCFG = """
 [rpmget]
+repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = true
 rpm_tool = dnf
@@ -28,6 +30,7 @@ rpm_tool = dnf
 
 NOURL = """
 [rpmget]
+repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
@@ -38,6 +41,7 @@ file = this/is/not/a/url.txt
 
 BADEND = """
 [rpmget]
+repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
@@ -48,6 +52,7 @@ file = http:xxxx://someplace.it/rpms/fake.rpm
 
 BADURL = """
 [rpmget]
+repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
@@ -58,6 +63,7 @@ file = https://some[place.it/rpms/fake.rpm
 
 BADLAYOUT = """
 [rpmget]
+repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = true
 pkg_tool = rpm
@@ -69,6 +75,7 @@ other = not_a_url
 
 HASRPM = """
 [rpmget]
+repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = flat
 pkg_tool = rpm

@@ -1,0 +1,20 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.8
+links: []
+normative: true
+ref: ''
+reviewed: EdbQrxyyjOoHBDmPheGfG3lZTggM9r2kcGWsWS5pLzc=
+short-name: createrepo
+text: |
+  The software **Shall** support the `createrepo` tool for both creating
+  and updating rpm-metadata (repodata) from local rpm packages.

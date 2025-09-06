@@ -1,0 +1,25 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: REQ Integration and Unit Tests
+header: ''
+level: 1.4
+links:
+- REQ009: EdbQrxyyjOoHBDmPheGfG3lZTggM9r2kcGWsWS5pLzc=
+normative: true
+ref: ''
+references:
+- keyword: REQ009
+  path: tests/test_rpmget.py
+  sha: f9dd67660a0197450e5974ae4f1064ee56427691b21b7ce5c7f7326a482d3a4c
+  type: file
+reviewed: ja53YkDYXvBFgByhS9iK4A0HmMkxFLwgIh6w7uLNjMI=
+short-name: createrepo_c
+text: |
+  Test createrepo_c:

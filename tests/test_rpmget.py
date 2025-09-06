@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import warnings
 from argparse import ArgumentParser
@@ -22,22 +23,25 @@ from rpmget.rpmget import (
     self_test,
     show_paths,
 )
+from rpmget.utils import get_filelist, manage_repo
 
 RPMFILES = """
 [rpmget]
+repo_dir = rpmrepo/el9
 top_dir = rpms
-layout = flat
+layout = tree
 pkg_tool = yum
-#rpm_tool = rpm
 
 [stuff]
 files =
     https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm
     https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/procman-0.6.1/python3-procman-0.6.1-1.el9.noarch.rpm
+    https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/pygtail-0.14.0.3/python-pygtail-0.14.0.3-1.el9.src.rpm
 """
 
 NOTCFG = """
 [rpmget]
+repo_dir = ~/repos//el9
 top_dir = rpms
 layout = tree
 rpm_tool = dnf
@@ -45,6 +49,7 @@ rpm_tool = dnf
 
 BADURL = """
 [rpmget]
+repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
@@ -54,19 +59,59 @@ file = https://some[place.it/rpms/fake.rpm
 """
 
 
-def test_process_config_loop(tmp_path):
+@pytest.mark.dependency()
+@pytest.mark.network()
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_process_config_loop(tmpdir_session):
+    """
+    Tests implementation of main processing loop.
+    """
     parser = CfgParser()
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
-    d = tmp_path / "sub"
+    d = tmpdir_session / "sub"
     res = process_config_loop(config=parser, temp_path=d)
     print(res)
+    assert len(res) == 3
+
+
+@pytest.mark.dependency(depends=["test_process_config_loop"])
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_manage_repo(tmpdir_session, monkeypatch):
+    """
+    Verifies REQ009
+    """
+    parser = CfgParser()
+    cfg_str = RPMFILES
+    parser.read_string(cfg_str)
+    d = tmpdir_session / "sub"
+    manage_repo(config=parser, temp_path=d)
+    dirlist = os.listdir(d / 'rpmrepo/el9/RPMS')
+    print(f'\nRPMS generated repodata: {dirlist}')
+    assert 'repodata' in dirlist
+    manage_repo(config=parser, temp_path=d)
+    rpms = [f for f in get_filelist(d) if 'rpmrepo' in f]
+    print(rpms)
+
+
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_manage_repo_no_bin(tmp_path, monkeypatch):
+    parser = CfgParser()
+    cfg_str = RPMFILES
+    parser.read_string(cfg_str)
+    d = tmp_path / "other"
+    monkeypatch.setenv("PATH", "/usr/local/bin")
+    manage_repo(config=parser, temp_path=d)
+    rpms = [f for f in get_filelist(d)]
+    print(rpms)
+    assert rpms == []
 
 
 def test_url_is_valid():
     parser = CfgParser()
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
+    assert parser["rpmget"]["repo_dir"] is not None
     rpms_str = parser["stuff"]["files"]
     print(rpms_str)
     urls = [x for x in rpms_str.splitlines() if x != '']

@@ -1,5 +1,5 @@
 # Copyright (c) 2025 Masen Furer
-# SPDX-License-Identifier: LicenseRef-MIT
+# SPDX-License-Identifier: MIT
 
 """
 https://github.com/masenf/tox-ignore-env-name-mismatch

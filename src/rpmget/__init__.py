@@ -8,7 +8,7 @@ from configparser import ConfigParser, ExtendedInterpolation
 from importlib.metadata import version
 from pathlib import Path
 from string import Template
-from typing import Dict, List, Optional, Tuple
+from typing import List, Optional, Tuple
 from urllib.parse import urlparse
 
 from cerberus import Validator
@@ -29,6 +29,7 @@ __all__ = [
 ]
 
 SCHEMA = {
+    'repo_dir': {'type': 'string', 'empty': False},
     'top_dir': {'type': 'string', 'empty': False},
     'layout': {'type': 'string', 'anyof_regex': ['^flat', '^tree']},
     'pkg_tool': {'type': 'string', 'anyof_regex': ['^rpm', '^yum', '^dnf']},
@@ -36,6 +37,7 @@ SCHEMA = {
 
 CFG = """
 [rpmget]
+repo_dir = ~/repos
 top_dir = rpmbuild
 layout = flat
 pkg_tool = rpm
@@ -98,6 +100,7 @@ class CfgSectionError(Exception):
     the required keys and valid values::
 
       [rpmget]
+      repo_dir =  ~/repos/el9
       top_dir = rpms
       layout = tree
       pkg_tool = rpm
@@ -112,17 +115,22 @@ class CfgParser(ConfigParser):
     """
     Simple subclass with extended interpolation and no empty lines in
     values (see design item SDD002).
+
+    * interpolation = ExtendedInterpolation
+    * inline_comment_prefixes = None
+    * empty_lines_in_values = False
     """
 
     def __init__(self, *args, **kwargs):
         """
-        Init with required non-default options.
+        Init with the above required options.
         """
         super().__init__(
             *args,
             **kwargs,
             interpolation=ExtendedInterpolation(),
             empty_lines_in_values=False,
+            allow_no_value=True,
         )
 
 
@@ -234,15 +242,13 @@ def url_is_valid(rpm_url: str) -> bool:
     return url_valid
 
 
-def validate_config(
-    config: CfgParser, schema: Dict = SCHEMA, stop_on_error: bool = True
-) -> bool:
+def validate_config(config: CfgParser, stop_on_error: bool = True) -> bool:
     """
     Validate minimum config sections and make sure [rpmget] section exists
     with required options (see design item SDD003).
 
     :param cfg_parse: loaded CfgParser instance
-    :param schema: cerberus schema dict
+    :param stop_on_error: boolean flag
     :returns: boolean ``is_valid`` flag
     """
     is_valid = False
@@ -254,7 +260,7 @@ def validate_config(
     v = Validator()
     v.allow_unknown = True
     v.require_all = True
-    default_is_valid = v.validate(data, schema)
+    default_is_valid = v.validate(data, SCHEMA)
 
     if not default_is_valid:
         msg = f'Validation errors found in defaults: {v.errors}'

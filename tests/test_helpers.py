@@ -22,6 +22,7 @@ from rpmget.utils import (
 
 GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm'
 NAME = 'python3-py3tftp-1.3.0-1.el9.noarch.rpm'
+BAD_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/foobar-1.3.0/python3-foobar-1.3.0-1.el9.noarch.rpm'
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
@@ -99,6 +100,13 @@ def test_check_for_rpm_bogus(monkeypatch, capfd):
     assert "program not found in PATH" in str(excinfo.value)
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_check_for_rpm_other(capfd):
+    cr_path = check_for_rpm('createrepo_c')
+    print(cr_path)
+    assert 'createrepo_c' in cr_path
+
+
 @pytest.mark.dependency()
 @pytest.mark.network()
 def test_download_progress_bin(tmpdir_session):
@@ -134,6 +142,14 @@ def test_get_filelist_tree(tmpdir_session):
     assert files[0].endswith(NAME)
 
 
+@pytest.mark.network()
+def test_download_progress_bogus(tmp_path):
+    dst_dir = tmp_path / 'rpmbuild'
+    create_layout(str(dst_dir), 'tree')
+    test_file_name = download_progress_bin(BAD_URL, dst_dir, 'tree')
+    assert test_file_name == "File Error"
+
+
 def test_create_layout_flat(tmp_path):
     """
     Test layout = tree as part of REQ006 validation.
@@ -167,10 +183,10 @@ def test_create_layout_tree(tmp_path):
     ]
 
 
-def test_get_filelist(tmp_path):
-    dst_dir = tmp_path / 'rpms'
-    dst_dir.mkdir()
-    p = dst_dir / "test1.rpm"
+def test_get_filelist(tmpdir_session):
+    dst_dir = tmpdir_session / 'rpmbuild/RPMS/noarch'
+    dst_dir.mkdir(parents=True, exist_ok=True)
+    p = dst_dir / "test1.noarch.rpm"
     p.write_bytes(os.urandom(1024))
     files = get_filelist(dst_dir)
     print(files)
