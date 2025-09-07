@@ -161,10 +161,11 @@ def process_config_loop(config: CfgParser, temp_path: Optional[Path] = None) -> 
     cfg_top = os.path.expanduser(config['rpmget']['top_dir'])
     top_dir = str(temp_path / cfg_top) if temp_path else cfg_top
     layout = config['rpmget']['layout']
+    timeout = config.getfloat('rpmget', 'httpx_timeout')
 
     urls = find_rpm_urls(config)
     for url in urls:
-        fname = download_progress_bin(url, top_dir, layout)
+        fname = download_progress_bin(url, top_dir, layout, timeout)
         if fname == "File Error":
             continue
         files.append(fname)
@@ -219,8 +220,10 @@ def main() -> None:  # pragma: no cover
         try:
             res = validate_config(ucfg)
             logger.info('User config is valid: %s', res)
+            sys.exit(0)
         except CfgSectionError as exc:
             logger.error('%s', repr(exc))
+            sys.exit(1)
 
     if args.update:
         manage_repo(ucfg)

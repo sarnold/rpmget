@@ -18,6 +18,9 @@ repo_dir = ~/repos
 top_dir = rpms
 layout = flat
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
+httpx_timeout = 15.0
 """
 
 NOTCFG = """
@@ -26,6 +29,7 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = true
 rpm_tool = dnf
+httpx_timeout = 15.0
 """
 
 NOURL = """
@@ -34,6 +38,9 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args =
+httpx_timeout = 15.0
 
 [stuff]
 file = this/is/not/a/url.txt
@@ -45,6 +52,9 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
+httpx_timeout = 15.0
 
 [stuff]
 file = http:xxxx://someplace.it/rpms/fake.rpm
@@ -56,6 +66,9 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
+httpx_timeout = 15.0
 
 [stuff]
 file = https://some[place.it/rpms/fake.rpm
@@ -67,6 +80,9 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = true
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
+httpx_timeout = 15.0
 
 [stuff]
 file = http://somewhere.over/the/rainbow.rpm
@@ -79,6 +95,9 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = flat
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
+httpx_timeout = 15.0
 
 [stuff]
 file = http://somewhere.over/the/rainbow.rpm
@@ -91,6 +110,9 @@ url_type = https
 host = github.com
 owner = VCTLabs
 repo = el9-rpm-toolbox
+repo_tool = createrepo_c
+repo_args =
+httpx_timeout = 10.0
 
 arch = noarch
 dist = el9

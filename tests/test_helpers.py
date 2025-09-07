@@ -111,7 +111,7 @@ def test_check_for_rpm_other(capfd):
 @pytest.mark.network()
 def test_download_progress_bin(tmpdir_session):
     dst_dir = tmpdir_session / 'rpms'
-    test_file_name = download_progress_bin(GH_URL, dst_dir, 'flat')
+    test_file_name = download_progress_bin(GH_URL, dst_dir, 'flat', 10.0)
     assert test_file_name == NAME
 
 
@@ -129,7 +129,7 @@ def test_get_filelist_down(tmpdir_session):
 def test_download_progress_tree(tmpdir_session):
     dst_dir = tmpdir_session / 'rpmbuild'
     create_layout(str(dst_dir), 'tree')
-    test_file_name = download_progress_bin(GH_URL, dst_dir, 'tree')
+    test_file_name = download_progress_bin(GH_URL, dst_dir, 'tree', 15.0)
     assert test_file_name == NAME
 
 
@@ -146,7 +146,7 @@ def test_get_filelist_tree(tmpdir_session):
 def test_download_progress_bogus(tmp_path):
     dst_dir = tmp_path / 'rpmbuild'
     create_layout(str(dst_dir), 'tree')
-    test_file_name = download_progress_bin(BAD_URL, dst_dir, 'tree')
+    test_file_name = download_progress_bin(BAD_URL, dst_dir, 'tree', 5.0)
     assert test_file_name == "File Error"
 
 

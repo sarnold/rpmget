@@ -29,18 +29,24 @@ __all__ = [
 ]
 
 SCHEMA = {
-    'repo_dir': {'type': 'string', 'empty': False},
     'top_dir': {'type': 'string', 'empty': False},
+    'repo_dir': {'type': 'string', 'empty': False},
     'layout': {'type': 'string', 'anyof_regex': ['^flat', '^tree']},
     'pkg_tool': {'type': 'string', 'anyof_regex': ['^rpm', '^yum', '^dnf']},
+    'repo_tool': {'type': 'string', 'anyof_regex': ['^createrepo_c', '^createrepo']},
+    'repo_args': {'type': 'string'},
+    'httpx_timeout': {'type': 'string', 'empty': False},
 }
 
 CFG = """
 [rpmget]
-repo_dir = ~/repos
 top_dir = rpmbuild
 layout = flat
 pkg_tool = rpm
+repo_dir = ext/rpmrepos
+repo_tool = createrepo_c
+repo_args = --compatibility
+httpx_timeout = 15.0
 
 [Common]
 url_type = https
@@ -58,15 +64,15 @@ url_post = ${release}.${dist}.${arch}.${ext}
 
 [Toolbox]
 dc_tag = diskcache-5.6.3
-hex_tag = hexdump-3.5.2
-hon_tag = honcho-2.0.0.1
-proc_tag = procman-0.6.0
+hex_tag = hexdump-3.5.3
+pyg_tag = pygtail-0.14.0.3
+tui_tag = picotui-1.2.3.2
 
 tb_rpms =
   ${Common:url_base}/${dc_tag}/python3-${dc_tag}-${Common:url_post}
   ${Common:url_base}/${hex_tag}/python3-${hex_tag}-${Common:url_post}
-  ${Common:url_base}/${hon_tag}/python3-${hon_tag}-${Common:url_post}
-  ${Common:url_base}/${proc_tag}/python3-${proc_tag}-${Common:url_post}
+  ${Common:url_base}/${pyg_tag}/python3-${pyg_tag}-${Common:url_post}
+  ${Common:url_base}/${tui_tag}/python3-${tui_tag}-${Common:url_post}
 """
 
 RPM_TREE = ["BUILD", "BUILDROOT", "RPMS", "SOURCES", "SPECS", "SRPMS"]
@@ -100,10 +106,13 @@ class CfgSectionError(Exception):
     the required keys and valid values::
 
       [rpmget]
-      repo_dir =  ~/repos/el9
       top_dir = rpms
       layout = tree
       pkg_tool = rpm
+      repo_dir = ~/rpmrepos
+      repo_tool = createrepo_c
+      repo_args = --compatibility
+      httpx_timeout = 15.0
 
     Also raised for invalid URL errors.
     """
@@ -178,6 +187,9 @@ def create_macros(topdir: str) -> str:
 def find_rpm_urls(config: CfgParser) -> List[str]:
     """
     Find all the (hopefully valid) URLs.
+
+    :param config: loaded CfgParser instance
+    :returns: list of valid URLs
     """
     valid_urls: List = []
     sections: List[str] = config.sections()
@@ -198,7 +210,7 @@ def load_config(ufile: str = '') -> Tuple[CfgParser, Optional[Path]]:
     Note that passing ``ufile`` as a parameter overrides the above default.
 
     :param ufile: path string for config file
-    :returns: cfg parser and file Path-or-None
+    :returns: loaded CfgParser instance and file Path-or-None
     :raises FileTypeError: if the input file is not in the allowed list
                            ['.ini', '.cfg', '.conf']
     """
@@ -247,7 +259,7 @@ def validate_config(config: CfgParser, stop_on_error: bool = True) -> bool:
     Validate minimum config sections and make sure [rpmget] section exists
     with required options (see design item SDD003).
 
-    :param cfg_parse: loaded CfgParser instance
+    :param config: loaded CfgParser instance
     :param stop_on_error: boolean flag
     :returns: boolean ``is_valid`` flag
     """

@@ -49,7 +49,7 @@ def copy_rpms(src_dir: str, dst_dir: str):
             copy(os.path.join(src_dir, p), os.path.join(dst_dir, p))
 
 
-def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0) -> str:
+def download_progress_bin(url: str, dst: str, layout: str, timeout: float) -> str:
     """
     Download a single binary with progress meter and default timeout.
     Create arch dir or top_dir depending on layout setting
@@ -68,18 +68,13 @@ def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0
     download_file.parent.mkdir(parents=True, exist_ok=True)
     client = httpx.Client(follow_redirects=True)
 
-    while True:
-        remove_borked_file: bool = False
-        return_file_name: str = download_file.name
-        with download_file.open("wb") as file_handle:
-            with client.stream("GET", url, timeout=timeout) as response:
-                total = response.headers.get("Content-Length")
-                logger.info('%s size: %s', download_file.name, total)
-                if response.status_code != 200:
-                    logging.error("Failed to download %s", url)
-                    remove_borked_file = True
-                    return_file_name = "File Error"
-                    break
+    remove_borked_file: bool = False
+    return_file_name: str = download_file.name
+    with download_file.open("wb") as file_handle:
+        with client.stream("GET", url, timeout=timeout) as response:
+            total = response.headers.get("Content-Length")
+            logger.info('%s size: %s', download_file.name, total)
+            if response.status_code == 200:
                 if total is None:
                     content = response.content
                     file_handle.write(content)
@@ -94,10 +89,14 @@ def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0
                                 response.num_bytes_downloaded - num_bytes_downloaded
                             )
                             num_bytes_downloaded = response.num_bytes_downloaded
-            break
+            else:
+                logging.error("Failed to download %s", url)
+                remove_borked_file = True
+                return_file_name = "File Error"
 
     if remove_borked_file:
         download_file.unlink()
+
     return return_file_name
 
 
@@ -119,12 +118,16 @@ def get_filelist(dirname: str, filepattern: str = '*.rpm') -> List[str]:
     return file_list
 
 
-def manage_repo(config: CfgParser, temp_path: Optional[Path] = None):
+def manage_repo(config: CfgParser, debug: bool = False, temp_path: Optional[Path] = None):
     """
     Create or update rpm repository using createrepo tool. Requires an
     existing rpm tree with one or more packages. Satisfies REQ009.
+
+    :param config: loaded CfgParser instance
+    :param debug: enables verbose on ``repo_tool``
+    :param temp_path: prepended to config paths (mainly for testing)
     """
-    cr_name = "createrepo_c"
+    cr_name: str = config['rpmget']['repo_tool']
     try:
         check_for_rpm(cr_name)
     except FileNotFoundError as exc:
@@ -153,10 +156,11 @@ def manage_repo(config: CfgParser, temp_path: Optional[Path] = None):
     cr_paths = [p for p in (cr_srcs_path, cr_bins_path) if p.exists()]
 
     for path in cr_paths:
-        cr_str = "--compatibility --verbose"
+        cr_str = config['rpmget']['repo_args']
+        dbg_str = "--verbose" if debug else ''
         if path.joinpath('repodata', 'repomd.xml').exists():
             cr_str = cr_str + " --update"
-        cr_cmd = f'{cr_name} {cr_str} {str(path.absolute())}'
+        cr_cmd = f'{cr_name} {cr_str} {dbg_str} {str(path.absolute())}'
 
         try:
             logger.debug('cmdline: %s', cr_cmd)
