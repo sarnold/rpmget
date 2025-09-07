@@ -219,6 +219,7 @@ def main() -> None:  # pragma: no cover
         try:
             res = validate_config(ucfg)
             logger.info('User config is valid: %s', res)
+            sys.exit(0)
         except CfgSectionError as exc:
             logger.error('%s', repr(exc))
 

@@ -31,6 +31,8 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = yum
+repo_tool = createrepo_c
+repo_args = --compatibility
 
 [stuff]
 files =
@@ -53,6 +55,8 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
 
 [stuff]
 file = https://some[place.it/rpms/fake.rpm
@@ -77,7 +81,7 @@ def test_process_config_loop(tmpdir_session):
 
 @pytest.mark.dependency(depends=["test_process_config_loop"])
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
-def test_manage_repo(tmpdir_session, monkeypatch):
+def test_manage_repo(tmpdir_session, caplog):
     """
     Verifies REQ009
     """
@@ -85,13 +89,19 @@ def test_manage_repo(tmpdir_session, monkeypatch):
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
     d = tmpdir_session / "sub"
-    manage_repo(config=parser, temp_path=d)
+    caplog.clear()
+    caplog.set_level(logging.DEBUG)
+    manage_repo(parser, debug=True, temp_path=d)
+    assert "cmdline: createrepo_c --compatibility --verbose" in caplog.text
     dirlist = os.listdir(d / 'rpmrepo/el9/RPMS')
-    print(f'\nRPMS generated repodata: {dirlist}')
+    print(f'\ncreaterepo generated repodata: {dirlist}')
     assert 'repodata' in dirlist
-    manage_repo(config=parser, temp_path=d)
+    caplog.clear()
+    manage_repo(config=parser, debug=True, temp_path=d)
+    assert "cmdline: createrepo_c --compatibility --update" in caplog.text
+    # print(caplog.text)
     rpms = [f for f in get_filelist(d) if 'rpmrepo' in f]
-    print(rpms)
+    print(f"rpm files: {rpms}")
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")

@@ -18,6 +18,8 @@ repo_dir = ~/repos
 top_dir = rpms
 layout = flat
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
 """
 
 NOTCFG = """
@@ -34,6 +36,8 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args =
 
 [stuff]
 file = this/is/not/a/url.txt
@@ -45,6 +49,8 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
 
 [stuff]
 file = http:xxxx://someplace.it/rpms/fake.rpm
@@ -56,6 +62,8 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = tree
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
 
 [stuff]
 file = https://some[place.it/rpms/fake.rpm
@@ -67,6 +75,8 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = true
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
 
 [stuff]
 file = http://somewhere.over/the/rainbow.rpm
@@ -79,6 +89,8 @@ repo_dir = rpmrepo/el9
 top_dir = rpms
 layout = flat
 pkg_tool = rpm
+repo_tool = createrepo_c
+repo_args = --compatibility
 
 [stuff]
 file = http://somewhere.over/the/rainbow.rpm
@@ -91,6 +103,8 @@ url_type = https
 host = github.com
 owner = VCTLabs
 repo = el9-rpm-toolbox
+repo_tool = createrepo_c
+repo_args =
 
 arch = noarch
 dist = el9

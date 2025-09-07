@@ -118,12 +118,16 @@ def get_filelist(dirname: str, filepattern: str = '*.rpm') -> List[str]:
     return file_list
 
 
-def manage_repo(config: CfgParser, temp_path: Optional[Path] = None):
+def manage_repo(config: CfgParser, debug: bool = False, temp_path: Optional[Path] = None):
     """
     Create or update rpm repository using createrepo tool. Requires an
     existing rpm tree with one or more packages. Satisfies REQ009.
+
+    :param config: loaded CfgParser instance
+    :param debug: enables verbose on ``repo_tool``
+    :param temp_path: prepended to config paths (mainly for testing)
     """
-    cr_name = "createrepo_c"
+    cr_name: str = config['rpmget']['repo_tool']
     try:
         check_for_rpm(cr_name)
     except FileNotFoundError as exc:
@@ -152,10 +156,11 @@ def manage_repo(config: CfgParser, temp_path: Optional[Path] = None):
     cr_paths = [p for p in (cr_srcs_path, cr_bins_path) if p.exists()]
 
     for path in cr_paths:
-        cr_str = "--compatibility --verbose"
+        cr_str = config['rpmget']['repo_args']
+        dbg_str = "--verbose" if debug else ''
         if path.joinpath('repodata', 'repomd.xml').exists():
             cr_str = cr_str + " --update"
-        cr_cmd = f'{cr_name} {cr_str} {str(path.absolute())}'
+        cr_cmd = f'{cr_name} {cr_str} {dbg_str} {str(path.absolute())}'
 
         try:
             logger.debug('cmdline: %s', cr_cmd)

@@ -33,8 +33,24 @@ Quick Start
 
 * Install from GH release page, eg in a Tox file or venv
 * Clone from GH and install in a venv
+* Write a minimal config file (see below)
+* Use at least one option with one or more URL strings
+* Use one of these file extensions: [.conf, .ini, .cfg]
 
-See the `Tox workflows`_ section below *and* the ``tox.ini`` file for more details.
+From a venv, run the following commands to validate your config and download
+rpms::
+
+  $ rpmget -c my_config.ini --validate
+  INFO:rpmget:Using input file my_config.ini
+  INFO:rpmget:User config is valid: True
+  $ rpmget -c my_config.ini
+  INFO:rpmget:Using input file my_config.ini
+  INFO:rpmget.utils:python3-py3tftp-1.3.0-1.el9.noarch.rpm size: 35486
+  100%|███████████████████████████████████████| 34.7k/34.7k [00:00<00:00, 422kB/s]
+  ...
+
+See the `Tox workflows`_ section below *and* the ``tox.ini`` file for more
+details.
 
 Install requirements
 --------------------
@@ -91,7 +107,9 @@ The CLI uses the standard Python ``argparse`` module::
 
 The example config uses extended interpolation and ${VAR} style notation
 but the simplest example config requires only an option value with a URL
-string.
+string. Note the simple example below has the minimum required keys and
+options; the ``repo_args`` key is the only one allowed to have an empty
+value.
 
 A simple example might look something like this::
 
@@ -100,6 +118,8 @@ A simple example might look something like this::
   top_dir = rpms
   layout = flat
   pkg_tool = yum
+  repo_tool = createrepo_c
+  repo_args =
 
   [stuff]
   hexdump =
