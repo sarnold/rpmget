@@ -49,7 +49,7 @@ def copy_rpms(src_dir: str, dst_dir: str):
             copy(os.path.join(src_dir, p), os.path.join(dst_dir, p))
 
 
-def download_progress_bin(url: str, dst: str, layout: str, timeout: float = 10.0) -> str:
+def download_progress_bin(url: str, dst: str, layout: str, timeout: float) -> str:
     """
     Download a single binary with progress meter and default timeout.
     Create arch dir or top_dir depending on layout setting

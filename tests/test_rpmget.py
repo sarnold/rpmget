@@ -33,6 +33,7 @@ layout = tree
 pkg_tool = yum
 repo_tool = createrepo_c
 repo_args = --compatibility
+httpx_timeout = 15.0
 
 [stuff]
 files =
@@ -47,6 +48,7 @@ repo_dir = ~/repos//el9
 top_dir = rpms
 layout = tree
 rpm_tool = dnf
+httpx_timeout = 15.0
 """
 
 BADURL = """
@@ -57,6 +59,7 @@ layout = tree
 pkg_tool = rpm
 repo_tool = createrepo_c
 repo_args = --compatibility
+httpx_timeout = 15.0
 
 [stuff]
 file = https://some[place.it/rpms/fake.rpm

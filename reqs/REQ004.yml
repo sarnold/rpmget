@@ -13,11 +13,13 @@ level: 1.3
 links: []
 normative: true
 ref: ''
-reviewed: IMx99UUk9I7byMvKHYIwryOcs0HFZonMJYLR5j6phKs=
+reviewed: 0m1mzMrR6y9dQ8IM723tseNmYvD8Z8HLhmH06mq4SlI=
 short-name: validation_rules
 text: |
   The software **Shall** consider a configuration valid when it passes
-  the following minimum rule criteria.
+  the following minimum rule criteria. Note that ConfigParser treats
+  *all values as strings* so other types must be coerced after being
+  extracted.
 
   * the rpmget section must be present and contain at least the following
     baseline keys and their allowed values
@@ -27,6 +29,7 @@ text: |
     * 'repo_dir': 'any'
     * 'repo_tool': ['createrepo_c', 'createrepo']
     * 'repo_args': optional arg string (can be empty)
+    * 'httpx_timeout': 'float'
   * there must be at least one string value matching the following criteria
     * starts with 'http'
     * ends with '.rpm'

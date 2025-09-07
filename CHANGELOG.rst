@@ -2,6 +2,62 @@ Changelog
 =========
 
 
+0.2.1 (2025-09-07)
+------------------
+
+Changes
+~~~~~~~
+- Expose httpx session timeout in required config section. [Stephen L
+  Arnold]
+
+  * update docs, docstrings, test data, validation schema
+- Add createrepo binary and arg strings to config, update reqs. [Stephen
+  L Arnold]
+
+  * also update default and example configs, update tests and docstrings
+- Refactor download context, invert check, remove while loop. [Stephen L
+  Arnold]
+
+
+0.2.0 (2025-09-06)
+------------------
+
+New
+~~~
+- Add support for createrepo_c repo maintenance. [Stephen L Arnold]
+
+  * update project docs, add related code and tests
+  * add required default config item to define repo_dir
+  * update bandit config, allow safe subprocess usage
+
+Changes
+~~~~~~~
+- Add and update doorstop doc items, links, and references. [Stephen L
+  Arnold]
+
+Fixes
+~~~~~
+- Improve error handling, fix example config, add a test. [Stephen L
+  Arnold]
+
+  * check response status code and content length
+  * remove empty/bogus files and return error string
+  * add a test for invalid (remote) file name/path
+  * not sure i like the while loop solution
+- Refactor httpx client bits, check for content, use file context.
+  [Stephen L Arnold]
+
+  * this cleaned up github release downloads, but also revealed some
+    rpm file errors using the example config
+- Refactor manage_repo and update tests. [Stephen L Arnold]
+
+  * cleanup some readme, docstring, and reuse bits
+- Refactor copy_rpms to workaround missing glob args below py310.
+  [Stephen L Arnold]
+
+  * mark the createrepo_c tests as linux-only
+
+
 0.1.0 (2025-08-24)
 ------------------
 
@@ -37,6 +93,7 @@ New
 
 Changes
 ~~~~~~~
+- Update changelog for release, tweak config. [Stephen L Arnold]
 - Add full example cfg for toolbox repo, cleanup reqs text. [Stephen L
   Arnold]
 

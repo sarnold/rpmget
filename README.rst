@@ -34,8 +34,9 @@ Quick Start
 * Install from GH release page, eg in a Tox file or venv
 * Clone from GH and install in a venv
 * Write a minimal config file (see below)
-* Use at least one option with one or more URL strings
-* Use one of these file extensions: [.conf, .ini, .cfg]
+
+  + Using one of these file extensions: [.conf, .ini, .cfg]
+  + Using at least one option with one or more URL strings
 
 From a venv, run the following commands to validate your config and download
 rpms::
@@ -115,20 +116,21 @@ A simple example might look something like this::
 
   [rpmget]
   repo_dir = ~/repos/el9
-  top_dir = rpms
-  layout = flat
-  pkg_tool = yum
+  top_dir = rpmbuild
+  layout = tree
+  pkg_tool = dnf
   repo_tool = createrepo_c
   repo_args =
 
-  [stuff]
-  hexdump =
+  [my stuff]
+  packages =
       https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/hexdump-3.5.3/python3-hexdump-3.5.3-1.el9.noarch.rpm
+      https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/diskcache-5.6.3/python3-diskcache-5.6.3-1.el9.noarch.rpm
 
 To install the above downloaded rpms in a RockyLinux9 environment, run
 something like the following::
 
-  $ sudo dnf install -y rpms/*.rpm
+  $ sudo dnf install -y rpmbuild/*.rpm
 
 Note the above example could easily use a separate option-key for each URL
 but the default configparser allows multiline strings, so we take advantage

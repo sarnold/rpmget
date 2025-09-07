@@ -35,6 +35,7 @@ SCHEMA = {
     'pkg_tool': {'type': 'string', 'anyof_regex': ['^rpm', '^yum', '^dnf']},
     'repo_tool': {'type': 'string', 'anyof_regex': ['^createrepo_c', '^createrepo']},
     'repo_args': {'type': 'string'},
+    'httpx_timeout': {'type': 'string', 'empty': False},
 }
 
 CFG = """
@@ -45,6 +46,7 @@ pkg_tool = rpm
 repo_dir = ext/rpmrepos
 repo_tool = createrepo_c
 repo_args = --compatibility
+httpx_timeout = 15.0
 
 [Common]
 url_type = https
@@ -110,6 +112,7 @@ class CfgSectionError(Exception):
       repo_dir = ~/rpmrepos
       repo_tool = createrepo_c
       repo_args = --compatibility
+      httpx_timeout = 15.0
 
     Also raised for invalid URL errors.
     """
