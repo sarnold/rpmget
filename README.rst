@@ -16,15 +16,16 @@ Things you can do now:
 
 * validate configuration files and URLs
 * download configured rpm files to a single directory or rpm tree
+* download one or more URL arguments to current directory (no config)
 * dump a sample config file
-* create an rpm repository from rpm tree (Not Implemented Yet)
+* create an rpm repository from rpm tree layout
 
-As stated above, the intended use cases (in the `user experience sense`_)
-are geared towards managing/using a set of RPMs in development workflows
-intended for older-but-still-supported Enterprise Linux environments, eg,
-RHEL9 or similar. That said, the initial packaging for RPMGet itself is
-not quite compatible (yet) with el9 packaging tools when using the newer
-pyproject macros.
+As stated above, the primary use cases (in the `user experience
+sense`_) are intended to support managing/using a set of RPMs in
+development workflows targeting older-but-still-supported Enterprise
+Linux environments, eg, RHEL9 or similar. That said, the initial
+packaging for RPMGet itself is not quite compatible (yet) with el9
+packaging tools when using the newer pyproject macros.
 
 .. _user experience sense: https://en.wikipedia.org/wiki/Use_case#Definition
 
@@ -49,6 +50,15 @@ rpms::
   INFO:rpmget.utils:python3-py3tftp-1.3.0-1.el9.noarch.rpm size: 35486
   100%|███████████████████████████████████████| 34.7k/34.7k [00:00<00:00, 422kB/s]
   ...
+
+Or, download URL arguments to the current directory with no config file
+required::
+
+  $ rpmget https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/diskcache-5.6.3/python3-diskcache-5.6.3-1.el9.noarch.rpm
+  INFO:root:Processing 1 valid url(s)
+  INFO:rpmget.utils:python3-diskcache-5.6.3-1.el9.noarch.rpm size: 76875
+  100%|███████████████████████████████████████| 75.1k/75.1k [00:
+  INFO:root:Downloaded 1 file(s)
 
 See the `Tox workflows`_ section below *and* the ``tox.ini`` file for more
 details.
@@ -90,8 +100,13 @@ The CLI uses the standard Python ``argparse`` module::
   $ source .venv/bin/activate
   $ rpmget -h
   usage: rpmget [-h] [--version] [-S] [-t] [-u] [-v] [-d] [-D] [-c FILE]
+                [URL ...]
 
   Download manager for rpm files
+
+  positional arguments:
+    URL                   download (valid) URLs to current directory with no
+                          config (default: None)
 
   options:
     -h, --help            show this help message and exit

@@ -1,0 +1,20 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.9
+links: []
+normative: true
+ref: ''
+reviewed: C1_1CbjOh_uQlj6F-DhzBVr2FGOfHg99MT87B1ETjKY=
+short-name: ''
+text: |
+  The software **Shall** support using a list of valid URLs as input in lieu
+  of the user configuration file (ie, a "no config" mode).

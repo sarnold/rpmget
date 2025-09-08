@@ -1,0 +1,25 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: REQ Integration and Unit Tests
+header: ''
+level: 1.5
+links:
+- REQ010: C1_1CbjOh_uQlj6F-DhzBVr2FGOfHg99MT87B1ETjKY=
+normative: true
+ref: ''
+references:
+- keyword: REQ010
+  path: tests/test_rpmget.py
+  sha: b3134bd0e2ca9c07eb7056872673e994491b491360e04bda2ba4513111175a2b
+  type: file
+reviewed: BaynoAp9jeKhwjnd7EwQZ1oAzbR4rRjR8v6ndcC0Xag=
+short-name: ''
+text: |
+  Test URL processing with no config:

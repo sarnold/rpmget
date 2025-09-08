@@ -2,11 +2,17 @@ Changelog
 =========
 
 
-0.2.1 (2025-09-07)
+0.2.1 (2025-09-08)
 ------------------
 
 Changes
 ~~~~~~~
+- Update changelog for next release. [Stephen L Arnold]
+- Support direct downloading of URLs without a config file. [Stephen L
+  Arnold]
+
+  * make sure URL args are validated before being passed to the downloader
+  * update docs, docstrings, requirements, and tests
 - Expose httpx session timeout in required config section. [Stephen L
   Arnold]
 

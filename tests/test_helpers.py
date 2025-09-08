@@ -147,7 +147,7 @@ def test_download_progress_bogus(tmp_path):
     dst_dir = tmp_path / 'rpmbuild'
     create_layout(str(dst_dir), 'tree')
     test_file_name = download_progress_bin(BAD_URL, dst_dir, 'tree', 5.0)
-    assert test_file_name == "File Error"
+    assert test_file_name == "ResourceError"
 
 
 def test_create_layout_flat(tmp_path):

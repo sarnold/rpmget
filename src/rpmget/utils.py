@@ -92,7 +92,7 @@ def download_progress_bin(url: str, dst: str, layout: str, timeout: float) -> st
             else:
                 logging.error("Failed to download %s", url)
                 remove_borked_file = True
-                return_file_name = "File Error"
+                return_file_name = "ResourceError"
 
     if remove_borked_file:
         download_file.unlink()
