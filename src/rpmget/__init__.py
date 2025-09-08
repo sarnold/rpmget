@@ -89,6 +89,14 @@ CTX = {
 }
 
 
+class InvalidURLError(Exception):
+    """
+    Raise if the URL string is not valid.
+    """
+
+    __module__ = Exception.__module__
+
+
 class FileTypeError(Exception):
     """
     Raise if the file extension is not in the allowed extensions list::
@@ -251,6 +259,7 @@ def url_is_valid(rpm_url: str) -> bool:
         url_valid = True
     except ValueError:
         logging.error("Must be a valid URL ending in .rpm: %s", rpm_url)
+
     return url_valid
 
 

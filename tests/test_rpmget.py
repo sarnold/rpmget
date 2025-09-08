@@ -12,14 +12,17 @@ from rpmget import (
     CFG,
     CfgParser,
     CfgSectionError,
+    InvalidURLError,
     __version__,
     find_rpm_urls,
     url_is_valid,
 )
 from rpmget.rpmget import (
+    collect_valid_urls,
     main_arg_parser,
     parse_command_line,
     process_config_loop,
+    process_urls,
     self_test,
     show_paths,
 )
@@ -64,6 +67,14 @@ httpx_timeout = 15.0
 [stuff]
 file = https://some[place.it/rpms/fake.rpm
 """
+
+BOGUS_TGT = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/foobar-1.3.0/python3-foobar-1.3.0-1.el9.noarch.rpm'
+BOGUS_URL = 'https://some[place.com/rpms/fake.rpm'
+
+
+@pytest.fixture()
+def change_test_dir(monkeypatch, tmp_path):
+    monkeypatch.chdir(tmp_path)
 
 
 @pytest.mark.dependency()
@@ -118,6 +129,44 @@ def test_manage_repo_no_bin(tmp_path, monkeypatch):
     rpms = [f for f in get_filelist(d)]
     print(rpms)
     assert rpms == []
+
+
+@pytest.mark.network()
+def test_process_urls(caplog, change_test_dir):
+    """
+    Tests implementation of url processing loop; satisfies REQ010.
+    """
+    parser = CfgParser()
+    cfg_str = RPMFILES
+    parser.read_string(cfg_str)
+    urls = [s for s in parser['stuff']['files'].splitlines() if s]
+    urls.append(BOGUS_URL)
+    urls.append(BOGUS_TGT)
+    print(urls)
+    assert isinstance(urls, list)
+    assert len(urls) == 5
+
+    caplog.clear()
+    with caplog.at_level(logging.INFO):
+        res = process_urls(urls)
+    print(res)
+    print(caplog.text)
+    assert isinstance(res, list)
+    assert len(res) == 4
+
+
+def test_process_urls_invalid(caplog):
+    """
+    Tests implementation of url processing loop.
+    """
+    parser = CfgParser()
+    cfg_str = BADURL
+    parser.read_string(cfg_str)
+    urls = [s for s in parser['stuff']['file'].splitlines() if s]
+    print(urls)
+    with pytest.raises(InvalidURLError) as excinfo:
+        res = process_urls(urls)
+    print(excinfo)
 
 
 def test_url_is_valid():

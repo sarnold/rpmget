@@ -9,14 +9,17 @@ import os
 import sys
 import warnings
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from . import (
     CfgParser,
     CfgSectionError,
+    InvalidURLError,
     __version__,
+    check_url_str,
     find_rpm_urls,
     load_config,
+    url_is_valid,
     validate_config,
 )
 from .utils import download_progress_bin, manage_repo
@@ -123,6 +126,13 @@ def main_arg_parser() -> argparse.ArgumentParser:
         type=str,
         help="path to ini-style configuration file",
     )
+    parser.add_argument(
+        'url',
+        nargs='*',
+        metavar="URL",
+        type=str,
+        help="download (valid) URLs to current directory with no config",
+    )
 
     return parser
 
@@ -166,11 +176,56 @@ def process_config_loop(config: CfgParser, temp_path: Optional[Path] = None) -> 
     urls = find_rpm_urls(config)
     for url in urls:
         fname = download_progress_bin(url, top_dir, layout, timeout)
-        if fname == "File Error":
-            continue
         files.append(fname)
-    logging.debug('Downloaded files: %s', files)
-    logging.info('Downloaded %d files', len(files))
+    logging.debug('Downloaded file(s): %s', files)
+    logging.info('Downloaded %d file(s)', len(files))
+    return files
+
+
+def collect_valid_urls(urls: List[str]) -> Tuple[List[str], List[str]]:
+    """
+    Collect valid URL strings.
+
+    :param urls: one or more URL strings
+    :returns: lists of valid and bogus URLs
+    """
+    valid_urls: List = []
+    bogus_urls: List = []
+
+    for url in urls:
+        if check_url_str(url) and url_is_valid(url):
+            logging.debug('Found valid url: %s', url)
+            valid_urls.append(url)
+        else:
+            logging.debug('Found bogus url: %s', url)
+            bogus_urls.append(url)
+    logging.info('Found %d bogus url(s)', len(bogus_urls))
+    logging.info('Found %d valid url(s)', len(valid_urls))
+
+    return valid_urls, bogus_urls
+
+
+def process_urls(urls: List[str]) -> List[str]:
+    """
+    Process valid URL strings.
+
+    :param urls: one or more URL strings
+    :returns: list of downloaded filenames and/or errors
+    """
+    files: List = []
+    vurls: List = []
+
+    vurls, _ = collect_valid_urls(urls)
+    if not vurls:
+        msg = f"No valid URLs found in input urls: {urls}"
+        raise InvalidURLError(msg)
+
+    for url in vurls:
+        fname = download_progress_bin(url, '.', 'flat', 15.0)
+        files.append(fname)
+    logging.debug('Downloaded file(s): %s', files)
+    logging.info('Downloaded %d file(s)', len(files))
+
     return files
 
 
@@ -190,6 +245,16 @@ def main() -> None:  # pragma: no cover
     logging.basicConfig(stream=sys.stdout, level=log_level)
     logger = logging.getLogger('rpmget')
     # printout()  # logging_tree
+
+    if args.url and args.file:
+        logger.warning('Config file %s is ignored when processing URL args', args.file)
+    if args.url:
+        try:
+            _ = process_urls(args.url)
+            sys.exit(0)
+        except InvalidURLError as exc:
+            logger.warning('No files downloaded: %s', repr(exc))
+            sys.exit(1)
 
     ufile: Optional[Path]
     infile = args.file
