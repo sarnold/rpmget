@@ -27,6 +27,11 @@ Linux environments, eg, RHEL9 or similar. That said, the initial
 packaging for RPMGet itself is not quite compatible (yet) with el9
 packaging tools when using the newer pyproject macros.
 
+.. important:: The ``--update`` argument requires an existing set of rpms
+               downloaded in the "tree" layout, so you will need to run
+               the initial download command with your config layout set
+               to "tree" *before* using ``--update``.
+
 .. _user experience sense: https://en.wikipedia.org/wiki/Use_case#Definition
 
 Quick Start
