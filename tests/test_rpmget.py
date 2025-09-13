@@ -1,11 +1,14 @@
+import json
 import logging
 import os
 import sys
 import warnings
 from argparse import ArgumentParser
+from pathlib import Path
 from shlex import split
 
 import pytest
+from munch import Munch
 
 import rpmget
 from rpmget import (
@@ -26,7 +29,11 @@ from rpmget.rpmget import (
     self_test,
     show_paths,
 )
-from rpmget.utils import get_filelist, manage_repo
+from rpmget.utils import (
+    get_filelist,
+    manage_repo,
+    process_file_manifest,
+)
 
 RPMFILES = """
 [rpmget]
@@ -91,6 +98,47 @@ def test_process_config_loop(tmpdir_session):
     res = process_config_loop(config=parser, temp_path=d)
     print(res)
     assert len(res) == 3
+    for file in res:
+        assert Path(file).is_absolute()
+
+
+def test_process_config_loop_invalid(tmpdir_session):
+    """
+    Tests implementation of main processing loop.
+    """
+    parser = CfgParser()
+    cfg_str = NOTCFG
+    parser.read_string(cfg_str)
+    d = tmpdir_session / "sub"
+    res = process_config_loop(config=parser, temp_path=d)
+    print(res)
+    assert res == []
+
+
+@pytest.mark.network()
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_process_file_manifest(caplog, tmpdir_session):
+    """
+    Test manifest processing.
+    """
+    parser = CfgParser()
+    cfg_str = RPMFILES
+    parser.read_string(cfg_str)
+    d = tmpdir_session / "sub"
+    files = process_config_loop(config=parser, temp_path=d)
+    print(f'manifest files {files}')
+    cfg_name = "test_file_manifest.ini"
+    # p.write_text(RPMFILES, encoding="utf-8")
+    c = tmpdir_session / "cache" / "rpmget"
+    process_file_manifest(files, cfg_name, str(c))
+    res = get_filelist(tmpdir_session, fileglob='*.json')
+    assert 'rpmget' in res[0]
+    print(f'\nGenerated manifest: {res[0]}')
+    with Path(res[0]).open("r") as f:
+        data = json.load(f)
+    # print(data)
+    attr_data = Munch.fromDict(data)
+    print(attr_data.files.toDict())
 
 
 @pytest.mark.dependency(depends=["test_process_config_loop"])
@@ -107,6 +155,7 @@ def test_manage_repo(tmpdir_session, caplog):
     caplog.set_level(logging.DEBUG)
     manage_repo(parser, debug=True, temp_path=d)
     assert "cmdline: createrepo_c --compatibility --verbose" in caplog.text
+    print(caplog.text)
     dirlist = os.listdir(d / 'rpmrepo/el9/RPMS')
     print(f'\ncreaterepo generated repodata: {dirlist}')
     assert 'repodata' in dirlist

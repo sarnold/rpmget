@@ -1,3 +1,4 @@
+import logging
 import os
 import sys
 from pathlib import Path
@@ -17,7 +18,9 @@ from rpmget import (
 from rpmget.utils import (
     check_for_rpm,
     download_progress_bin,
+    get_file_data,
     get_filelist,
+    get_user_cachedir,
 )
 
 GH_URL = 'https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm'
@@ -33,6 +36,29 @@ def test_create_macros():
     res = create_macros("rpmbuild")
     print(res)
     assert "%packager" in res
+
+
+def test_get_user_cachedir():
+    res = get_user_cachedir()
+    print(res)
+    assert isinstance(res, str)
+    assert "rpmget" in res
+
+
+def test_get_file_data(tmp_path):
+    d = tmp_path / "digest"
+    d.mkdir()
+    p = d / "test.ini"
+    p.write_text(CFG, encoding="utf-8")
+
+    _, pfile = load_config(str(p))
+
+    _, res = get_file_data(pfile)
+    print(res)
+    assert isinstance(res, dict)
+    keys = ['name', 'digest', 'size', 'mtime']
+    for key in keys:
+        assert key in res
 
 
 def test_cfg_parser():
@@ -112,15 +138,18 @@ def test_check_for_rpm_other(capfd):
 def test_download_progress_bin(tmpdir_session):
     dst_dir = tmpdir_session / 'rpms'
     test_file_name = download_progress_bin(GH_URL, dst_dir, 'flat', 10.0)
-    assert test_file_name == NAME
+    assert test_file_name.endswith(NAME)
 
 
 @pytest.mark.dependency(depends=["test_download_progress_bin"])
-def test_get_filelist_down(tmpdir_session):
+def test_get_filelist_down(caplog, tmpdir_session):
     dst_dir = tmpdir_session / 'rpms'
-    files = get_filelist(dst_dir)
+    with caplog.at_level(logging.INFO):
+        files = get_filelist(dst_dir)
     print(files)
+    print(caplog.text)
     assert len(files) == 1
+    assert Path(files[0]).is_absolute()
     assert files[0].endswith(NAME)
 
 
@@ -130,7 +159,7 @@ def test_download_progress_tree(tmpdir_session):
     dst_dir = tmpdir_session / 'rpmbuild'
     create_layout(str(dst_dir), 'tree')
     test_file_name = download_progress_bin(GH_URL, dst_dir, 'tree', 15.0)
-    assert test_file_name == NAME
+    assert test_file_name.endswith(NAME)
 
 
 @pytest.mark.dependency(depends=["test_download_progress_tree"])
@@ -192,3 +221,6 @@ def test_get_filelist(tmpdir_session):
     print(files)
     for file in files:
         assert Path(file).suffix == '.rpm'
+        assert Path(file).is_absolute()
+    rfiles = get_filelist(dst_dir, False)
+    print(rfiles)

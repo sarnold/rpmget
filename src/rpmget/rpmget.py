@@ -22,7 +22,11 @@ from . import (
     url_is_valid,
     validate_config,
 )
-from .utils import download_progress_bin, manage_repo
+from .utils import (
+    download_progress_bin,
+    manage_repo,
+    process_file_manifest,
+)
 
 # from logging_tree import printout  # debug logger environment
 
@@ -167,6 +171,7 @@ def process_config_loop(config: CfgParser, temp_path: Optional[Path] = None) -> 
         logging.debug('Current config is valid: %s', res)
     except CfgSectionError as exc:
         logging.error('%s', repr(exc))
+        return files
 
     cfg_top = os.path.expanduser(config['rpmget']['top_dir'])
     top_dir = str(temp_path / cfg_top) if temp_path else cfg_top
@@ -294,7 +299,12 @@ def main() -> None:  # pragma: no cover
         manage_repo(ucfg)
         sys.exit(0)
 
-    _ = process_config_loop(ucfg)
+    rfiles = process_config_loop(ucfg)
+    if not rfiles:
+        logger.error('No files downloaded?')
+        sys.exit(1)
+    if rfiles and ufile:
+        process_file_manifest(rfiles, ufile.name)
 
 
 if __name__ == "__main__":

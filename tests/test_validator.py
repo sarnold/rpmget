@@ -159,7 +159,7 @@ def test_cfg_bad_layout():
     cfg_str = BADLAYOUT
     parser.read_string(cfg_str)
     with pytest.raises(CfgSectionError) as excinfo:
-        res = validate_config(parser, SCHEMA)
+        res = validate_config(parser)
     print(excinfo.value)
     assert 'Validation errors found in defaults' in str(excinfo.value)
 
@@ -168,7 +168,7 @@ def test_cfg_no_default_section():
     parser = CfgParser()
     parser.read_string(USRCFG)
     with pytest.raises(CfgSectionError) as excinfo:
-        res = validate_config(parser, SCHEMA)
+        res = validate_config(parser)
     assert 'Config section [rpmget]' in str(excinfo.value)
 
 
@@ -177,7 +177,7 @@ def test_cfg_missing_required_default():
     cfg_str = NOTCFG + '\n' + USRCFG
     parser.read_string(cfg_str)
     with pytest.raises(CfgSectionError) as excinfo:
-        res = validate_config(parser, SCHEMA)
+        res = validate_config(parser)
     assert 'Validation errors found' in str(excinfo.value)
 
 
@@ -186,7 +186,7 @@ def test_cfg_no_valid_url():
     cfg_str = NOURL
     parser.read_string(cfg_str)
     with pytest.raises(CfgSectionError) as excinfo:
-        res = validate_config(parser, SCHEMA)
+        res = validate_config(parser)
     assert 'At least one URL string failed to validate' in str(excinfo.value)
 
 
@@ -195,7 +195,7 @@ def test_cfg_bad_valid_url():
     cfg_str = BADEND
     parser.read_string(cfg_str)
     with pytest.raises(CfgSectionError) as excinfo:
-        res = validate_config(parser, SCHEMA)
+        res = validate_config(parser)
     print(excinfo)
     assert 'Invalid URL scheme, address, or file target' in str(excinfo.value)
 
@@ -205,7 +205,7 @@ def test_cfg_bad_url_file():
     cfg_str = BADURL
     parser.read_string(cfg_str)
     with pytest.raises(CfgSectionError) as excinfo:
-        res = validate_config(parser, SCHEMA)
+        res = validate_config(parser)
     print(excinfo)
     assert 'At least one URL string failed to validate' in str(excinfo.value)
 
@@ -214,12 +214,12 @@ def test_cfg_minimum_valid_url():
     parser = CfgParser()
     cfg_str = HASRPM
     parser.read_string(cfg_str)
-    res = validate_config(parser, SCHEMA)
+    res = validate_config(parser)
     assert res is True
 
 
 def test_cfg_valid_default_config():
     config, _ = load_config()
     print(config.sections())
-    res = validate_config(config, SCHEMA)
+    res = validate_config(config)
     assert res is True
