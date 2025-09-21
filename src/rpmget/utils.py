@@ -55,16 +55,22 @@ def copy_rpms(src_dir: str, dst_dir: str):
         copy(os.path.join(src_dir, p), os.path.join(dst_dir, p))
 
 
-def download_progress_bin(url: str, dst: str, layout: str, timeout: float) -> str:
+def download_progress_bin(
+    url: str, dst: str, layout: str, timeout: float, mdata: Dict
+) -> str:
     """
     Download a single binary with progress meter and default timeout.
     Create arch dir or top_dir depending on layout setting
 
     :param url: URL to download
     :param dst: top-level destination directory
+    :param layout: config layout
     :param timeout: httpx client timeout
+    :param mdata: manifest data if available
     :returns: name of downloaded file
     """
+    fsize: int = -1
+    head_size: int = 0
     arch_path: str = ''
     rpm_file: str = urlparse(url).path.rsplit("/", maxsplit=1)[1]
     rpm_arch: str = rpm_file.rsplit('.', maxsplit=2)[-2]
@@ -72,14 +78,24 @@ def download_progress_bin(url: str, dst: str, layout: str, timeout: float) -> st
         arch_path = 'SRPMS' if rpm_arch == 'src' else f'RPMS/{rpm_arch}'
     download_file: Path = Path(dst) / arch_path / rpm_file
     download_file.parent.mkdir(parents=True, exist_ok=True)
-    client = httpx.Client(follow_redirects=True)
-
     remove_borked_file: bool = False
     return_file_name: str = str(download_file.resolve())
-    with download_file.open("wb") as file_handle:
-        with client.stream("GET", url, timeout=timeout) as response:
-            total = response.headers.get("Content-Length")
-            logger.info('%s size: %s', download_file.name, total)
+    if mdata:
+        fsize = mdata["files"][download_file.name]["size"]
+        logger.debug('Size from manifest: %s', fsize)
+        with httpx.Client(follow_redirects=True) as cli:
+            resp = cli.head(url)
+            head_size = int(resp.headers.get('Content-Length'))
+        logger.debug('Size from HEAD request: %s', head_size)
+
+    if head_size == fsize:
+        return "ResourceSkipped"
+
+    client = httpx.Client(follow_redirects=True)
+    with client.stream("GET", url, timeout=timeout) as response:
+        total = response.headers.get("Content-Length")
+        logger.info('%s size: %s', download_file.name, total)
+        with download_file.open("wb") as file_handle:
             if response.status_code == 200:
                 if total is None:
                     content = response.content
@@ -106,21 +122,41 @@ def download_progress_bin(url: str, dst: str, layout: str, timeout: float) -> st
     return return_file_name
 
 
+def compare_file_data(old: Dict, new: Dict) -> Dict:
+    """
+    Compare two dictionaries and return the difference result.
+
+    :param old: old dict
+    :param new: new dict
+    :returns: any differences found
+    """
+    delta: Dict = {}
+    if not old == new:
+        for key, old_val in old.items():
+            new_val = new[key]
+            if old_val != new_val:
+                delta.update({key: new_val})
+    return delta
+
+
 def get_file_data(path: Path) -> Tuple[str, Dict]:
     """
+    Get manifest data for a single rpm file from input path and return
+    a dictionary full of metadata. Current keys are given below.
+
     :param path: file target
     :returns: file metadata
     """
     name = path.name
-    size = path.stat().st_size
-    sha = get_file_hash(path)
     mtime = get_file_mtime(path)
+    sha = get_file_hash(path)
+    size = path.stat().st_size
 
     return name, {
-        'name': name,
         'digest': sha,
-        'size': size,
         'mtime': mtime,
+        'name': name,
+        'size': size,
     }
 
 
@@ -165,7 +201,7 @@ def get_filelist(
     """
     Get path objects matching ``fileglob`` starting at ``dirname`` and
     return a list of resolved path strings of any files found. Set the
-    ``resolve``parameter to False to return relative paths when input
+    ``resolve`` parameter to False to return relative paths when input
     path is relative.
 
     :param dirname: directory name to start search in
@@ -198,33 +234,120 @@ def wrap_file_manifest(fdata: Dict[str, Dict], cfgname: str) -> Dict:
     }
 
 
+def create_manifest_data(files: List[str], cfile: str) -> Dict:
+    """
+    Create new manifest data from a list of downloaded files and return
+    a nested dictionary.
+
+    :param files: list of downloaded filenames
+    :param cfile: matching config filename
+    :returns: manifest data
+    """
+    paths = [Path(p) for p in sorted(files)]
+    logger.debug('Found rpm paths: %s', paths)
+    # print(f'Found rpm paths: {paths}')
+
+    file_data: Dict = {}
+    for path in paths:
+        name, data = get_file_data(path)
+        file_data[name] = data
+    mdata = wrap_file_manifest(file_data, cfile)
+    return mdata
+
+
+def read_manifest(mfile: Path, temp_path: str = "") -> Dict:
+    """
+    Read a manifest file and return the data.
+
+    :param mfile: manifest file
+    :param temp_path: use temp_path if provided
+    :returns: manifest data
+    """
+    in_data: Dict
+    man_path = temp_path if temp_path else get_user_cachedir()
+    man_file = Path(man_path) / (mfile.name)
+    with man_file.open() as dfile:
+        in_data = json.load(dfile)
+    return in_data
+
+
+def write_manifest(mdata: Dict, mfile: Path):
+    """
+    Write a new manifest file where the name is derived from the
+    associated config file name.
+
+    :param mdata: manifest data
+    :param mfile: manifest file
+    """
+    mfile.parent.mkdir(parents=True, exist_ok=True)
+    out = json.dumps(mdata, indent=2, sort_keys=True)
+    mfile.write_text(out)
+
+
+def compare_manifest_data(old: Dict, new: Dict) -> List:
+    """
+    Compare full manifest data.
+
+    :param old: manifest data
+    :param new: manifest data
+    """
+    msgs: List = []
+    if not old["config"] == new["config"]:
+        logger.warning(
+            'Config mismatch: %s not equal to %s', old["config"], new["config"]
+        )
+        msgs.append(new["config"])
+        return msgs
+    old_files = list(old['files'].values())
+    new_files = list(new['files'].values())
+    for o, n in zip(old_files, new_files):
+        diff = compare_file_data(o, n)
+        if not diff:
+            logger.debug('No changes in manifest: %s', n["name"])
+            continue
+        logger.warning('Manifest changes: %s', diff)
+        msgs.append(diff)
+    return msgs
+
+
+def load_manifest(cfile: str, temp_path: str = "") -> Dict:
+    """
+    If available, load a manifest file *before* config loop run.
+
+    :param cfile: matching config filename
+    :param temp_path: use temp_path if provided
+    """
+    manifest_data: Dict = {}
+    man_path = temp_path if temp_path else get_user_cachedir()
+    manifest = Path(man_path) / f"{cfile}.json"
+    if manifest.exists():
+        manifest_data = read_manifest(manifest, temp_path)
+    return manifest_data
+
+
 def process_file_manifest(files: List[str], cfile: str, temp_path: str = ""):
     """
-    Create or refresh manifest file where the name is derived from the
-    associated config file name.
+    Process manifest file after successful config loop run.
 
     :param files: list of downloaded filenames
     :param cfile: matching config filename
     :param temp_path: use temp_path if provided
     """
+    results: List = []
     man_path = temp_path if temp_path else get_user_cachedir()
     manifest = Path(man_path) / f"{cfile}.json"
-    verb = "Found" if manifest.exists() else "Using"
+    verb = "Found" if manifest.exists() else "Creating"
     logger.info('%s manifest: %s', verb, str(manifest))
 
-    paths = [Path(p) for p in files]
-    logger.debug('Found rpm paths: %s', paths)
-    # print(f'Found rpm paths: {paths}')
-
+    current_data = create_manifest_data(files, cfile)
     if not manifest.exists():
-        manifest.parent.mkdir(parents=True, exist_ok=True)
-        file_data: Dict = {}
-        for path in paths:
-            name, data = get_file_data(path)
-            file_data[name] = data
-        mdata = wrap_file_manifest(file_data, cfile)
-        out = json.dumps(mdata, indent=2, sort_keys=True)
-        manifest.write_text(out)
+        write_manifest(current_data, manifest)
+        results.append(str(manifest))
+    else:
+        previous_data = read_manifest(manifest, temp_path)
+        diffs = compare_manifest_data(previous_data, current_data)
+        results = diffs
+    return results
 
 
 def manage_repo(config: CfgParser, debug: bool = False, temp_path: Optional[Path] = None):

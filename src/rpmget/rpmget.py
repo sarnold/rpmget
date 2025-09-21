@@ -9,7 +9,7 @@ import os
 import sys
 import warnings
 from pathlib import Path
-from typing import List, Optional, Tuple
+from typing import Dict, List, Optional, Tuple
 
 from . import (
     CfgParser,
@@ -24,6 +24,7 @@ from . import (
 )
 from .utils import (
     download_progress_bin,
+    load_manifest,
     manage_repo,
     process_file_manifest,
 )
@@ -153,17 +154,21 @@ def parse_command_line(argv):
     return parser.parse_args(argv[1:])
 
 
-def process_config_loop(config: CfgParser, temp_path: Optional[Path] = None) -> List[str]:
+def process_config_loop(
+    config: CfgParser, mdata: Dict, temp_path: Optional[Path] = None
+) -> List[str]:
     """
     Main processing loop for user config data; enables self-validation and
     partial config parsing before processing urls.
 
     :param config: loaded CfgParser
+    :param mdata: manifest data, possibly empty
     :param temp_path: temp Path to be prepended to top_dir
 
     :returns: list of downloaded filenames
     """
     files: List = []
+    skipped: List = []
     urls: List = []
 
     try:
@@ -180,10 +185,14 @@ def process_config_loop(config: CfgParser, temp_path: Optional[Path] = None) -> 
 
     urls = find_rpm_urls(config)
     for url in urls:
-        fname = download_progress_bin(url, top_dir, layout, timeout)
-        files.append(fname)
+        fname = download_progress_bin(url, top_dir, layout, timeout, mdata)
+        if "Skipped" in fname:
+            skipped.append(fname)
+        else:
+            files.append(fname)
     logging.debug('Downloaded file(s): %s', files)
     logging.info('Downloaded %d file(s)', len(files))
+    logging.info('Skipped %d file(s)', len(skipped))
     return files
 
 
@@ -226,7 +235,7 @@ def process_urls(urls: List[str]) -> List[str]:
         raise InvalidURLError(msg)
 
     for url in vurls:
-        fname = download_progress_bin(url, '.', 'flat', 15.0)
+        fname = download_progress_bin(url, '.', 'flat', 15.0, {})
         files.append(fname)
     logging.debug('Downloaded file(s): %s', files)
     logging.info('Downloaded %d file(s)', len(files))
@@ -299,12 +308,11 @@ def main() -> None:  # pragma: no cover
         manage_repo(ucfg)
         sys.exit(0)
 
-    rfiles = process_config_loop(ucfg)
-    if not rfiles:
-        logger.error('No files downloaded?')
-        sys.exit(1)
+    udata = load_manifest(ufile.name)  # type: ignore[union-attr]
+    rfiles = process_config_loop(ucfg, udata)
     if rfiles and ufile:
-        process_file_manifest(rfiles, ufile.name)
+        info = process_file_manifest(rfiles, ufile.name)
+        logger.info('Manifest handling result: %s', info)
 
 
 if __name__ == "__main__":

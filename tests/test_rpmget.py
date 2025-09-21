@@ -30,9 +30,12 @@ from rpmget.rpmget import (
     show_paths,
 )
 from rpmget.utils import (
+    compare_manifest_data,
     get_filelist,
+    load_manifest,
     manage_repo,
     process_file_manifest,
+    read_manifest,
 )
 
 RPMFILES = """
@@ -51,6 +54,80 @@ files =
     https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/procman-0.6.1/python3-procman-0.6.1-1.el9.noarch.rpm
     https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/pygtail-0.14.0.3/python-pygtail-0.14.0.3-1.el9.src.rpm
 """
+
+MAN_DATA = """
+{
+  "config": "test_file_manifest.ini",
+  "files": {
+    "python-pygtail-0.14.0.3-1.el9.src.rpm": {
+      "digest": "26dfd0e4fa5730a2ada17e6ce63079119b10e1cae9e41ca3274779043f2e7a6c",
+      "mtime": "09-20-2025 17:21:10",
+      "name": "python-pygtail-0.14.0.3-1.el9.src.rpm",
+      "size": 36460
+    },
+    "python3-procman-0.6.1-1.el9.noarch.rpm": {
+      "digest": "0c3e73f7f6b88effe9e2931309b9859f31758a6a7d54479c29031059dc4fa6ac",
+      "mtime": "09-20-2025 17:21:10",
+      "name": "python3-procman-0.6.1-1.el9.noarch.rpm",
+      "size": 37682
+    },
+    "python3-py3tftp-1.3.0-1.el9.noarch.rpm": {
+      "digest": "dd6dc41b99a326970e53f216e6f76cb4aba5d6f0321bab63192da0a4a463e69c",
+      "mtime": "09-20-2025 17:21:10",
+      "name": "python3-py3tftp-1.3.0-1.el9.noarch.rpm",
+      "size": 35486
+    }
+  }
+}
+"""
+
+MAN_DICT = {
+    'config': 'test_file_manifest.ini',
+    'files': {
+        'python-pygtail-0.14.0.3-1.el9.src.rpm': {
+            'digest': '26dfd0e4fa5730a2ada17e6ce63079119b10e1cae9e41ca3274779043f2e7a6c',
+            'mtime': '09-20-2025 17:21:10',
+            'name': 'python-pygtail-0.14.0.3-1.el9.src.rpm',
+            'size': 36460,
+        },
+        'python3-procman-0.6.1-1.el9.noarch.rpm': {
+            'digest': '0c3e73f7f6b88effe9e2931309b9859f31758a6a7d54479c29031059dc4fa6ac',
+            'mtime': '09-20-2025 17:21:10',
+            'name': 'python3-procman-0.6.1-1.el9.noarch.rpm',
+            'size': 37682,
+        },
+        'python3-py3tftp-1.3.0-1.el9.noarch.rpm': {
+            'digest': 'dd6dc41b99a326970e53f216e6f76cb4aba5d6f0321bab63192da0a4a463e69c',
+            'mtime': '09-20-2025 17:21:10',
+            'name': 'python3-py3tftp-1.3.0-1.el9.noarch.rpm',
+            'size': 35486,
+        },
+    },
+}
+
+NEW_DICT = {
+    'config': 'test_file_manifest.ini',
+    'files': {
+        'python-pygtail-0.14.0.3-1.el9.src.rpm': {
+            'digest': '26dfd0e4fa5730a2ada17e6ce63079119b10e1cae9e41ca3274779043f2e7a6c',
+            'mtime': '09-20-2025 17:21:10',
+            'name': 'python-pygtail-0.14.0.3-1.el9.src.rpm',
+            'size': 36460,
+        },
+        'python3-procman-0.6.1-1.el9.noarch.rpm': {
+            'digest': '0c3e73f7f6b88effe9e2931309b9859f31758a6a7d54479c29031059dc4fa6ac',
+            'mtime': '09-20-2025 17:21:10',
+            'name': 'python3-procman-0.6.1-1.el9.noarch.rpm',
+            'size': 37682,
+        },
+        'python3-py3tftp-1.3.0-1.el9.noarch.rpm': {
+            'digest': 'aa6dc41b99a326970e53f216e6f76cb4aba5d6f0321bab63192da0a4a463e69c',
+            'mtime': '09-20-2025 17:21:10',
+            'name': 'python3-py3tftp-1.3.0-1.el9.noarch.rpm',
+            'size': 35486,
+        },
+    },
+}
 
 NOTCFG = """
 [rpmget]
@@ -95,11 +172,13 @@ def test_process_config_loop(tmpdir_session):
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
     d = tmpdir_session / "sub"
-    res = process_config_loop(config=parser, temp_path=d)
+    res = process_config_loop(config=parser, mdata={}, temp_path=d)
     print(res)
     assert len(res) == 3
     for file in res:
         assert Path(file).is_absolute()
+    res2 = process_config_loop(config=parser, mdata=MAN_DICT, temp_path=d)
+    print(res2)
 
 
 def test_process_config_loop_invalid(tmpdir_session):
@@ -110,14 +189,14 @@ def test_process_config_loop_invalid(tmpdir_session):
     cfg_str = NOTCFG
     parser.read_string(cfg_str)
     d = tmpdir_session / "sub"
-    res = process_config_loop(config=parser, temp_path=d)
+    res = process_config_loop(config=parser, mdata={}, temp_path=d)
     print(res)
     assert res == []
 
 
 @pytest.mark.network()
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
-def test_process_file_manifest(caplog, tmpdir_session):
+def test_process_file_manifest(tmpdir_session, caplog):
     """
     Test manifest processing.
     """
@@ -125,7 +204,7 @@ def test_process_file_manifest(caplog, tmpdir_session):
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
     d = tmpdir_session / "sub"
-    files = process_config_loop(config=parser, temp_path=d)
+    files = process_config_loop(config=parser, mdata={}, temp_path=d)
     print(f'manifest files {files}')
     cfg_name = "test_file_manifest.ini"
     # p.write_text(RPMFILES, encoding="utf-8")
@@ -134,11 +213,62 @@ def test_process_file_manifest(caplog, tmpdir_session):
     res = get_filelist(tmpdir_session, fileglob='*.json')
     assert 'rpmget' in res[0]
     print(f'\nGenerated manifest: {res[0]}')
+    process_file_manifest(files, cfg_name, str(c))
     with Path(res[0]).open("r") as f:
         data = json.load(f)
     # print(data)
     attr_data = Munch.fromDict(data)
     print(attr_data.files.toDict())
+
+
+def test_read_manifest(tmpdir_session, caplog):
+    """
+    Test reading manifest from file.
+    """
+    c = tmpdir_session / "cache" / "rpmget"
+    c.mkdir(parents=True, exist_ok=True)
+    mfile = c / 'test_file_manifest.ini.json'
+    mfile.write_text(MAN_DATA)
+    print(mfile)
+    assert 'rpmget' in str(mfile)
+    assert isinstance(mfile, Path)
+    data = read_manifest(mfile, str(c))
+    assert isinstance(data, dict)
+    print(data)
+
+
+def test_load_manifest(tmpdir_session, caplog):
+    """
+    Test reading manifest from file.
+    """
+    c = tmpdir_session / "cache" / "rpmget"
+    c.mkdir(parents=True, exist_ok=True)
+    cname = 'test_file_manifest.ini'
+    data = load_manifest(cname, str(c))
+    assert isinstance(data, dict)
+    assert data["config"] == cname
+    print(data)
+
+
+def test_compare_manifest_data(tmpdir_session, caplog):
+    """
+    Test reading manifest from file.
+    """
+    c = tmpdir_session / "cache" / "rpmget"
+    mfile = c / 'test_file_manifest.ini.json'
+    print(mfile)
+    data = read_manifest(mfile, str(c))
+    assert isinstance(data, dict)
+    # print(data)
+    res = compare_manifest_data(data, NEW_DICT)
+    assert res[0] == {
+        'digest': 'aa6dc41b99a326970e53f216e6f76cb4aba5d6f0321bab63192da0a4a463e69c'
+    }
+    print(res)
+    NEW_DICT["config"] = 'test_file_manifest.cfg'
+    res2 = compare_manifest_data(data, NEW_DICT)
+    assert res2[0] == 'test_file_manifest.cfg'
+    print(res2)
 
 
 @pytest.mark.dependency(depends=["test_process_config_loop"])
