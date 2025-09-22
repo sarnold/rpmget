@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RPMGet API and SW Docs &mdash; rpmget 0.2.1.post14 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=66721364"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="1.0 Requirements {#REQ001}" href="ds/reqs_tree.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            rpmget
+          </a>
+              <div class="version">
+                0.2.1.post14
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ds/reqs_tree.html">1.0 Requirements {#REQ001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ds/sw_design.html">1.0 Design Elements {#SDD001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ds/unit_tests.html">1.0 Automated Tests {#TST001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">RPMGet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">rpmget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/generate-changelog.html">Changelog Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/pre-commit-config.html">Contents of the <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/pre-commit-usage.html">Using Pre-Commit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">rpmget</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">RPMGet API and SW Docs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rpmget-api-and-sw-docs">
+<h1>RPMGet API and SW Docs<a class="headerlink" href="#rpmget-api-and-sw-docs" title="Link to this heading"></a></h1>
+<p><dl class="field-list">
+<dt class="field-odd">Branch<span class="colon">:</span></dt>
+<dd class="field-odd"><em>main</em></dd>
+<dt class="field-even">Commit<span class="colon">:</span></dt>
+<dd class="field-even"><em>bb49e452e0</em></dd>
+</dl>
+</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ds/reqs_tree.html">1.0 Requirements {#REQ001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ds/sw_design.html">1.0 Design Elements {#SDD001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ds/unit_tests.html">1.0 Automated Tests {#TST001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">RPMGet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">rpmget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/generate-changelog.html">Changelog Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/pre-commit-config.html">Contents of the <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/pre-commit-usage.html">Using Pre-Commit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+</ul>
+</div>
+</section>
+<section id="recent-changes">
+<h1>Recent changes<a class="headerlink" href="#recent-changes" title="Link to this heading"></a></h1>
+<ul>
+<li><p><strong>Merge pull request #25 from sarnold/misc-cleanup</strong><span> by </span><em>Steve Arnold</em><span> at </span><em>2025-09-22 03:10:24</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">manifest</span> <span class="n">files</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>new: dev: add more manifest checking support, refactor some tests and utils</strong><span> by </span><em>Stephen L Arnold</em><span> at </span><em>2025-09-21 01:49:54</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="k">pass</span> <span class="n">manifest</span> <span class="n">data</span> <span class="kn">from</span><span class="w"> </span><span class="nn">main</span> <span class="k">if</span> <span class="n">available</span> <span class="n">so</span> <span class="n">downloader</span> <span class="n">can</span> <span class="n">check</span>
+  <span class="n">file</span> <span class="n">size</span> <span class="n">against</span> <span class="n">HEAD</span> <span class="n">request</span> <span class="n">content</span> <span class="n">length</span> <span class="n">so</span> <span class="n">we</span> <span class="n">can</span> <span class="n">skip</span> <span class="n">the</span>
+  <span class="n">download</span> <span class="k">for</span> <span class="n">matching</span> <span class="n">files</span>
+<span class="o">*</span> <span class="n">updat</span> <span class="n">tests</span><span class="p">,</span> <span class="n">make</span> <span class="n">sure</span> <span class="n">logging</span> <span class="n">output</span> <span class="n">includes</span> <span class="n">skipped</span> <span class="n">files</span><span class="p">,</span>
+  <span class="n">cleanup</span> <span class="n">docstrings</span>
+
+<span class="n">Signed</span><span class="o">-</span><span class="n">off</span><span class="o">-</span><span class="n">by</span><span class="p">:</span> <span class="n">Stephen</span> <span class="n">L</span> <span class="n">Arnold</span> <span class="o">&lt;</span><span class="n">sarnold</span><span class="nd">@vctlabs</span><span class="o">.</span><span class="n">com</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>new: dev: add platformdirs and munch deps, support per-cfg manifest files</strong><span> by </span><em>Stephen L Arnold</em><span> at </span><em>2025-09-13 19:34:26</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">*</span> <span class="n">add</span> <span class="n">code</span> <span class="k">for</span> <span class="n">file</span> <span class="n">metadata</span> <span class="ow">and</span> <span class="n">saving</span> <span class="n">json</span> <span class="n">manifest</span> <span class="n">to</span> <span class="n">user</span> <span class="n">cache</span> <span class="nb">dir</span>
+<span class="o">*</span> <span class="n">change</span> <span class="n">signature</span> <span class="k">for</span> <span class="n">get_filelist</span><span class="p">,</span> <span class="n">make</span> <span class="n">resolved</span> <span class="k">return</span> <span class="n">paths</span> <span class="n">optional</span>
+  <span class="n">when</span> <span class="nb">input</span> <span class="n">dirname</span> <span class="n">arg</span> <span class="ow">is</span> <span class="n">relative</span>
+<span class="o">*</span> <span class="n">add</span> <span class="n">tests</span> <span class="k">for</span> <span class="n">new</span> <span class="n">code</span><span class="p">,</span> <span class="n">cleanup</span> <span class="n">older</span> <span class="n">test</span> <span class="n">files</span>
+
+<span class="n">Signed</span><span class="o">-</span><span class="n">off</span><span class="o">-</span><span class="n">by</span><span class="p">:</span> <span class="n">Stephen</span> <span class="n">L</span> <span class="n">Arnold</span> <span class="o">&lt;</span><span class="n">sarnold</span><span class="nd">@vctlabs</span><span class="o">.</span><span class="n">com</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>ci: bump ad-m/github-push-action in the all-actions group (#26)</strong><span> by </span><em>dependabot[bot]</em><span> at </span><em>2025-09-15 13:23:35</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Bumps the all-actions group with 1 update: [ad-m/github-push-action](https://github.com/ad-m/github-push-action).
+
+
+Updates `ad-m/github-push-action` from 0.8.0 to 1.0.0
+- [Release notes](https://github.com/ad-m/github-push-action/releases)
+- [Commits](https://github.com/ad-m/github-push-action/compare/d91a481090679876dfc4178fef17f286781251df...77c5b412c50b723d2a4fbc6d71fb5723bcd439aa)
+
+---
+updated-dependencies:
+- dependency-name: ad-m/github-push-action
+  dependency-version: 1.0.0
+  dependency-type: direct:production
+  update-type: version-update:semver-major
+  dependency-group: all-actions
+...
+
+Signed-off-by: dependabot[bot] &lt;support@github.com&gt;
+Co-authored-by: dependabot[bot] &lt;49699333+dependabot[bot]@users.noreply.github.com&gt;
+</pre></div>
+</div>
+</li>
+<li><p><strong>Merge pull request #24 from sarnold/docs-cleanup</strong><span> by </span><em>Steve Arnold</em><span> at </span><em>2025-09-09 02:51:26</em></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">improve</span> <span class="n">docs</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="ds/reqs_tree.html" class="btn btn-neutral float-right" title="1.0 Requirements {#REQ001}" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 Stephen Arnold.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
