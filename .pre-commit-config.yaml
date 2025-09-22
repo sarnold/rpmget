@@ -53,8 +53,11 @@ repos:
         - --non-interactive
         - --check-untyped-defs
       additional_dependencies:
+        - "platformdirs"
         - "cerberus"
         - "httpx"
+        - "munch"
+        - "munch-stubs"
         - "tqdm"
       files: src/
 

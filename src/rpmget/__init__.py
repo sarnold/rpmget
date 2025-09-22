@@ -269,7 +269,7 @@ def validate_config(config: CfgParser, stop_on_error: bool = True) -> bool:
     with required options (see design item SDD003).
 
     :param config: loaded CfgParser instance
-    :param stop_on_error: boolean flag
+    :param stop_on_error: boolean flag for URL processing
     :returns: boolean ``is_valid`` flag
     """
     is_valid = False
