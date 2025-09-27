@@ -1,0 +1,34 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: REQ Integration and Unit Tests
+header: ''
+level: 1.7
+links:
+- REQ012: VbbByqX-gavzXKv2H0FICHYoqnTHO_2O9H4939ndzu8=
+- REQ013: yKlr-mWE4BenmtegZjOHcp4xMovfSh0KGAOAtoEUuQc=
+normative: true
+ref: ''
+references:
+- keyword: test_compare_manifest_data
+  path: tests/test_rpmget.py
+  sha: bf778a07e72d2af92e484414f54f159b7c9bac7a75c74f06d54504b850ba13d4
+  type: file
+- keyword: test_get_file_data
+  path: tests/test_helpers.py
+  sha: 4f5125e9357b918c9bfc8516fcdb99e502d36c1a063ee8d930d2281d3189c493
+  type: file
+- keyword: test_read_manifest
+  path: tests/test_rpmget.py
+  sha: bf778a07e72d2af92e484414f54f159b7c9bac7a75c74f06d54504b850ba13d4
+  type: file
+reviewed: B-xd7Xz0ladoVeUo9QevT6ttJ99mrRW6jHx4qXTZdVM=
+short-name: ''
+text: |
+  Test manifest metadata content and format:

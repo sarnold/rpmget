@@ -45,7 +45,7 @@ def test_create_macros():
 
 def test_compare_file_data():
     """
-    Compare metadata dictionaries
+    Compare metadata dictionaries.
     """
     diff_good = compare_file_data(GOOD_MFT, GOOD_MFT)
     print(f'\nNO difference: {diff_good}')
@@ -65,6 +65,9 @@ def test_get_user_cachedir():
 
 
 def test_get_file_data(tmp_path):
+    """
+    Tests rpm file metadata; verifies file metadata portion of REQ012.
+    """
     d = tmp_path / "digest"
     d.mkdir()
     p = d / "test.ini"

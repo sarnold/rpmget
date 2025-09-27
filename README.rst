@@ -61,8 +61,9 @@ required::
 
   $ rpmget https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/diskcache-5.6.3/python3-diskcache-5.6.3-1.el9.noarch.rpm
   INFO:root:Processing 1 valid url(s)
+  INFO:rpmget.utils:Processing file: python3-diskcache-5.6.3-1.el9.noarch.rpm
   INFO:rpmget.utils:python3-diskcache-5.6.3-1.el9.noarch.rpm size: 76875
-  100%|███████████████████████████████████████| 75.1k/75.1k [00:
+  100%|███████████████████████████████████████| 75.1k/75.1k [00:00<00:00, 508kB/s]
   INFO:root:Downloaded 1 file(s)
 
 See the `Tox workflows`_ section below *and* the ``tox.ini`` file for more
@@ -77,8 +78,10 @@ following Python dependencies are installed automatically).
 Python dependencies:
 
 * httpx
+* munch
 * tqdm
 * Cerberus
+* platformdirs
 
 Non-Python dependencies:
 
