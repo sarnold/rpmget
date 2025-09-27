@@ -18,7 +18,7 @@ authors = [
 ]
 
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Environment :: Console",
     "Framework :: tox",
     "Intended Audience :: Developers",
@@ -71,6 +71,7 @@ test = [
 
 [project.urls]
 Homepage = "https://github.com/sarnold/rpmget"
+Documentation = "https://sarnold.github.io/rpmget/"
 Repository = "https://github.com/sarnold/rpmget.git"
 Issues = "https://github.com/sarnold/rpmget/issues"
 Changelog = "https://github.com/sarnold/rpmget/blob/main/CHANGELOG.rst"
