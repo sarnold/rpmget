@@ -237,19 +237,6 @@ def test_read_manifest(tmpdir_session, caplog):
     print(data)
 
 
-def test_load_manifest(tmpdir_session, caplog):
-    """
-    Test reading manifest from file.
-    """
-    c = tmpdir_session / "cache" / "rpmget"
-    c.mkdir(parents=True, exist_ok=True)
-    cname = 'test_file_manifest.ini'
-    data = load_manifest(cname, str(c))
-    assert isinstance(data, dict)
-    assert data["config"] == cname
-    print(data)
-
-
 def test_compare_manifest_data(tmpdir_session, caplog):
     """
     Test reading manifest from file.
@@ -269,6 +256,23 @@ def test_compare_manifest_data(tmpdir_session, caplog):
     res2 = compare_manifest_data(data, NEW_DICT)
     assert res2[0] == 'test_file_manifest.cfg'
     print(res2)
+
+
+def test_load_manifest(tmpdir_session, caplog):
+    """
+    Test reading manifest from file.
+    """
+    c = tmpdir_session / "cache" / "rpmget"
+    c.mkdir(parents=True, exist_ok=True)
+    cname = 'test_file_manifest.ini'
+    data = load_manifest(cname, str(c))
+    assert isinstance(data, dict)
+    assert data["config"] == cname
+    print(data)
+    mfile = c / 'test_file_manifest.ini.json'
+    mfile.unlink()
+    data2 = load_manifest(cname, str(c))
+    assert not data2
 
 
 @pytest.mark.dependency(depends=["test_process_config_loop"])
@@ -407,7 +411,7 @@ def test_self_test_not_valid(caplog, tmp_path):
     self_test(p)
     print(caplog.text)
     assert "ERROR" in caplog.text
-    assert "False" in caplog.text
+    assert "required field" in caplog.text
 
 
 def test_self_test_none(capfd):

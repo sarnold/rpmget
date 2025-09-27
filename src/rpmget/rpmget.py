@@ -47,14 +47,14 @@ def self_test(fname: Optional[Path]):
             print(mod.__doc__)
 
         except (NameError, KeyError, ModuleNotFoundError) as exc:
-            logging.error("FAILED: %s", repr(exc))
+            logging.error("%s", repr(exc))
 
     cfg, cfg_file = load_config(str(fname)) if fname else load_config()
     try:
         res = validate_config(cfg)  # SDD004
-        logging.info("cfg valid: %s", res)
-    except CfgSectionError:
-        logging.error("cfg valid: False")
+        logging.info("configuration valid: %s", res)
+    except CfgSectionError as exc:
+        logging.error("%s", repr(exc))
 
     print(f"file: {cfg_file}")
     if not cfg_file:
@@ -213,8 +213,7 @@ def collect_valid_urls(urls: List[str]) -> Tuple[List[str], List[str]]:
         else:
             logging.debug('Found bogus url: %s', url)
             bogus_urls.append(url)
-    logging.info('Found %d bogus url(s)', len(bogus_urls))
-    logging.info('Found %d valid url(s)', len(valid_urls))
+    logging.info('Processing %d valid url(s)', len(valid_urls))
 
     return valid_urls, bogus_urls
 
@@ -253,8 +252,9 @@ def main() -> None:  # pragma: no cover
     args = parse_command_line(sys.argv)
 
     # basic logging setup must come before any other logging calls
-    httpx_level = logging.DEBUG if args.debug else logging.WARNING
+    httpx_level = logging.INFO if args.debug else logging.WARNING
     logging.getLogger('httpx').setLevel(httpx_level)
+    logging.getLogger('httpcore').setLevel(httpx_level)
     log_level = logging.DEBUG if args.debug else logging.INFO
     logging.basicConfig(stream=sys.stdout, level=log_level)
     logger = logging.getLogger('rpmget')
@@ -311,8 +311,8 @@ def main() -> None:  # pragma: no cover
     udata = load_manifest(ufile.name)  # type: ignore[union-attr]
     rfiles = process_config_loop(ucfg, udata)
     if rfiles and ufile:
-        info = process_file_manifest(rfiles, ufile.name)
-        logger.info('Manifest handling result: %s', info)
+        diff = process_file_manifest(rfiles, ufile.name)
+        logger.info('Manifest handling result: %s', diff)
 
 
 if __name__ == "__main__":
