@@ -198,14 +198,14 @@ def test_process_config_loop_invalid(tmpdir_session):
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
 def test_process_file_manifest(tmpdir_session, caplog):
     """
-    Test manifest processing.
+    Test manifest processing; verifies REQ011.
     """
     parser = CfgParser()
     cfg_str = RPMFILES
     parser.read_string(cfg_str)
     d = tmpdir_session / "sub"
     files = process_config_loop(config=parser, mdata={}, temp_path=d)
-    print(f'manifest files {files}')
+    print(f'files for manifest: {files}')
     cfg_name = "test_file_manifest.ini"
     # p.write_text(RPMFILES, encoding="utf-8")
     c = tmpdir_session / "cache" / "rpmget"
@@ -223,7 +223,8 @@ def test_process_file_manifest(tmpdir_session, caplog):
 
 def test_read_manifest(tmpdir_session, caplog):
     """
-    Test reading manifest from file.
+    Test reading manifest from file and json dumping the result. Verifies
+    REQ013.
     """
     c = tmpdir_session / "cache" / "rpmget"
     c.mkdir(parents=True, exist_ok=True)
@@ -235,11 +236,13 @@ def test_read_manifest(tmpdir_session, caplog):
     data = read_manifest(mfile, str(c))
     assert isinstance(data, dict)
     print(data)
+    assert json.dumps(data)
 
 
 def test_compare_manifest_data(tmpdir_session, caplog):
     """
-    Test reading manifest from file.
+    Test comparing manifest data read from file with test data; partially
+    verifies REQ012.
     """
     c = tmpdir_session / "cache" / "rpmget"
     mfile = c / 'test_file_manifest.ini.json'

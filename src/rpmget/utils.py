@@ -146,8 +146,9 @@ def compare_file_data(old: Dict, new: Dict) -> Dict:
 
 def get_file_data(path: Path) -> Tuple[str, Dict]:
     """
-    Get manifest data for a single rpm file from input path and return
-    a dictionary full of metadata. Current keys are given below.
+    Get manifest data for a single rpm file from input path and return a
+    dictionary full of metadata. Current keys are given below. This
+    implements file metadata portion of REQ012.
 
     :param path: file target
     :returns: file metadata
@@ -262,7 +263,8 @@ def create_manifest_data(files: List[str], cfile: str) -> Dict:
 
 def read_manifest(mfile: Path, temp_path: str = "") -> Dict:
     """
-    Read a manifest file and return the data.
+    Read a manifest file and return the data. Implements reading portion of
+    REQ013 JSON requirement
 
     :param mfile: manifest file
     :param temp_path: use temp_path if provided
@@ -279,7 +281,8 @@ def read_manifest(mfile: Path, temp_path: str = "") -> Dict:
 def write_manifest(mdata: Dict, mfile: Path):
     """
     Write a new manifest file where the name is derived from the
-    associated config file name.
+    associated config file name. Implements writing portion of
+    REQ013 JSON requirement.
 
     :param mdata: manifest data
     :param mfile: manifest file
@@ -334,7 +337,9 @@ def process_file_manifest(
     files: List[str], cfile: str, temp_path: str = ""
 ) -> List[Dict]:
     """
-    Process manifest file after successful config loop run.
+    Process manifest file after successful config loop run (where success
+    means at least one rpm file was downloaded). This is the main calling
+    function for meeting REQ011.
 
     :param files: list of downloaded filenames
     :param cfile: matching config filename

@@ -1,0 +1,19 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.12
+links: []
+normative: true
+ref: ''
+reviewed: yKlr-mWE4BenmtegZjOHcp4xMovfSh0KGAOAtoEUuQc=
+short-name: ''
+text: |
+  The manifest file **Shall** be maintained as valid JSON.

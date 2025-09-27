@@ -13,7 +13,7 @@ level: 1.0
 links: []
 normative: false
 ref: ''
-reviewed: 6z3VuQ8T2RRuUooW58C206t3FlEoFbVAWzbiEDKobgg=
+reviewed: zF43HyT5ML6bhTryCLLZMRAo1CG1OZ_kApHbkbi2o18=
 short-name: reqs_overview
 text: |
   Requirements
@@ -23,12 +23,9 @@ text: |
   * Python ConfigParser sample config
   * download rpms to a directory (flat)
   * download rpms to the usual files tree
+  * download rpm URLs without a config file
+  * maintain a manifest file for each config with valid URLs
 
   If creatrepo is available
 
-  * create rpm repo from files tree
-
-  If RHEL environment
-
-  * install rpms from local files
-  * install rpms on-the-fly from URLs
+  * create yum-compatible rpm repo from files tree

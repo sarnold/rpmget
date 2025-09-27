@@ -18,9 +18,9 @@ ref: ''
 references:
 - keyword: validate_config
   path: tests/test_validator.py
-  sha: af571228e3ef92ec62f89a0a0aa08f1ce3affdb5f1afe7b141c5c2db7ddd11dd
+  sha: 922812a071403390cc8d269476654b55811664807b85615414d2c181c27ddb9c
   type: file
-reviewed: EzcYCypIKpyZKCIHy3fvzuBUe7kH51lFbQWmsCwwCig=
+reviewed: zo0HOXtDSgVZeCF-6Yv31T-3XlZJu8ctD-EBo8MSenU=
 short-name: ''
 text: |
   Test config validation:
