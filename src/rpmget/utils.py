@@ -20,7 +20,7 @@ from tqdm import tqdm
 
 from . import CfgParser
 
-logger = logging.getLogger('rpmget')
+logger = logging.getLogger('rpmget.utils')
 
 
 def check_for_rpm(pgm: str = 'rpm') -> str:
@@ -87,8 +87,12 @@ def download_progress_bin(
             resp = cli.head(url)
             head_size = int(resp.headers.get('Content-Length'))
         logger.debug('Size from HEAD request: %s', head_size)
+    current_size: int = 0
+    if download_file.exists():
+        current_size = download_file.stat().st_size
+    keep_existing_file = head_size == fsize and head_size == current_size
 
-    if head_size == fsize:
+    if keep_existing_file:
         return "ResourceSkipped"
 
     client = httpx.Client(follow_redirects=True)
@@ -141,8 +145,9 @@ def compare_file_data(old: Dict, new: Dict) -> Dict:
 
 def get_file_data(path: Path) -> Tuple[str, Dict]:
     """
-    Get manifest data for a single rpm file from input path and return
-    a dictionary full of metadata. Current keys are given below.
+    Get manifest data for a single rpm file from input path and return a
+    dictionary full of metadata. Current keys are given below. This
+    implements file metadata portion of REQ012.
 
     :param path: file target
     :returns: file metadata
@@ -257,7 +262,8 @@ def create_manifest_data(files: List[str], cfile: str) -> Dict:
 
 def read_manifest(mfile: Path, temp_path: str = "") -> Dict:
     """
-    Read a manifest file and return the data.
+    Read a manifest file and return the data. Implements reading portion of
+    REQ013 JSON requirement
 
     :param mfile: manifest file
     :param temp_path: use temp_path if provided
@@ -274,7 +280,8 @@ def read_manifest(mfile: Path, temp_path: str = "") -> Dict:
 def write_manifest(mdata: Dict, mfile: Path):
     """
     Write a new manifest file where the name is derived from the
-    associated config file name.
+    associated config file name. Implements writing portion of
+    REQ013 JSON requirement.
 
     :param mdata: manifest data
     :param mfile: manifest file
@@ -303,9 +310,9 @@ def compare_manifest_data(old: Dict, new: Dict) -> List:
     for o, n in zip(old_files, new_files):
         diff = compare_file_data(o, n)
         if not diff:
-            logger.debug('No changes in manifest: %s', n["name"])
+            logger.debug('No differences in file data: %s', n["name"])
             continue
-        logger.warning('Manifest changes: %s', diff)
+        logger.debug('Manifest changes: %s', diff)
         msgs.append(diff)
     return msgs
 
@@ -325,13 +332,18 @@ def load_manifest(cfile: str, temp_path: str = "") -> Dict:
     return manifest_data
 
 
-def process_file_manifest(files: List[str], cfile: str, temp_path: str = ""):
+def process_file_manifest(
+    files: List[str], cfile: str, temp_path: str = ""
+) -> List[Dict]:
     """
-    Process manifest file after successful config loop run.
+    Process manifest file after successful config loop run (where success
+    means at least one rpm file was downloaded). This is the main calling
+    function for meeting REQ011.
 
     :param files: list of downloaded filenames
     :param cfile: matching config filename
     :param temp_path: use temp_path if provided
+    :returns: list of differences
     """
     results: List = []
     man_path = temp_path if temp_path else get_user_cachedir()
@@ -345,8 +357,11 @@ def process_file_manifest(files: List[str], cfile: str, temp_path: str = ""):
         results.append(str(manifest))
     else:
         previous_data = read_manifest(manifest, temp_path)
-        diffs = compare_manifest_data(previous_data, current_data)
-        results = diffs
+        results = compare_manifest_data(previous_data, current_data)
+        logger.debug('Manifest processing result: %s', results)
+        if results:
+            write_manifest(current_data, manifest)
+            logger.info('Updated manifest: %s', str(manifest))
     return results
 
 

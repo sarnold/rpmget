@@ -1,0 +1,20 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: '1.10'
+links: []
+normative: true
+ref: ''
+reviewed: qUKUDaNQGeulO41_2F1TnXsS8nAHINYLmN5NOEVW5iY=
+short-name: ''
+text: |
+  The software **Shall** maintain a manifest file for each configuration
+  with valid rpm urls.

@@ -1,0 +1,26 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: Requirements for _rpmget_
+header: ''
+level: 1.11
+links: []
+normative: true
+ref: ''
+reviewed: VbbByqX-gavzXKv2H0FICHYoqnTHO_2O9H4939ndzu8=
+short-name: ''
+text: |
+  The rpm manifest **Shall**  contain the configuration name and metadata
+  for aech downloaded rpm file. The minimum file metadata should include the
+  following:
+
+  - file name
+  - file mtime (download timestamp)
+  - file digest using at least sha256
+  - file size in bytes

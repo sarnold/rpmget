@@ -9,17 +9,17 @@ doc:
   ref: ''
   title: REQ Integration and Unit Tests
 header: ''
-level: 1.4
+level: 1.6
 links:
-- REQ009: EdbQrxyyjOoHBDmPheGfG3lZTggM9r2kcGWsWS5pLzc=
+- REQ011: qUKUDaNQGeulO41_2F1TnXsS8nAHINYLmN5NOEVW5iY=
 normative: true
 ref: ''
 references:
-- keyword: REQ009
+- keyword: test_process_file_manifest
   path: tests/test_rpmget.py
   sha: bf778a07e72d2af92e484414f54f159b7c9bac7a75c74f06d54504b850ba13d4
   type: file
-reviewed: R21fA8bAWV7Zj-ioM6tDCOq0ZBds793kYD7ESmZgeR0=
-short-name: createrepo_c
+reviewed: o-r_Kq2_v7YZCa38gGBxHGnlBJv6-AS6jPKbzz3ymIE=
+short-name: ''
 text: |
-  Test createrepo_c:
+  Test manifest file and data processing:

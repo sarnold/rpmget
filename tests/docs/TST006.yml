@@ -17,9 +17,9 @@ ref: ''
 references:
 - keyword: REQ010
   path: tests/test_rpmget.py
-  sha: b3134bd0e2ca9c07eb7056872673e994491b491360e04bda2ba4513111175a2b
+  sha: bf778a07e72d2af92e484414f54f159b7c9bac7a75c74f06d54504b850ba13d4
   type: file
-reviewed: BaynoAp9jeKhwjnd7EwQZ1oAzbR4rRjR8v6ndcC0Xag=
+reviewed: t-YMroxuLfVvY13rWPW02N_0qwa829lIYqEp8w1DZkI=
 short-name: ''
 text: |
   Test URL processing with no config:

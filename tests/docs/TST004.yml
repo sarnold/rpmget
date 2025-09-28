@@ -19,17 +19,17 @@ ref: ''
 references:
 - keyword: REQ006
   path: tests/test_helpers.py
-  sha: 40a7cdf74d20b4575b9d87b03013f7bff2359803e9e976649783970499a05b52
+  sha: 4f5125e9357b918c9bfc8516fcdb99e502d36c1a063ee8d930d2281d3189c493
   type: file
 - keyword: REQ007
   path: tests/test_helpers.py
-  sha: 40a7cdf74d20b4575b9d87b03013f7bff2359803e9e976649783970499a05b52
+  sha: 4f5125e9357b918c9bfc8516fcdb99e502d36c1a063ee8d930d2281d3189c493
   type: file
 - keyword: .rpmmacros
   path: tests/test_helpers.py
-  sha: 40a7cdf74d20b4575b9d87b03013f7bff2359803e9e976649783970499a05b52
+  sha: 4f5125e9357b918c9bfc8516fcdb99e502d36c1a063ee8d930d2281d3189c493
   type: file
-reviewed: qRHu-O0KwA37fapr87l5lXZ4Q0njFol5qD0RlQTBNOQ=
+reviewed: rmP6tTik7_ri89fgTc5i_bsUeFqW7WzMDX_EhygoKaM=
 short-name: ''
 text: |
   Test layout artifacts:
