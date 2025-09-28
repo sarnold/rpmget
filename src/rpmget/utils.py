@@ -78,7 +78,6 @@ def download_progress_bin(
         arch_path = 'SRPMS' if rpm_arch == 'src' else f'RPMS/{rpm_arch}'
     download_file: Path = Path(dst) / arch_path / rpm_file
     download_file.parent.mkdir(parents=True, exist_ok=True)
-    logger.info('Processing file: %s', download_file.name)
     remove_borked_file: bool = False
     return_file_name: str = str(download_file.resolve())
     if mdata:

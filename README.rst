@@ -16,6 +16,7 @@ Things you can do now:
 
 * validate configuration files and URLs
 * download configured rpm files to a single directory or rpm tree
+* automatically skip downloading files that match size checks
 * download one or more URL arguments to current directory (no config)
 * dump a sample config file
 * create an rpm repository from rpm tree layout
@@ -44,6 +45,29 @@ Quick Start
   + Using one of these file extensions: [.conf, .ini, .cfg]
   + Using at least one option with one or more URL strings
 
+From a venv run ``rpmget -c <filename>`` with your config file to download
+rpm files in the config. The initial download will create a manifest file
+in the XDG user cache directory, ie ``~/.cache/rpmget/my_config.ini.json``.
+Running the above command again without changing the config or deleting the
+downloaded rpms should skip the downloading since the remote and local sizes
+should all match.
+
+::
+
+  $ rpmget -c el9-toolbox-all.ini
+  INFO:rpmget:Using input file el9-toolbox-all.ini
+  INFO:root:Processing 13 valid url(s)
+  INFO:root:Downloaded 0 file(s)
+  INFO:root:Skipped 13 file(s)
+
+To force downloading again, simply delete the ``top_dir`` directory and
+run the rpmget command again.
+
+
+
+Examples
+--------
+
 From a venv, run the following commands to validate your config and download
 rpms::
 
@@ -52,6 +76,7 @@ rpms::
   INFO:rpmget:User config is valid: True
   $ rpmget -c my_config.ini
   INFO:rpmget:Using input file my_config.ini
+  INFO:root:Processing 3 valid url(s)
   INFO:rpmget.utils:python3-py3tftp-1.3.0-1.el9.noarch.rpm size: 35486
   100%|███████████████████████████████████████| 34.7k/34.7k [00:00<00:00, 422kB/s]
   ...
@@ -107,7 +132,7 @@ The CLI uses the standard Python ``argparse`` module::
   $ tox -e dev
   $ source .venv/bin/activate
   $ rpmget -h
-  usage: rpmget [-h] [--version] [-S] [-t] [-u] [-v] [-d] [-D] [-c FILE]
+  usage: rpmget [-h] [--version] [-S] [-t] [-u] [-v] [-d] [-q] [-D] [-c FILE]
                 [URL ...]
 
   Download manager for rpm files
@@ -125,6 +150,7 @@ The CLI uses the standard Python ``argparse`` module::
     -v, --validate        run schema validation on active config (default:
                           False)
     -d, --debug           display more processing info (default: False)
+    -q, --quiet           display less processing info (default: False)
     -D, --dump-config     dump active configuration to stdout (default: False)
     -c, --configfile FILE
                           path to ini-style configuration file (default: None)

@@ -2,11 +2,35 @@ Changelog
 =========
 
 
-0.2.1 (2025-09-08)
+0.3.0 (2025-09-28)
 ------------------
+
+New
+~~~
+- Add more manifest checking support, refactor some tests and utils.
+  [Stephen L Arnold]
+
+  * pass manifest data from main if available so downloader can check
+    file size against HEAD request content length so we can skip the
+    download for matching files
+  * updat tests, make sure logging output includes skipped files,
+    cleanup docstrings
+- Add platformdirs and munch deps, support per-cfg manifest files.
+  [Stephen L Arnold]
+
+  * add code for file metadata and saving json manifest to user cache dir
+  * change signature for get_filelist, make resolved return paths optional
+    when input dirname arg is relative
+  * add tests for new code, cleanup older test files
 
 Changes
 ~~~~~~~
+- Update readme and changelog, adjust logging for quiet arg. [Stephen L
+  Arnold]
+- Update doorstop doc bits, annotate docstrings and tests. [Stephen L
+  Arnold]
+
+  * add reqs and link tests for manifest file processing
 - Update changelog for next release. [Stephen L Arnold]
 - Support direct downloading of URLs without a config file. [Stephen L
   Arnold]
@@ -23,6 +47,24 @@ Changes
   * also update default and example configs, update tests and docstrings
 - Refactor download context, invert check, remove while loop. [Stephen L
   Arnold]
+
+Fixes
+~~~~~
+- Only skip downloading if all 3 sizes match, otherwise download.
+  [Stephen L Arnold]
+
+  * complete manifest handling, update to most recent if metadata changes
+  * warn on changes, assume versioned RPM file is canonical source
+  * update log messages and adjust logging levels
+- Add readme note about using tree layout download *before* update.
+  [Stephen L Arnold]
+
+  * this should close issue #23 since those commands should not be
+    tightly coupled
+
+Other
+~~~~~
+- [create-pull-request] automated change. [github-actions[bot]]
 
 
 0.2.0 (2025-09-06)

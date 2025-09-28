@@ -116,6 +116,12 @@ def main_arg_parser() -> argparse.ArgumentParser:
         help="display more processing info",
     )
     parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="display less processing info",
+    )
+    parser.add_argument(
         '-D',
         '--dump-config',
         help="dump active configuration to stdout",
@@ -184,6 +190,7 @@ def process_config_loop(
     timeout = config.getfloat('rpmget', 'httpx_timeout')
 
     urls = find_rpm_urls(config)
+    logging.info('Processing %d valid url(s)', len(urls))
     for url in urls:
         fname = download_progress_bin(url, top_dir, layout, timeout, mdata)
         if "Skipped" in fname:
@@ -252,11 +259,13 @@ def main() -> None:  # pragma: no cover
     args = parse_command_line(sys.argv)
 
     # basic logging setup must come before any other logging calls
-    httpx_level = logging.INFO if args.debug else logging.WARNING
-    logging.getLogger('httpx').setLevel(httpx_level)
-    logging.getLogger('httpcore').setLevel(httpx_level)
-    log_level = logging.DEBUG if args.debug else logging.INFO
-    logging.basicConfig(stream=sys.stdout, level=log_level)
+    httpx_lvl = (
+        logging.INFO if args.debug else logging.ERROR if args.quiet else logging.WARNING
+    )
+    logging.getLogger('httpx').setLevel(httpx_lvl)
+    logging.getLogger('httpcore').setLevel(httpx_lvl)
+    lvl = logging.DEBUG if args.debug else logging.WARNING if args.quiet else logging.INFO
+    logging.basicConfig(stream=sys.stdout, level=lvl)
     logger = logging.getLogger('rpmget')
     # printout()  # logging_tree
 
