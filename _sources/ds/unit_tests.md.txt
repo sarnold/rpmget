@@ -1,0 +1,86 @@
+# 1.0 Automated Tests {#TST001}
+
+Automated Tests
+
+Whether desktop or CI, run these tests from the project root,
+after installing Python and [Tox](https://github.com/tox-dev/tox):
+
+```shell
+tox -e py
+```
+
+To see test output, ie, code under test and print statements, append
+the following positional arg to the above tox command:
+
+```shell
+tox -e py -- no
+```
+
+
+## 1.1 TST002 {#TST002}
+
+Test config handling:
+
+> `tests/test_helpers.py` (line 87)
+
+*Parent links: REQ002*
+
+
+## 1.2 TST003 {#TST003}
+
+Test config validation:
+
+> `tests/test_validator.py` (line 12)
+
+*Parent links: REQ003, REQ004*
+
+
+## 1.3 TST004 {#TST004}
+
+Test layout artifacts:
+
+> `tests/test_helpers.py` (line 206)
+> `tests/test_helpers.py` (line 39)
+> `tests/test_helpers.py` (line 227)
+
+*Parent links: REQ006, REQ007, REQ008*
+
+
+## 1.4 TST005 {#TST005}
+
+Test createrepo_c:
+
+> `tests/test_rpmget.py` (line 285)
+
+*Parent links: REQ009*
+
+
+## 1.5 TST006 {#TST006}
+
+Test URL processing with no config:
+
+> `tests/test_rpmget.py` (line 323)
+
+*Parent links: REQ010*
+
+
+## 1.6 TST007 {#TST007}
+
+Test manifest file and data processing:
+
+> `tests/test_rpmget.py` (line 199)
+
+*Parent links: REQ011*
+
+
+## 1.7 TST008 {#TST008}
+
+Test manifest metadata content and format:
+
+> `tests/test_rpmget.py` (line 242)
+> `tests/test_helpers.py` (line 67)
+> `tests/test_rpmget.py` (line 224)
+
+*Parent links: REQ012, REQ013*
+
+

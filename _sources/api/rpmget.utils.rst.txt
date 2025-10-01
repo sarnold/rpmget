@@ -1,0 +1,7 @@
+rpmget.utils module
+===================
+
+.. automodule:: rpmget.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

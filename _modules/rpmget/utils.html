@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>rpmget.utils &mdash; rpmget 0.3.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=55b73dce" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../_static/documentation_options.js?v=71d9d8e6"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            rpmget
+          </a>
+              <div class="version">
+                0.3.2
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ds/reqs_tree.html">1.0 Requirements {#REQ001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ds/sw_design.html">1.0 Design Elements {#SDD001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../ds/unit_tests.html">1.0 Automated Tests {#TST001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">RPMGet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">rpmget</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/generate-changelog.html">Changelog Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/pre-commit-config.html">Contents of the <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../dev/pre-commit-usage.html">Using Pre-Commit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../CHANGELOG.html">Changelog</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">rpmget</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+          <li class="breadcrumb-item"><a href="../rpmget.html">rpmget</a></li>
+      <li class="breadcrumb-item active">rpmget.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for rpmget.utils</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Utility functions.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shlex</span><span class="w"> </span><span class="kn">import</span> <span class="n">split</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">shutil</span><span class="w"> </span><span class="kn">import</span> <span class="n">copy</span><span class="p">,</span> <span class="n">which</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.parse</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlparse</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">platformdirs</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlatformDirs</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">CfgParser</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s1">&#39;rpmget.utils&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="check_for_rpm">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.check_for_rpm">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_for_rpm</span><span class="p">(</span><span class="n">pgm</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;rpm&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Make sure we can find the ``rpm`` binary in the user environment</span>
+<span class="sd">    and return a path string.</span>
+
+<span class="sd">    :returns: program path string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">rpm_path</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="n">pgm</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">rpm_path</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;Cannot continue, no path found for </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">pgm</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">pgm</span><span class="si">}</span><span class="s2">: program not found in PATH&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rpm_path</span></div>
+
+
+
+<div class="viewcode-block" id="copy_rpms">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.copy_rpms">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy_rpms</span><span class="p">(</span><span class="n">src_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dst_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Copy .rpm globs while preserving arch dirs. This now replicates what</span>
+<span class="sd">    glob.glob(root_dir=src_dir) does. Stem directories are each rpm tree</span>
+<span class="sd">    with rpm files, ie SRPMS and RPMS.</span>
+
+<span class="sd">    :param src_dir: source dir is top_dir with stem</span>
+<span class="sd">    :param dst_dir: destination dir is repo_dir with stem</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">[</span>
+        <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">src_dir</span><span class="p">))</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">get_filelist</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="n">resolve</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Found glob: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">p</span><span class="p">)</span>
+        <span class="c1"># if os.path.isfile(os.path.join(src_dir, p)):</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">p</span><span class="p">)),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">copy</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">src_dir</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dst_dir</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="download_progress_bin">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.download_progress_bin">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_progress_bin</span><span class="p">(</span>
+    <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dst</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">layout</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">timeout</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">mdata</span><span class="p">:</span> <span class="n">Dict</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Download a single binary with progress meter and default timeout.</span>
+<span class="sd">    Create arch dir or top_dir depending on layout setting</span>
+
+<span class="sd">    :param url: URL to download</span>
+<span class="sd">    :param dst: top-level destination directory</span>
+<span class="sd">    :param layout: config layout</span>
+<span class="sd">    :param timeout: httpx client timeout</span>
+<span class="sd">    :param mdata: manifest data if available</span>
+<span class="sd">    :returns: name of downloaded file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fsize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">head_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">arch_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+    <span class="n">rpm_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">urlparse</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">rpm_arch</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">rpm_file</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">2</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">layout</span> <span class="o">==</span> <span class="s2">&quot;tree&quot;</span><span class="p">:</span>
+        <span class="n">arch_path</span> <span class="o">=</span> <span class="s1">&#39;SRPMS&#39;</span> <span class="k">if</span> <span class="n">rpm_arch</span> <span class="o">==</span> <span class="s1">&#39;src&#39;</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;RPMS/</span><span class="si">{</span><span class="n">rpm_arch</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">download_file</span><span class="p">:</span> <span class="n">Path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">dst</span><span class="p">)</span> <span class="o">/</span> <span class="n">arch_path</span> <span class="o">/</span> <span class="n">rpm_file</span>
+    <span class="n">download_file</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">remove_borked_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">return_file_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">download_file</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">mdata</span><span class="p">:</span>
+        <span class="n">fsize</span> <span class="o">=</span> <span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;files&quot;</span><span class="p">][</span><span class="n">download_file</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="s2">&quot;size&quot;</span><span class="p">]</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Size from manifest: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">fsize</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">as</span> <span class="n">cli</span><span class="p">:</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+            <span class="n">head_size</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;Content-Length&#39;</span><span class="p">))</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Size from HEAD request: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">head_size</span><span class="p">)</span>
+    <span class="n">current_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">download_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">current_size</span> <span class="o">=</span> <span class="n">download_file</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+    <span class="n">keep_existing_file</span> <span class="o">=</span> <span class="n">head_size</span> <span class="o">==</span> <span class="n">fsize</span> <span class="ow">and</span> <span class="n">head_size</span> <span class="o">==</span> <span class="n">current_size</span>
+
+    <span class="k">if</span> <span class="n">keep_existing_file</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;ResourceSkipped&quot;</span>
+
+    <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">follow_redirects</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">client</span><span class="o">.</span><span class="n">stream</span><span class="p">(</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">response</span><span class="p">:</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;Content-Length&quot;</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> size: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">download_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">download_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_handle</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">total</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">content</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">content</span>
+                    <span class="n">file_handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">with</span> <span class="n">tqdm</span><span class="p">(</span>
+                        <span class="n">total</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="n">total</span><span class="p">),</span> <span class="n">unit_scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">unit_divisor</span><span class="o">=</span><span class="mi">1024</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;B&quot;</span>
+                    <span class="p">)</span> <span class="k">as</span> <span class="n">progress</span><span class="p">:</span>
+                        <span class="n">num_bytes_downloaded</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">num_bytes_downloaded</span>
+                        <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">iter_bytes</span><span class="p">():</span>
+                            <span class="n">file_handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>
+                            <span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                                <span class="n">response</span><span class="o">.</span><span class="n">num_bytes_downloaded</span> <span class="o">-</span> <span class="n">num_bytes_downloaded</span>
+                            <span class="p">)</span>
+                            <span class="n">num_bytes_downloaded</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">num_bytes_downloaded</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Failed to download </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+                <span class="n">remove_borked_file</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="n">return_file_name</span> <span class="o">=</span> <span class="s2">&quot;ResourceError&quot;</span>
+
+    <span class="k">if</span> <span class="n">remove_borked_file</span><span class="p">:</span>
+        <span class="n">download_file</span><span class="o">.</span><span class="n">unlink</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">return_file_name</span></div>
+
+
+
+<div class="viewcode-block" id="compare_file_data">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.compare_file_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_file_data</span><span class="p">(</span><span class="n">old</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare two dictionaries and return the difference result.</span>
+
+<span class="sd">    :param old: old dict</span>
+<span class="sd">    :param new: new dict</span>
+<span class="sd">    :returns: any differences found</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">delta</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span> <span class="o">==</span> <span class="n">new</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">old_val</span> <span class="ow">in</span> <span class="n">old</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_val</span> <span class="o">=</span> <span class="n">new</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">old_val</span> <span class="o">!=</span> <span class="n">new_val</span><span class="p">:</span>
+                <span class="n">delta</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="n">new_val</span><span class="p">})</span>
+    <span class="k">return</span> <span class="n">delta</span></div>
+
+
+
+<div class="viewcode-block" id="get_file_data">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.get_file_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_file_data</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get manifest data for a single rpm file from input path and return a</span>
+<span class="sd">    dictionary full of metadata. Current keys are given below. This</span>
+<span class="sd">    implements file metadata portion of REQ012.</span>
+
+<span class="sd">    :param path: file target</span>
+<span class="sd">    :returns: file metadata</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">mtime</span> <span class="o">=</span> <span class="n">get_file_mtime</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">sha</span> <span class="o">=</span> <span class="n">get_file_hash</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+
+    <span class="k">return</span> <span class="n">name</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s1">&#39;digest&#39;</span><span class="p">:</span> <span class="n">sha</span><span class="p">,</span>
+        <span class="s1">&#39;mtime&#39;</span><span class="p">:</span> <span class="n">mtime</span><span class="p">,</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+        <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="n">size</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="get_file_hash">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.get_file_hash">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_file_hash</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param path: file target</span>
+<span class="sd">    :returns: file digest using sha256</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">buf_size</span> <span class="o">=</span> <span class="mi">65536</span>
+    <span class="n">sha</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">sha256</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buf_size</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">sha</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">sha</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="get_file_mtime">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.get_file_mtime">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_file_mtime</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    :param path: file target</span>
+<span class="sd">    :returns: formatted time string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_mtime</span><span class="p">)</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%m-</span><span class="si">%d</span><span class="s1">-%Y %H:%M:%S&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_user_cachedir">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.get_user_cachedir">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_user_cachedir</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return user cache directory per platform.</span>
+
+<span class="sd">    :returns: user_cache_dir path as string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">dirs</span> <span class="o">=</span> <span class="n">PlatformDirs</span><span class="p">(</span><span class="s2">&quot;rpmget&quot;</span><span class="p">,</span> <span class="s2">&quot;nerdboy&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dirs</span><span class="o">.</span><span class="n">user_cache_dir</span></div>
+
+
+
+<div class="viewcode-block" id="get_filelist">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.get_filelist">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_filelist</span><span class="p">(</span>
+    <span class="n">dirname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">resolve</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">fileglob</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;*.rpm&#39;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get path objects matching ``fileglob`` starting at ``dirname`` and</span>
+<span class="sd">    return a list of resolved path strings of any files found. Set the</span>
+<span class="sd">    ``resolve`` parameter to False to return relative paths when input</span>
+<span class="sd">    path is relative.</span>
+
+<span class="sd">    :param dirname: directory name to start search in</span>
+<span class="sd">    :param fileglob: extension of the form ``*.&lt;ext&gt;``</span>
+<span class="sd">    :returns: file path strings</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">ext</span> <span class="o">=</span> <span class="n">fileglob</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">filenames</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">dirname</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="n">fileglob</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">pfile</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">filenames</span><span class="p">):</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">pfile</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span> <span class="k">if</span> <span class="n">resolve</span> <span class="k">else</span> <span class="n">pfile</span>
+        <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found </span><span class="si">%d</span><span class="s1"> </span><span class="si">%s</span><span class="s1"> file(s)&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">file_list</span><span class="p">),</span> <span class="n">ext</span><span class="p">)</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Found </span><span class="si">%s</span><span class="s1"> file(s): </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">ext</span><span class="p">,</span> <span class="n">file_list</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">file_list</span></div>
+
+
+
+<div class="viewcode-block" id="wrap_file_manifest">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.wrap_file_manifest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">wrap_file_manifest</span><span class="p">(</span><span class="n">fdata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">],</span> <span class="n">cfgname</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Wrap file data for json export.</span>
+
+<span class="sd">    :param fdata: list of manifest dicts</span>
+<span class="sd">    :param cfgname: parent config name</span>
+<span class="sd">    :returns: data for json</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">&#39;config&#39;</span><span class="p">:</span> <span class="n">cfgname</span><span class="p">,</span>
+        <span class="s1">&#39;files&#39;</span><span class="p">:</span> <span class="n">fdata</span><span class="p">,</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="create_manifest_data">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.create_manifest_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_manifest_data</span><span class="p">(</span><span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">cfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create new manifest data from a list of downloaded files and return</span>
+<span class="sd">    a nested dictionary.</span>
+
+<span class="sd">    :param files: list of downloaded filenames</span>
+<span class="sd">    :param cfile: matching config filename</span>
+<span class="sd">    :returns: manifest data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">Path</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">files</span><span class="p">)]</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Found rpm paths: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">paths</span><span class="p">)</span>
+    <span class="c1"># print(f&#39;Found rpm paths: {paths}&#39;)</span>
+
+    <span class="n">file_data</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">paths</span><span class="p">:</span>
+        <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="o">=</span> <span class="n">get_file_data</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="n">file_data</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+    <span class="n">mdata</span> <span class="o">=</span> <span class="n">wrap_file_manifest</span><span class="p">(</span><span class="n">file_data</span><span class="p">,</span> <span class="n">cfile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mdata</span></div>
+
+
+
+<div class="viewcode-block" id="read_manifest">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.read_manifest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_manifest</span><span class="p">(</span><span class="n">mfile</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read a manifest file and return the data. Implements reading portion of</span>
+<span class="sd">    REQ013 JSON requirement</span>
+
+<span class="sd">    :param mfile: manifest file</span>
+<span class="sd">    :param temp_path: use temp_path if provided</span>
+<span class="sd">    :returns: manifest data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">in_data</span><span class="p">:</span> <span class="n">Dict</span>
+    <span class="n">man_path</span> <span class="o">=</span> <span class="n">temp_path</span> <span class="k">if</span> <span class="n">temp_path</span> <span class="k">else</span> <span class="n">get_user_cachedir</span><span class="p">()</span>
+    <span class="n">man_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">man_path</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">mfile</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">man_file</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">dfile</span><span class="p">:</span>
+        <span class="n">in_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">dfile</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">in_data</span></div>
+
+
+
+<div class="viewcode-block" id="write_manifest">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.write_manifest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_manifest</span><span class="p">(</span><span class="n">mdata</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">mfile</span><span class="p">:</span> <span class="n">Path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write a new manifest file where the name is derived from the</span>
+<span class="sd">    associated config file name. Implements writing portion of</span>
+<span class="sd">    REQ013 JSON requirement.</span>
+
+<span class="sd">    :param mdata: manifest data</span>
+<span class="sd">    :param mfile: manifest file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">mfile</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">sort_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">mfile</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">out</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="compare_manifest_data">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.compare_manifest_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">compare_manifest_data</span><span class="p">(</span><span class="n">old</span><span class="p">:</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">new</span><span class="p">:</span> <span class="n">Dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compare full manifest data.</span>
+
+<span class="sd">    :param old: manifest data</span>
+<span class="sd">    :param new: manifest data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">msgs</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">old</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">]:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span>
+            <span class="s1">&#39;Config mismatch: </span><span class="si">%s</span><span class="s1"> not equal to </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">old</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">],</span> <span class="n">new</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">]</span>
+        <span class="p">)</span>
+        <span class="n">msgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s2">&quot;config&quot;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">msgs</span>
+    <span class="n">old_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">old</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="n">new_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">new</span><span class="p">[</span><span class="s1">&#39;files&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">o</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">old_files</span><span class="p">,</span> <span class="n">new_files</span><span class="p">):</span>
+        <span class="n">diff</span> <span class="o">=</span> <span class="n">compare_file_data</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">diff</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;No differences in file data: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">n</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+            <span class="k">continue</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Manifest changes: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">diff</span><span class="p">)</span>
+        <span class="n">msgs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">msgs</span></div>
+
+
+
+<div class="viewcode-block" id="load_manifest">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.load_manifest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load_manifest</span><span class="p">(</span><span class="n">cfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    If available, load a manifest file *before* config loop run.</span>
+
+<span class="sd">    :param cfile: matching config filename</span>
+<span class="sd">    :param temp_path: use temp_path if provided</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">manifest_data</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">man_path</span> <span class="o">=</span> <span class="n">temp_path</span> <span class="k">if</span> <span class="n">temp_path</span> <span class="k">else</span> <span class="n">get_user_cachedir</span><span class="p">()</span>
+    <span class="n">manifest</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">man_path</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cfile</span><span class="si">}</span><span class="s2">.json&quot;</span>
+    <span class="k">if</span> <span class="n">manifest</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">manifest_data</span> <span class="o">=</span> <span class="n">read_manifest</span><span class="p">(</span><span class="n">manifest</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">manifest_data</span></div>
+
+
+
+<div class="viewcode-block" id="process_file_manifest">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.process_file_manifest">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">process_file_manifest</span><span class="p">(</span>
+    <span class="n">files</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">cfile</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Process manifest file after successful config loop run (where success</span>
+<span class="sd">    means at least one rpm file was downloaded). This is the main calling</span>
+<span class="sd">    function for meeting REQ011.</span>
+
+<span class="sd">    :param files: list of downloaded filenames</span>
+<span class="sd">    :param cfile: matching config filename</span>
+<span class="sd">    :param temp_path: use temp_path if provided</span>
+<span class="sd">    :returns: list of differences</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">results</span><span class="p">:</span> <span class="n">List</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">man_path</span> <span class="o">=</span> <span class="n">temp_path</span> <span class="k">if</span> <span class="n">temp_path</span> <span class="k">else</span> <span class="n">get_user_cachedir</span><span class="p">()</span>
+    <span class="n">manifest</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">man_path</span><span class="p">)</span> <span class="o">/</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cfile</span><span class="si">}</span><span class="s2">.json&quot;</span>
+    <span class="n">verb</span> <span class="o">=</span> <span class="s2">&quot;Found&quot;</span> <span class="k">if</span> <span class="n">manifest</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;Creating&quot;</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1"> manifest: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">verb</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">manifest</span><span class="p">))</span>
+
+    <span class="n">current_data</span> <span class="o">=</span> <span class="n">create_manifest_data</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">cfile</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">manifest</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="n">write_manifest</span><span class="p">(</span><span class="n">current_data</span><span class="p">,</span> <span class="n">manifest</span><span class="p">)</span>
+        <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">manifest</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">previous_data</span> <span class="o">=</span> <span class="n">read_manifest</span><span class="p">(</span><span class="n">manifest</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="n">compare_manifest_data</span><span class="p">(</span><span class="n">previous_data</span><span class="p">,</span> <span class="n">current_data</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Manifest processing result: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">results</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">results</span><span class="p">:</span>
+            <span class="n">write_manifest</span><span class="p">(</span><span class="n">current_data</span><span class="p">,</span> <span class="n">manifest</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Updated manifest: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">manifest</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">results</span></div>
+
+
+
+<div class="viewcode-block" id="manage_repo">
+<a class="viewcode-back" href="../../api/rpmget.utils.html#rpmget.utils.manage_repo">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">manage_repo</span><span class="p">(</span><span class="n">config</span><span class="p">:</span> <span class="n">CfgParser</span><span class="p">,</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">temp_path</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Path</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create or update rpm repository using createrepo tool. Requires an</span>
+<span class="sd">    existing rpm tree with one or more packages. Satisfies REQ009.</span>
+
+<span class="sd">    :param config: loaded CfgParser instance</span>
+<span class="sd">    :param debug: enables verbose on ``repo_tool``</span>
+<span class="sd">    :param temp_path: prepended to config paths (mainly for testing)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cr_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;rpmget&#39;</span><span class="p">][</span><span class="s1">&#39;repo_tool&#39;</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">check_for_rpm</span><span class="p">(</span><span class="n">cr_name</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">FileNotFoundError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+        <span class="k">return</span>
+
+    <span class="n">cfg_top</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;rpmget&#39;</span><span class="p">][</span><span class="s1">&#39;top_dir&#39;</span><span class="p">])</span>
+    <span class="n">top_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">temp_path</span> <span class="o">/</span> <span class="n">cfg_top</span><span class="p">)</span> <span class="k">if</span> <span class="n">temp_path</span> <span class="k">else</span> <span class="n">cfg_top</span>
+    <span class="n">cfg_repo</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">expanduser</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;rpmget&#39;</span><span class="p">][</span><span class="s1">&#39;repo_dir&#39;</span><span class="p">])</span>
+    <span class="n">repo_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">temp_path</span> <span class="o">/</span> <span class="n">cfg_repo</span><span class="p">)</span> <span class="k">if</span> <span class="n">temp_path</span> <span class="k">else</span> <span class="n">cfg_repo</span>
+
+    <span class="n">top_src</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">top_path</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;SRPMS&#39;</span>
+    <span class="n">top_bin</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">top_path</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;RPMS&#39;</span>
+
+    <span class="n">rpm_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="n">top_src</span><span class="p">,</span> <span class="n">top_bin</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span> <span class="ow">and</span> <span class="n">get_filelist</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">))]</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;Found rpm src paths: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">rpm_paths</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">rpm_paths</span><span class="p">:</span>
+        <span class="n">copy_rpms</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">repo_path</span><span class="p">,</span> <span class="n">path</span><span class="o">.</span><span class="n">stem</span><span class="p">),</span> <span class="s1">&#39;Packages&#39;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="n">cr_srcs_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">repo_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">top_src</span><span class="o">.</span><span class="n">stem</span>
+    <span class="n">cr_bins_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">repo_path</span><span class="p">)</span> <span class="o">/</span> <span class="n">top_bin</span><span class="o">.</span><span class="n">stem</span>
+
+    <span class="n">cr_paths</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="p">(</span><span class="n">cr_srcs_path</span><span class="p">,</span> <span class="n">cr_bins_path</span><span class="p">)</span> <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">exists</span><span class="p">()]</span>
+
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="n">cr_paths</span><span class="p">:</span>
+        <span class="n">cr_str</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;rpmget&#39;</span><span class="p">][</span><span class="s1">&#39;repo_args&#39;</span><span class="p">]</span>
+        <span class="n">dbg_str</span> <span class="o">=</span> <span class="s2">&quot;--verbose&quot;</span> <span class="k">if</span> <span class="n">debug</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;repodata&#39;</span><span class="p">,</span> <span class="s1">&#39;repomd.xml&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+            <span class="n">cr_str</span> <span class="o">=</span> <span class="n">cr_str</span> <span class="o">+</span> <span class="s2">&quot; --update&quot;</span>
+        <span class="n">cr_cmd</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">cr_name</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">cr_str</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">dbg_str</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">absolute</span><span class="p">())</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;cmdline: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">cr_cmd</span><span class="p">)</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="n">sp</span><span class="o">.</span><span class="n">check_output</span><span class="p">(</span><span class="n">split</span><span class="p">(</span><span class="n">cr_cmd</span><span class="p">),</span> <span class="n">stderr</span><span class="o">=</span><span class="n">sp</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s1">&#39;cmd result: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">res</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">sp</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;proc error: </span><span class="si">%s</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">exc</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025 Stephen Arnold.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
