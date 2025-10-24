@@ -24,9 +24,13 @@ Things you can do now:
 As stated above, the primary use cases (in the `user experience
 sense`_) are intended to support managing/using a set of RPMs in
 development workflows targeting older-but-still-supported Enterprise
-Linux environments, eg, RHEL9 or similar. That said, the initial
-packaging for RPMGet itself is not quite compatible (yet) with el9
-packaging tools when using the newer pyproject macros.
+Linux environments, eg, RHEL9 or similar.
+
+The initial package metadata for RPMGet itself has been back-ported to
+``setup.cfg`` which is compatible with el9 versions of packaging tools
+when using the newer pyproject macros. For more details, see the `built
+documentation`_, as well as the el9-rpm-toolbox_ repo for the latest
+RPM package release.
 
 .. important:: The ``--update`` argument requires an existing set of rpms
                downloaded in the "tree" layout, so you will need to run
@@ -34,6 +38,9 @@ packaging tools when using the newer pyproject macros.
                to "tree" *before* using ``--update``.
 
 .. _user experience sense: https://en.wikipedia.org/wiki/Use_case#Definition
+.. _built documentation: https://sarnold.github.io/rpmget
+.. _el9-rpm-toolbox: https://github.com/VCTLabs/el9-rpm-toolbox
+
 
 Quick Start
 ~~~~~~~~~~~
