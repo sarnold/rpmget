@@ -2,6 +2,43 @@ Changelog
 =========
 
 
+0.3.3 (2025-10-27)
+------------------
+
+Changes
+~~~~~~~
+- Switch to sphinx-nefertiti theme, let myst render mermaid. [Stephen L
+  Arnold]
+
+  * update sphinx docs config, remove rendered svg file, go with mermaid
+    source in details block instead of figure caption for now
+  * add readme blurb about rpm packages and built docs
+
+
+0.3.2 (2025-10-01)
+------------------
+
+Fixes
+~~~~~
+- Adjust minimum version of cerberus dep. [Stephen L Arnold]
+
+  * we need the lowest common version between el9, centos, rocky
+
+
+0.3.1 (2025-10-01)
+------------------
+
+Changes
+~~~~~~~
+- Cleanup coverage and config bits, cov-report term is misleading.
+  [Stephen L Arnold]
+
+  * seems like pytest-cov has some issues with coverage.py *and* where
+    it gets config data from
+- Backport package metadata to setup.cfg for el9 rpm packaging. [Stephen
+  L Arnold]
+
+
 0.3.0 (2025-09-28)
 ------------------
 
