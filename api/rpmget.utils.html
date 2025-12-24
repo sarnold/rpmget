@@ -1,0 +1,854 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="colorset-reset" content="86400000" />
+    <meta name="docsearch:name" content="rpmget" />
+    <meta name="docsearch:package_type" content="" />
+    <meta name="docsearch:release" content="0.3.2.post17" />
+    <meta name="docsearch:version" content="0.3.2.post17" />
+    
+      <meta name="theme-color" content="#CFE2FF" media="(prefers-color-scheme: light)" />
+      <meta name="theme-color" content="#031633" media="(prefers-color-scheme: dark)" />
+    
+    
+      <title>rpmget.utils module &mdash; rpmget 0.3.2.post17 documentation</title>
+    
+    <link rel="canonical" href="api/rpmget.utils" />
+          <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=55b73dce" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="../_static/sphinx-nefertiti-blue.min.css?v=8c7e6259" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="../_static/fonts/nunito/stylesheet.css?v=abf98f06" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="../_static/fonts/ubuntu-sans-mono/stylesheet.css?v=8616a587" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="../_static/pygments-dark.css?v=f21207c5" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="../_static/pygments-light.css?v=6c104457" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="../_static/bootstrap-icons.min.css?v=44730005" /><!-- add (1) -->
+        <link rel="index" title="Index" href="../genindex.html" />
+        <link rel="search" title="Search" href="../search.html" />
+        <link rel="top" title="rpmget 0.3.2.post17 documentation" href="#" />
+        <link rel="up" title="rpmget package" href="rpmget.html" />
+        <link rel="next" title="Changelog Generation" href="../dev/generate-changelog.html" />
+        <link rel="prev" title="rpmget.rpmget module" href="rpmget.rpmget.html" />
+    <style>
+      :root {
+        --nftt-body-font-family: "Nunito", var(--nftt-font-sans-serif) !important;
+        --nftt-font-monospace: "Ubuntu Sans Mono", var(--nftt-font-family-monospace) !important;
+        --nftt-project-name-font: var(--nftt-body-font-family);
+        --nftt-documentation-font: var(--nftt-body-font-family);
+        --nftt-doc-headers-font: "Georgia", var(--nftt-documentation-font);--nftt-monospace-font-size: .90rem;}
+
+      h1 *,
+      h2 *,
+      h3 *,
+      h4 *,
+      h5 *,
+      h6 * {
+        font-size: inherit;
+      }
+
+      .light pre,
+      .dark pre {
+        line-height: var(--nftt-pre-line-height, 140%);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="back-to-top-container" class="position-fixed start-50 translate-middle-x">
+      <button id="back-to-top" type="button" class="d-none btn btn-neutral btn-sm shadow px-4" data-bs-toggle="button">Back to top</button>
+    </div>
+    <header id="snftt-nav-bar" class="navbar navbar-expand-xl neutral nftt-navbar flex-column fixed-top">
+      <div class="skip-links container-fluid visually-hidden-focusable overflow-hidden justify-content-start flex-grow-1">
+        <div class="border-bottom mb-2 pb-2 w-100">
+          <a class="d-none d-md-inline-flex p-2 m-1" href="#sidebar-filter">Skip to index filter</a>
+          <a class="d-inline-flex p-2 m-1" href="#content">Skip to main content</a>
+        </div>
+      </div>
+      <nav class="container-xxl nftt-gutter flex-nowrap" aria-label="Main navigation">
+        <div class="nftt-navbar-toggler">
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Toggle documentation navigation">
+            <i class="bi bi-list"></i>
+          </button>
+        </div>
+          <a href="../index.html"
+             class="navbar-brand"
+          ><span class="brand-text">rpmget</span><span class="brand-short-text">rpmget</span></a>
+        
+        
+        <div class="d-flex d-xl-none">
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#nfttSearch" aria-controls="nfttSearch" aria-label="Search">
+            <i class="bi bi-search"></i>
+          </button>
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#nfttNavbar" aria-controls="nfttNavbar" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+        </div>
+        
+<div class="offcanvas-xl offcanvas-end flex-grow-1" tabindex="-1" id="nfttSearch" aria-labelledby="nfttSearchOffcanvasLabel" data-bs-scroll="true">
+  <div class="offcanvas-header px-4 pb-0">
+    <h5 class="offcanvas-title fw-bold" id="nfttSearchOffcanvasLabel">Search the documentation</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#nfttSearch"></button>
+  </div>
+  <div class="offcanvas-body p-4 pt-0 p-xl-0 ps-xl-4">
+    <hr class="d-xl-none text-white-50">
+    <ul class="navbar-nav flex-row align-items-center flex-wrap ms-md-auto">
+      <li class="nav-item col-12 col-xl-auto">
+        <form id="nftt-search-form" action="../search.html" method="get">
+          <div class="input-group">
+            <input type="text" name="q" class="form-control search-input" placeholder="Search" aria-label="Search" aria-describedby="button-search">
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+            <button class="btn btn-primary" type="submit" id="button-search" aria-label="Search"><i class="bi bi-search"></i></button>
+          </div>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="nfttNavbar" aria-labelledby="nfttNavbarOffcanvasLabel" data-bs-scroll="true">
+          <div class="offcanvas-header px-4 pb-0">
+            <div class="offcanvas-title navbar-brand" id="nfttNavbarOffcanvasLabel"><span class="brand-short-text">rpmget</span></div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#nfttNavbar"></button>
+          </div>
+          <div class="offcanvas-body p-4 pt-0 p-xl-0 px-xl-3">
+            <hr class="d-xl-none text-white-50">
+            <ul class="navbar-nav flex-row align-items-center flex-wrap ms-lg-auto">
+              
+              
+              <li class="nav-item col-12 col-xl-auto">
+                <a class="nav-link py-2 py-xl-0 px-0 px-xl-2" href="https://github.com/sarnold/rpmget" target="_blank" rel="noopener">
+                  <div class="d-flex align-items-center">
+                    <div class="me-2">
+                      <i class="bi bi-git size-24"></i>
+                    </div>
+                    <div class="repo d-flex flex-column align-items-center" data-snftt-repo-url="https://github.com/sarnold/rpmget">
+                      rpmget
+                      <div class="d-flex justify-content-center" data-snftt-repo-metrics>
+                        <span class="pe-2 d-flex justify-content-center align-items-center">
+                          <i class="bi bi-tag size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-tag></span>
+                        </span>
+                        <span class="pe-2 d-flex justify-content-center align-items-center">
+                          <i class="bi bi-star size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-stars></span>
+                        </span>
+                        <span class="d-flex justify-content-center align-items-center">
+                          <i class="bi bi-diagram-2 size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-forks></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+                <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+                <hr class="d-xl-none text-white-50">
+              </li>
+              
+              
+  <li class="nav-item dropdown">
+    <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-version" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Select version">
+      <span id="snftt-version-text" class="d-xl-none">rpmget</span>
+      <span class="ms-2" data-snftt-version-active="latest">latest</span>
+    </a>
+    
+    <ul class="dropdown-menu dropdown-menu-end dropdown-limit-max-height" aria-labelledby="snftt-version-text" id="versions-dropdown-menu">
+      <li>
+        <h6 class="dropdown-header">Versions</h6>
+      </li>
+    </ul>
+  </li>
+  <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+    <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+    <hr class="d-xl-none text-white-50">
+  </li>
+
+              
+  <!-- colorssets-dropdown.html -->
+  <li class="nav-item dropdown">
+    <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-color" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Change base color">
+      <i class="bi bi-palette"></i>
+      <span id="snftt-color-text" class="d-xl-none ms-2">Change base color</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="snftt-color-text">
+      <li>
+        <h6 class="dropdown-header">Change base color</h6>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center active" data-snftt-colorset="blue" href="#" aria-pressed="false">
+          <span class="blue">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Blue</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="indigo" href="#" aria-pressed="false">
+          <span class="indigo">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Indigo</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="purple" href="#" aria-pressed="false">
+          <span class="purple">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Purple</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="pink" href="#" aria-pressed="false">
+          <span class="pink">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Pink</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="red" href="#" aria-pressed="false">
+          <span class="red">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Red</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="orange" href="#" aria-pressed="false">
+          <span class="orange">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Orange</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="yellow" href="#" aria-pressed="false">
+          <span class="yellow">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Yellow</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="green" href="#" aria-pressed="false">
+          <span class="green">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Green</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="teal" href="#" aria-pressed="false">
+          <span class="teal">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Teal</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="default" href="#" aria-pressed="false">
+          <span class="cyan">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Cyan</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li><hr class="dropdown-divider" /></li>
+      <li>
+        <h6 class="dropdown-header">Header style</h6>
+      </li>
+      <li>
+        <a class="dropdown-item d-flex align-items-center active current" data-snftt-colorset-neutral="on" href="#" aria-pressed="false">
+          <i class="bi bi-noise-reduction"></i>
+          <span class="ms-3">Neutral</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+    <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+    <hr class="d-lg-none text-white-50">
+  </li>
+
+              
+              <!-- lightdark-dropdown.html -->
+<li class="nav-item dropdown">
+  <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-luz" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Change appearance">
+    <i class="bi bi-circle-half" data-snftt-luz-icon-active></i>
+    <span id="snftt-luz-text" class="d-xl-none ms-2">Change appearance</span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="snftt-luz-text">
+    <li>
+      <h6 class="dropdown-header">Change appearance</h6>
+    </li>
+    <li>
+      <a class="dropdown-item d-flex align-items-center" data-snftt-luz="light" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-sun" data-snftt-luz-icon="light"></i>
+        </span>
+        <span class="ms-3">Light</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item d-flex align-items-center" data-snftt-luz="dark" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-moon-stars" data-snftt-luz-icon="dark"></i>
+        </span>
+        <span class="ms-3">Dark</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item current d-flex align-items-center" data-snftt-luz="default" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-circle-half" data-snftt-luz-icon="default"></i>
+        </span>
+        <span class="ms-3">Automatic</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+  </ul>
+</li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
+    </header>
+
+    <div class="container-fluid flex-grow-1">
+      <div class="nftt-gutter nftt-page">
+        <aside class="nftt-sidebar ">
+          <div class="nftt-sidebar-content">
+            
+            <div class="title d-none d-xl-none">
+              <i class="bi bi-book"></i>&nbsp;&nbsp;<span>Index</span>
+            </div>
+            <div id="sidebar" tabindex="-1" class="offcanvas-xl offcanvas-start" aria-labelledby="nfttSidebarOffcanvasLabel">
+                <!-- sidebartemplate: "globaltoc.html" --><div class="offcanvas-header border-bottom">
+  <h5 class="offcanvas-title fw-bold" id="nfttSidebarOffcanvasLabel">
+    Index
+  </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#sidebar"></button>
+</div>
+
+<div class="offcanvas-body">
+  <nav class="toc" aria-label="Main menu">
+    <div class="mb-3 p-1 pb-4 border-bottom">
+      <input id="sidebar-filter" type="text" name="filter" class="form-control form-control-sm" placeholder="index filter" aria-label="index filter">
+    </div>
+    <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../ds/reqs_tree.html">1.0 Requirements {#REQ001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/sw_design.html">1.0 Design Elements {#SDD001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../ds/unit_tests.html">1.0 Automated Tests {#TST001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../README.html">RPMGet</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">rpmget</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="rpmget.html">rpmget package</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="rpmget.rpmget.html">rpmget.rpmget module</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">rpmget.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/generate-changelog.html">Changelog Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/pre-commit-config.html">Contents of the <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/pre-commit-usage.html">Using Pre-Commit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../CHANGELOG.html">Changelog</a></li>
+</ul>
+
+  </nav>
+  <template data-toggle-item-template>
+    <button class="btn btn-sm btn-link toctree-expand" type="button">
+      <i class="bi bi-caret-right"></i>
+      <span class="visually-hidden">Toggle menu contents</span>
+    </button>
+  </template>
+</div>
+            </div>
+            
+          </div>
+        </aside>
+        <article id="content" class="nftt-content" role="main">
+          <div><div class="d-flex flex-row justify-content-between">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="../index.html">Start</a></li>
+        <li class="breadcrumb-item"><a href="modules.html">rpmget</a></li>
+        <li class="breadcrumb-item"><a href="rpmget.html">rpmget package</a></li>
+      <li class="breadcrumb-item active" aria-current="page">rpmget.utils module</li>
+    </ol>
+  </nav>
+  
+    <div class="fs085">
+        <a href="../_sources/api/rpmget.utils.rst.txt"  rel="nofollow" aria-label="Show source of this document"><i class="bi bi-file-earmark-code"></i></a>
+    </div>
+  
+</div>
+            
+    <section id="module-rpmget.utils">
+<span id="rpmget-utils-module"></span><h1>rpmget.utils module<a class="headerlink" href="#module-rpmget.utils" title="Link to this heading">¶</a></h1>
+<p>Utility functions.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.check_for_rpm">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">check_for_rpm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pgm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rpm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#check_for_rpm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.check_for_rpm" title="Link to this definition">¶</a></dt>
+<dd><p>Make sure we can find the <code class="docutils literal notranslate"><span class="pre">rpm</span></code> binary in the user environment
+and return a path string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>program path string</p>
+</dd>
+<dt class="field-even">Parameters<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>pgm</strong> (<em>str</em>)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.compare_file_data">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">compare_file_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#compare_file_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.compare_file_data" title="Link to this definition">¶</a></dt>
+<dd><p>Compare two dictionaries and return the difference result.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old</strong> (<em>Dict</em>) – old dict</p></li>
+<li><p><strong>new</strong> (<em>Dict</em>) – new dict</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>any differences found</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Dict</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.compare_manifest_data">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">compare_manifest_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#compare_manifest_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.compare_manifest_data" title="Link to this definition">¶</a></dt>
+<dd><p>Compare full manifest data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old</strong> (<em>Dict</em>) – manifest data</p></li>
+<li><p><strong>new</strong> (<em>Dict</em>) – manifest data</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>List</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.copy_rpms">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">copy_rpms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src_dir</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst_dir</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#copy_rpms"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.copy_rpms" title="Link to this definition">¶</a></dt>
+<dd><p>Copy .rpm globs while preserving arch dirs. This now replicates what
+glob.glob(root_dir=src_dir) does. Stem directories are each rpm tree
+with rpm files, ie SRPMS and RPMS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>src_dir</strong> (<em>str</em>) – source dir is top_dir with stem</p></li>
+<li><p><strong>dst_dir</strong> (<em>str</em>) – destination dir is repo_dir with stem</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.create_manifest_data">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">create_manifest_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#create_manifest_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.create_manifest_data" title="Link to this definition">¶</a></dt>
+<dd><p>Create new manifest data from a list of downloaded files and return
+a nested dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – list of downloaded filenames</p></li>
+<li><p><strong>cfile</strong> (<em>str</em>) – matching config filename</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>manifest data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Dict</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.download_progress_bin">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">download_progress_bin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mdata</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#download_progress_bin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.download_progress_bin" title="Link to this definition">¶</a></dt>
+<dd><p>Download a single binary with progress meter and default timeout.
+Create arch dir or top_dir depending on layout setting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<em>str</em>) – URL to download</p></li>
+<li><p><strong>dst</strong> (<em>str</em>) – top-level destination directory</p></li>
+<li><p><strong>layout</strong> (<em>str</em>) – config layout</p></li>
+<li><p><strong>timeout</strong> (<em>float</em>) – httpx client timeout</p></li>
+<li><p><strong>mdata</strong> (<em>Dict</em>) – manifest data if available</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>name of downloaded file</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.get_file_data">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#get_file_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.get_file_data" title="Link to this definition">¶</a></dt>
+<dd><p>Get manifest data for a single rpm file from input path and return a
+dictionary full of metadata. Current keys are given below. This
+implements file metadata portion of REQ012.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – file target</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>file metadata</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Tuple</em>[str, <em>Dict</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.get_file_hash">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_hash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#get_file_hash"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.get_file_hash" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – file target</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>file digest using sha256</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.get_file_mtime">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">get_file_mtime</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#get_file_mtime"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.get_file_mtime" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – file target</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>formatted time string</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.get_filelist">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">get_filelist</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dirname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resolve</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fileglob</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'*.rpm'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#get_filelist"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.get_filelist" title="Link to this definition">¶</a></dt>
+<dd><p>Get path objects matching <code class="docutils literal notranslate"><span class="pre">fileglob</span></code> starting at <code class="docutils literal notranslate"><span class="pre">dirname</span></code> and
+return a list of resolved path strings of any files found. Set the
+<code class="docutils literal notranslate"><span class="pre">resolve</span></code> parameter to False to return relative paths when input
+path is relative.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dirname</strong> (<em>str</em>) – directory name to start search in</p></li>
+<li><p><strong>fileglob</strong> (<em>str</em>) – extension of the form <code class="docutils literal notranslate"><span class="pre">*.&lt;ext&gt;</span></code></p></li>
+<li><p><strong>resolve</strong> (<em>bool</em>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>file path strings</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>List</em>[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.get_user_cachedir">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">get_user_cachedir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#get_user_cachedir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.get_user_cachedir" title="Link to this definition">¶</a></dt>
+<dd><p>Return user cache directory per platform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>user_cache_dir path as string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.load_manifest">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">load_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#load_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.load_manifest" title="Link to this definition">¶</a></dt>
+<dd><p>If available, load a manifest file <em>before</em> config loop run.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cfile</strong> (<em>str</em>) – matching config filename</p></li>
+<li><p><strong>temp_path</strong> (<em>str</em>) – use temp_path if provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><em>Dict</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.manage_repo">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">manage_repo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">debug</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#manage_repo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.manage_repo" title="Link to this definition">¶</a></dt>
+<dd><p>Create or update rpm repository using createrepo tool. Requires an
+existing rpm tree with one or more packages. Satisfies REQ009.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>config</strong> (<a class="reference internal" href="rpmget.html#rpmget.CfgParser" title="rpmget.CfgParser"><em>CfgParser</em></a>) – loaded CfgParser instance</p></li>
+<li><p><strong>debug</strong> (<em>bool</em>) – enables verbose on <code class="docutils literal notranslate"><span class="pre">repo_tool</span></code></p></li>
+<li><p><strong>temp_path</strong> (<em>Path</em><em> | </em><em>None</em>) – prepended to config paths (mainly for testing)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.process_file_manifest">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">process_file_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">files</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#process_file_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.process_file_manifest" title="Link to this definition">¶</a></dt>
+<dd><p>Process manifest file after successful config loop run (where success
+means at least one rpm file was downloaded). This is the main calling
+function for meeting REQ011.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>files</strong> (<em>List</em><em>[</em><em>str</em><em>]</em>) – list of downloaded filenames</p></li>
+<li><p><strong>cfile</strong> (<em>str</em>) – matching config filename</p></li>
+<li><p><strong>temp_path</strong> (<em>str</em>) – use temp_path if provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>list of differences</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>List</em>[<em>Dict</em>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.read_manifest">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">read_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mfile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#read_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.read_manifest" title="Link to this definition">¶</a></dt>
+<dd><p>Read a manifest file and return the data. Implements reading portion of
+REQ013 JSON requirement</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mfile</strong> (<em>Path</em>) – manifest file</p></li>
+<li><p><strong>temp_path</strong> (<em>str</em>) – use temp_path if provided</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>manifest data</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Dict</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.wrap_file_manifest">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">wrap_file_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cfgname</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#wrap_file_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.wrap_file_manifest" title="Link to this definition">¶</a></dt>
+<dd><p>Wrap file data for json export.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fdata</strong> (<em>Dict</em><em>[</em><em>str</em><em>, </em><em>Dict</em><em>]</em>) – list of manifest dicts</p></li>
+<li><p><strong>cfgname</strong> (<em>str</em>) – parent config name</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>data for json</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><em>Dict</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rpmget.utils.write_manifest">
+<span class="sig-prename descclassname"><span class="pre">rpmget.utils.</span></span><span class="sig-name descname"><span class="pre">write_manifest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mdata</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mfile</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/rpmget/utils.html#write_manifest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#rpmget.utils.write_manifest" title="Link to this definition">¶</a></dt>
+<dd><p>Write a new manifest file where the name is derived from the
+associated config file name. Implements writing portion of
+REQ013 JSON requirement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdata</strong> (<em>Dict</em>) – manifest data</p></li>
+<li><p><strong>mfile</strong> (<em>Path</em>) – manifest file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+</div>
+        </article>
+        <aside class="nftt-toc my-3">
+          
+          <div class="my-sm-1 my-lg-0 ps-xl-3 text-muted">
+            <button class="btn btn-link p-lg-0 mb-2 mb-lg-0 text-decoration-none nftt-toc-toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#tocContents" aria-expanded="false" aria-controls="tocContents"
+            >On this page <i class="ms-2 bi bi-chevron-expand"></i></button>
+            <div class="title d-none d-lg-block">
+              <i class="bi bi-file-earmark-text"></i>&nbsp;&nbsp;<span class="small">On this page</span>
+            </div>
+            <div class="collapse nftt-toc-collapse" id="tocContents">
+              <nav id="TableOfContents">
+                <ul>
+<li><a class="reference internal" href="#">rpmget.utils module</a><ul>
+<li><a class="reference internal" href="#rpmget.utils.check_for_rpm"><code class="docutils literal notranslate"><span class="pre">check_for_rpm()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.compare_file_data"><code class="docutils literal notranslate"><span class="pre">compare_file_data()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.compare_manifest_data"><code class="docutils literal notranslate"><span class="pre">compare_manifest_data()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.copy_rpms"><code class="docutils literal notranslate"><span class="pre">copy_rpms()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.create_manifest_data"><code class="docutils literal notranslate"><span class="pre">create_manifest_data()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.download_progress_bin"><code class="docutils literal notranslate"><span class="pre">download_progress_bin()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.get_file_data"><code class="docutils literal notranslate"><span class="pre">get_file_data()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.get_file_hash"><code class="docutils literal notranslate"><span class="pre">get_file_hash()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.get_file_mtime"><code class="docutils literal notranslate"><span class="pre">get_file_mtime()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.get_filelist"><code class="docutils literal notranslate"><span class="pre">get_filelist()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.get_user_cachedir"><code class="docutils literal notranslate"><span class="pre">get_user_cachedir()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.load_manifest"><code class="docutils literal notranslate"><span class="pre">load_manifest()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.manage_repo"><code class="docutils literal notranslate"><span class="pre">manage_repo()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.process_file_manifest"><code class="docutils literal notranslate"><span class="pre">process_file_manifest()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.read_manifest"><code class="docutils literal notranslate"><span class="pre">read_manifest()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.wrap_file_manifest"><code class="docutils literal notranslate"><span class="pre">wrap_file_manifest()</span></code></a></li>
+<li><a class="reference internal" href="#rpmget.utils.write_manifest"><code class="docutils literal notranslate"><span class="pre">write_manifest()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+              </nav>
+            </div>
+          </div>
+          
+        </aside>
+      </div>
+    </div>
+
+    <footer class="nftt-footer">
+      <nav id="paginator" class="py-4" aria-label="Documentation navigation">
+    <div class="container">
+      <ul class="pagination justify-content-between mb-0"><li class="d-flex page-item">
+            <a href="rpmget.rpmget.html" class="d-flex px-5 align-items-end" rel="prev" aria-label="Previous page: rpmget.rpmget module">
+              <span class="prev-page"><i class="bi bi-caret-left"></i></span>
+              <div class="d-none d-sm-flex flex-column">
+                <span class="text-small text-start text-muted">Previous</span>
+                <span class="underline">rpmget.rpmget module</span>
+              </div>
+            </a>
+          </li>
+        <li class="d-flex page-item ms-auto">
+            <a href="../dev/generate-changelog.html" class="d-flex px-5 align-items-end" rel="next" aria-label="Next page: Changelog Generation">
+              <div class="d-flex flex-column">
+                <span class="text-small text-end text-start text-muted">Next</span>
+                <span class="underline">Changelog Generation</span>
+              </div>
+              <span class="next-page"><i class="bi bi-caret-right"></i></span>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </nav>
+
+      <div class="py-5 px-4 px-md-3">
+  <div class="container">
+    
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <a class="brand-text d-inline-flex align-items-center mb-2 text-decoration-none" href="/" aria-label="rpmget">
+          <span class="fs-6 fw-bold">rpmget</span>
+        </a>
+        
+          <ul class="list-unstyled small text-muted">
+            <li>2025 Stephen Arnold</li>
+          </ul>
+        
+        <div class="built-with pt-2">
+          Built with <a href="http://sphinx-doc.org">Sphinx 7.4.7</a> and <a href="https://github.com/danirus/sphinx-nefertiti">Nefertiti 0.9.1</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    </footer>
+
+    <div class="modal modal-xl fade" id="nftt-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen-xxl-down modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="nftt-modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="nftt-modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <script src="../_static/documentation_options.js?v=5ec7d421"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/colorsets.js?v=58f89e02"></script>
+    <script src="../_static/docs-versions.js?v=c7fa2eac"></script>
+    <script src="../_static/sphinx-nefertiti.min.js?v=732b5b51"></script>
+    <script src="../_static/bootstrap.bundle.min.js?v=e96d90d1"></script>
+  </body>
+</html>

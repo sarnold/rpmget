@@ -1,0 +1,16 @@
+rpmget package
+==============
+
+.. automodule:: rpmget
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   rpmget.rpmget
+   rpmget.utils

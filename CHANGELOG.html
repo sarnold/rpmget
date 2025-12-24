@@ -1,0 +1,869 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="colorset-reset" content="86400000" />
+    <meta name="docsearch:name" content="rpmget" />
+    <meta name="docsearch:package_type" content="" />
+    <meta name="docsearch:release" content="0.3.2.post17" />
+    <meta name="docsearch:version" content="0.3.2.post17" />
+    
+      <meta name="theme-color" content="#CFE2FF" media="(prefers-color-scheme: light)" />
+      <meta name="theme-color" content="#031633" media="(prefers-color-scheme: dark)" />
+    
+    
+      <title>Changelog &mdash; rpmget 0.3.2.post17 documentation</title>
+    
+    <link rel="canonical" href="CHANGELOG" />
+          <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=55b73dce" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/sphinx-nefertiti-blue.min.css?v=8c7e6259" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/fonts/nunito/stylesheet.css?v=abf98f06" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/fonts/ubuntu-sans-mono/stylesheet.css?v=8616a587" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/pygments-dark.css?v=f21207c5" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/pygments-light.css?v=6c104457" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/bootstrap-icons.min.css?v=44730005" /><!-- add (1) -->
+        <link rel="index" title="Index" href="genindex.html" />
+        <link rel="search" title="Search" href="search.html" />
+        <link rel="top" title="rpmget 0.3.2.post17 documentation" href="#" />
+        <link rel="prev" title="Using Pre-Commit" href="dev/pre-commit-usage.html" />
+    <style>
+      :root {
+        --nftt-body-font-family: "Nunito", var(--nftt-font-sans-serif) !important;
+        --nftt-font-monospace: "Ubuntu Sans Mono", var(--nftt-font-family-monospace) !important;
+        --nftt-project-name-font: var(--nftt-body-font-family);
+        --nftt-documentation-font: var(--nftt-body-font-family);
+        --nftt-doc-headers-font: "Georgia", var(--nftt-documentation-font);--nftt-monospace-font-size: .90rem;}
+
+      h1 *,
+      h2 *,
+      h3 *,
+      h4 *,
+      h5 *,
+      h6 * {
+        font-size: inherit;
+      }
+
+      .light pre,
+      .dark pre {
+        line-height: var(--nftt-pre-line-height, 140%);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="back-to-top-container" class="position-fixed start-50 translate-middle-x">
+      <button id="back-to-top" type="button" class="d-none btn btn-neutral btn-sm shadow px-4" data-bs-toggle="button">Back to top</button>
+    </div>
+    <header id="snftt-nav-bar" class="navbar navbar-expand-xl neutral nftt-navbar flex-column fixed-top">
+      <div class="skip-links container-fluid visually-hidden-focusable overflow-hidden justify-content-start flex-grow-1">
+        <div class="border-bottom mb-2 pb-2 w-100">
+          <a class="d-none d-md-inline-flex p-2 m-1" href="#sidebar-filter">Skip to index filter</a>
+          <a class="d-inline-flex p-2 m-1" href="#content">Skip to main content</a>
+        </div>
+      </div>
+      <nav class="container-xxl nftt-gutter flex-nowrap" aria-label="Main navigation">
+        <div class="nftt-navbar-toggler">
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Toggle documentation navigation">
+            <i class="bi bi-list"></i>
+          </button>
+        </div>
+          <a href="index.html"
+             class="navbar-brand"
+          ><span class="brand-text">rpmget</span><span class="brand-short-text">rpmget</span></a>
+        
+        
+        <div class="d-flex d-xl-none">
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#nfttSearch" aria-controls="nfttSearch" aria-label="Search">
+            <i class="bi bi-search"></i>
+          </button>
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#nfttNavbar" aria-controls="nfttNavbar" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+        </div>
+        
+<div class="offcanvas-xl offcanvas-end flex-grow-1" tabindex="-1" id="nfttSearch" aria-labelledby="nfttSearchOffcanvasLabel" data-bs-scroll="true">
+  <div class="offcanvas-header px-4 pb-0">
+    <h5 class="offcanvas-title fw-bold" id="nfttSearchOffcanvasLabel">Search the documentation</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#nfttSearch"></button>
+  </div>
+  <div class="offcanvas-body p-4 pt-0 p-xl-0 ps-xl-4">
+    <hr class="d-xl-none text-white-50">
+    <ul class="navbar-nav flex-row align-items-center flex-wrap ms-md-auto">
+      <li class="nav-item col-12 col-xl-auto">
+        <form id="nftt-search-form" action="search.html" method="get">
+          <div class="input-group">
+            <input type="text" name="q" class="form-control search-input" placeholder="Search" aria-label="Search" aria-describedby="button-search">
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+            <button class="btn btn-primary" type="submit" id="button-search" aria-label="Search"><i class="bi bi-search"></i></button>
+          </div>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="nfttNavbar" aria-labelledby="nfttNavbarOffcanvasLabel" data-bs-scroll="true">
+          <div class="offcanvas-header px-4 pb-0">
+            <div class="offcanvas-title navbar-brand" id="nfttNavbarOffcanvasLabel"><span class="brand-short-text">rpmget</span></div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#nfttNavbar"></button>
+          </div>
+          <div class="offcanvas-body p-4 pt-0 p-xl-0 px-xl-3">
+            <hr class="d-xl-none text-white-50">
+            <ul class="navbar-nav flex-row align-items-center flex-wrap ms-lg-auto">
+              
+              
+              <li class="nav-item col-12 col-xl-auto">
+                <a class="nav-link py-2 py-xl-0 px-0 px-xl-2" href="https://github.com/sarnold/rpmget" target="_blank" rel="noopener">
+                  <div class="d-flex align-items-center">
+                    <div class="me-2">
+                      <i class="bi bi-git size-24"></i>
+                    </div>
+                    <div class="repo d-flex flex-column align-items-center" data-snftt-repo-url="https://github.com/sarnold/rpmget">
+                      rpmget
+                      <div class="d-flex justify-content-center" data-snftt-repo-metrics>
+                        <span class="pe-2 d-flex justify-content-center align-items-center">
+                          <i class="bi bi-tag size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-tag></span>
+                        </span>
+                        <span class="pe-2 d-flex justify-content-center align-items-center">
+                          <i class="bi bi-star size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-stars></span>
+                        </span>
+                        <span class="d-flex justify-content-center align-items-center">
+                          <i class="bi bi-diagram-2 size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-forks></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+                <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+                <hr class="d-xl-none text-white-50">
+              </li>
+              
+              
+  <li class="nav-item dropdown">
+    <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-version" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Select version">
+      <span id="snftt-version-text" class="d-xl-none">rpmget</span>
+      <span class="ms-2" data-snftt-version-active="latest">latest</span>
+    </a>
+    
+    <ul class="dropdown-menu dropdown-menu-end dropdown-limit-max-height" aria-labelledby="snftt-version-text" id="versions-dropdown-menu">
+      <li>
+        <h6 class="dropdown-header">Versions</h6>
+      </li>
+    </ul>
+  </li>
+  <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+    <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+    <hr class="d-xl-none text-white-50">
+  </li>
+
+              
+  <!-- colorssets-dropdown.html -->
+  <li class="nav-item dropdown">
+    <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-color" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Change base color">
+      <i class="bi bi-palette"></i>
+      <span id="snftt-color-text" class="d-xl-none ms-2">Change base color</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="snftt-color-text">
+      <li>
+        <h6 class="dropdown-header">Change base color</h6>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center active" data-snftt-colorset="blue" href="#" aria-pressed="false">
+          <span class="blue">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Blue</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="indigo" href="#" aria-pressed="false">
+          <span class="indigo">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Indigo</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="purple" href="#" aria-pressed="false">
+          <span class="purple">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Purple</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="pink" href="#" aria-pressed="false">
+          <span class="pink">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Pink</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="red" href="#" aria-pressed="false">
+          <span class="red">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Red</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="orange" href="#" aria-pressed="false">
+          <span class="orange">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Orange</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="yellow" href="#" aria-pressed="false">
+          <span class="yellow">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Yellow</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="green" href="#" aria-pressed="false">
+          <span class="green">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Green</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="teal" href="#" aria-pressed="false">
+          <span class="teal">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Teal</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="default" href="#" aria-pressed="false">
+          <span class="cyan">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Cyan</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li><hr class="dropdown-divider" /></li>
+      <li>
+        <h6 class="dropdown-header">Header style</h6>
+      </li>
+      <li>
+        <a class="dropdown-item d-flex align-items-center active current" data-snftt-colorset-neutral="on" href="#" aria-pressed="false">
+          <i class="bi bi-noise-reduction"></i>
+          <span class="ms-3">Neutral</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+    <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+    <hr class="d-lg-none text-white-50">
+  </li>
+
+              
+              <!-- lightdark-dropdown.html -->
+<li class="nav-item dropdown">
+  <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-luz" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Change appearance">
+    <i class="bi bi-circle-half" data-snftt-luz-icon-active></i>
+    <span id="snftt-luz-text" class="d-xl-none ms-2">Change appearance</span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="snftt-luz-text">
+    <li>
+      <h6 class="dropdown-header">Change appearance</h6>
+    </li>
+    <li>
+      <a class="dropdown-item d-flex align-items-center" data-snftt-luz="light" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-sun" data-snftt-luz-icon="light"></i>
+        </span>
+        <span class="ms-3">Light</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item d-flex align-items-center" data-snftt-luz="dark" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-moon-stars" data-snftt-luz-icon="dark"></i>
+        </span>
+        <span class="ms-3">Dark</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item current d-flex align-items-center" data-snftt-luz="default" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-circle-half" data-snftt-luz-icon="default"></i>
+        </span>
+        <span class="ms-3">Automatic</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+  </ul>
+</li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
+    </header>
+
+    <div class="container-fluid flex-grow-1">
+      <div class="nftt-gutter nftt-page">
+        <aside class="nftt-sidebar ">
+          <div class="nftt-sidebar-content">
+            
+            <div class="title d-none d-xl-none">
+              <i class="bi bi-book"></i>&nbsp;&nbsp;<span>Index</span>
+            </div>
+            <div id="sidebar" tabindex="-1" class="offcanvas-xl offcanvas-start" aria-labelledby="nfttSidebarOffcanvasLabel">
+                <!-- sidebartemplate: "globaltoc.html" --><div class="offcanvas-header border-bottom">
+  <h5 class="offcanvas-title fw-bold" id="nfttSidebarOffcanvasLabel">
+    Index
+  </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#sidebar"></button>
+</div>
+
+<div class="offcanvas-body">
+  <nav class="toc" aria-label="Main menu">
+    <div class="mb-3 p-1 pb-4 border-bottom">
+      <input id="sidebar-filter" type="text" name="filter" class="form-control form-control-sm" placeholder="index filter" aria-label="index filter">
+    </div>
+    <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ds/reqs_tree.html">1.0 Requirements {#REQ001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ds/sw_design.html">1.0 Design Elements {#SDD001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ds/unit_tests.html">1.0 Automated Tests {#TST001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="README.html">RPMGet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">rpmget</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/rpmget.html">rpmget package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/rpmget.rpmget.html">rpmget.rpmget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/rpmget.utils.html">rpmget.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dev/generate-changelog.html">Changelog Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/pre-commit-config.html">Contents of the <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/pre-commit-usage.html">Using Pre-Commit</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Changelog</a></li>
+</ul>
+
+  </nav>
+  <template data-toggle-item-template>
+    <button class="btn btn-sm btn-link toctree-expand" type="button">
+      <i class="bi bi-caret-right"></i>
+      <span class="visually-hidden">Toggle menu contents</span>
+    </button>
+  </template>
+</div>
+            </div>
+            
+          </div>
+        </aside>
+        <article id="content" class="nftt-content" role="main">
+          <div><div class="d-flex flex-row justify-content-between">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Start</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Changelog</li>
+    </ol>
+  </nav>
+  
+    <div class="fs085">
+        <a href="_sources/CHANGELOG.rst.txt"  rel="nofollow" aria-label="Show source of this document"><i class="bi bi-file-earmark-code"></i></a>
+    </div>
+  
+</div>
+            
+    <section id="changelog">
+<h1>Changelog<a class="headerlink" href="#changelog" title="Link to this heading">¶</a></h1>
+<section id="id1">
+<h2>0.3.3 (2025-10-27)<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h2>
+<section id="changes">
+<h3>Changes<a class="headerlink" href="#changes" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Switch to sphinx-nefertiti theme, let myst render mermaid. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>update sphinx docs config, remove rendered svg file, go with mermaid
+source in details block instead of figure caption for now</p></li>
+<li><p>add readme blurb about rpm packages and built docs</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>0.3.2 (2025-10-01)<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h2>
+<section id="fixes">
+<h3>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Adjust minimum version of cerberus dep. [Stephen L Arnold]</p>
+<ul>
+<li><p>we need the lowest common version between el9, centos, rocky</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="id3">
+<h2>0.3.1 (2025-10-01)<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h2>
+<section id="id4">
+<h3>Changes<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Cleanup coverage and config bits, cov-report term is misleading.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>seems like pytest-cov has some issues with coverage.py <em>and</em> where
+it gets config data from</p></li>
+</ul>
+</li>
+<li><p>Backport package metadata to setup.cfg for el9 rpm packaging. [Stephen
+L Arnold]</p></li>
+</ul>
+</section>
+</section>
+<section id="id5">
+<h2>0.3.0 (2025-09-28)<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h2>
+<section id="new">
+<h3>New<a class="headerlink" href="#new" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Add more manifest checking support, refactor some tests and utils.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>pass manifest data from main if available so downloader can check
+file size against HEAD request content length so we can skip the
+download for matching files</p></li>
+<li><p>updat tests, make sure logging output includes skipped files,
+cleanup docstrings</p></li>
+</ul>
+</li>
+<li><p>Add platformdirs and munch deps, support per-cfg manifest files.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>add code for file metadata and saving json manifest to user cache dir</p></li>
+<li><p>change signature for get_filelist, make resolved return paths optional
+when input dirname arg is relative</p></li>
+<li><p>add tests for new code, cleanup older test files</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id6">
+<h3>Changes<a class="headerlink" href="#id6" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Update readme and changelog, adjust logging for quiet arg. [Stephen L
+Arnold]</p></li>
+<li><p>Update doorstop doc bits, annotate docstrings and tests. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>add reqs and link tests for manifest file processing</p></li>
+</ul>
+</li>
+<li><p>Update changelog for next release. [Stephen L Arnold]</p></li>
+<li><p>Support direct downloading of URLs without a config file. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>make sure URL args are validated before being passed to the downloader</p></li>
+<li><p>update docs, docstrings, requirements, and tests</p></li>
+</ul>
+</li>
+<li><p>Expose httpx session timeout in required config section. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>update docs, docstrings, test data, validation schema</p></li>
+</ul>
+</li>
+<li><p>Add createrepo binary and arg strings to config, update reqs. [Stephen
+L Arnold]</p>
+<ul>
+<li><p>also update default and example configs, update tests and docstrings</p></li>
+</ul>
+</li>
+<li><p>Refactor download context, invert check, remove while loop. [Stephen L
+Arnold]</p></li>
+</ul>
+</section>
+<section id="id7">
+<h3>Fixes<a class="headerlink" href="#id7" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Only skip downloading if all 3 sizes match, otherwise download.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>complete manifest handling, update to most recent if metadata changes</p></li>
+<li><p>warn on changes, assume versioned RPM file is canonical source</p></li>
+<li><p>update log messages and adjust logging levels</p></li>
+</ul>
+</li>
+<li><p>Add readme note about using tree layout download <em>before</em> update.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>this should close issue #23 since those commands should not be
+tightly coupled</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="other">
+<h3>Other<a class="headerlink" href="#other" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>[create-pull-request] automated change. [github-actions[bot]]</p></li>
+</ul>
+</section>
+</section>
+<section id="id8">
+<h2>0.2.0 (2025-09-06)<a class="headerlink" href="#id8" title="Link to this heading">¶</a></h2>
+<section id="id9">
+<h3>New<a class="headerlink" href="#id9" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Add support for createrepo_c repo maintenance. [Stephen L Arnold]</p>
+<ul>
+<li><p>update project docs, add related code and tests</p></li>
+<li><p>add required default config item to define repo_dir</p></li>
+<li><p>update bandit config, allow safe subprocess usage</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="id10">
+<h3>Changes<a class="headerlink" href="#id10" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Add and update doorstop doc items, links, and references. [Stephen L
+Arnold]</p></li>
+</ul>
+</section>
+<section id="id11">
+<h3>Fixes<a class="headerlink" href="#id11" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Improve error handling, fix example config, add a test. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>check response status code and content length</p></li>
+<li><p>remove empty/bogus files and return error string</p></li>
+<li><p>add a test for invalid (remote) file name/path</p></li>
+<li><p>not sure i like the while loop solution</p></li>
+</ul>
+</li>
+<li><p>Refactor httpx client bits, check for content, use file context.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>this cleaned up github release downloads, but also revealed some
+rpm file errors using the example config</p></li>
+</ul>
+</li>
+<li><p>Refactor manage_repo and update tests. [Stephen L Arnold]</p>
+<ul>
+<li><p>cleanup some readme, docstring, and reuse bits</p></li>
+</ul>
+</li>
+<li><p>Refactor copy_rpms to workaround missing glob args below py310.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>mark the createrepo_c tests as linux-only</p></li>
+</ul>
+</li>
+</ul>
+</section>
+</section>
+<section id="id12">
+<h2>0.1.0 (2025-08-24)<a class="headerlink" href="#id12" title="Link to this heading">¶</a></h2>
+<section id="id13">
+<h3>New<a class="headerlink" href="#id13" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Add processing loop function with a test, review SDD diagram chg.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>set minimum dep versions equal to el9 package versions</p></li>
+<li><p>fix release workflow, flesh out readme</p></li>
+<li><p>cleanup some config bits and doc strings</p></li>
+</ul>
+</li>
+<li><p>Create directory layout based on config options. [Stephen L Arnold]</p>
+<ul>
+<li><p>update validation schema to include allowed values</p></li>
+<li><p>add tests for create_layout</p></li>
+</ul>
+</li>
+<li><p>Add config file validation in self-test and commandline arg. [Stephen
+L Arnold]</p>
+<ul>
+<li><p>add baseline config validation using DEFAULT schema and url check</p></li>
+<li><p>add cerberus dep for validate function, add mypy config</p></li>
+<li><p>add validation tests for new function, add commandline arg, add
+config validation to self-test with logging output</p></li>
+</ul>
+</li>
+<li><p>Add main entrypoint with initial args, move cfg handling. [Stephen L
+Arnold]</p></li>
+<li><p>Add cfg file handling and tests, update def_config and tox envs.
+[Stephen L Arnold]</p></li>
+<li><p>Add ConfigParser subclass and default ini cfg string with tests.
+[Stephen L Arnold]</p>
+<ul>
+<li><p>CfgParser() sets REQ002 defaults but still accepts the normal options</p></li>
+</ul>
+</li>
+<li><p>Add url fetching and file finding with tests, update readme. [Stephen
+L Arnold]</p></li>
+</ul>
+</section>
+<section id="id14">
+<h3>Changes<a class="headerlink" href="#id14" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Update changelog for release, tweak config. [Stephen L Arnold]</p></li>
+<li><p>Add full example cfg for toolbox repo, cleanup reqs text. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>remove unused dependency from packaging and swd doc</p></li>
+<li><p>(re)render dependency diagram and cleanup some doc strings</p></li>
+</ul>
+</li>
+<li><p>Add more cfg/url handling and tests, update doorstop docs. [Stephen L
+Arnold]</p></li>
+<li><p>Refactor validation bits and tests. [Stephen L Arnold]</p>
+<ul>
+<li><p>factor out url validation into its own function</p></li>
+<li><p>update tests and test data</p></li>
+</ul>
+</li>
+<li><p>Add more doorstop doc items, document layout reqs. [Stephen L Arnold]</p></li>
+<li><p>Add macros file creation in rpm tree mode. [Stephen L Arnold]</p>
+<ul>
+<li><p>mark create_macros test as linux only</p></li>
+</ul>
+</li>
+<li><p>Add/update more doorstop doc items and readme. [Stephen L Arnold]</p></li>
+<li><p>Expand reqs and swd docs, update sources for traceability. [Stephen L
+Arnold]</p></li>
+<li><p>Refactor argparse bits for testability, update docs. [Stephen L
+Arnold]</p></li>
+<li><p>Flesh out basic design items, link core bits to parent. [Stephen L
+Arnold]</p></li>
+<li><p>Required section name is now rpmget, update src and tests. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>we only validate [rpmget] section and any found URL values</p></li>
+<li><p>whether to use DEFAULT section is now a user choice</p></li>
+</ul>
+</li>
+<li><p>Close initial diagram PR and recycle for diagram updates. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>(re)review doorstop doc updates</p></li>
+</ul>
+</li>
+<li><p>Add more doorstop bits, flesh out doc tree. [Stephen L Arnold]</p>
+<ul>
+<li><p>add the doc and diagram processing scripts and target assets dirs</p></li>
+<li><p>update doc sources and tox, correct some typos, generate changelog</p></li>
+</ul>
+</li>
+<li><p>Cleanup some docstrings and log messages, update project files.
+[Stephen L Arnold]</p></li>
+<li><p>Cleanup entrypoint and type hints, add tests. [Stephen L Arnold]</p></li>
+<li><p>Revert ci platform matrix and mark tests. [Stephen L Arnold]</p>
+<ul>
+<li><p>skip rpm checks on non-linux platforms, allow other tests</p></li>
+</ul>
+</li>
+<li><p>Add pytest mark for network test, add check for rpm cmd. [Stephen L
+Arnold]</p>
+<ul>
+<li><p>add rpm dep install in github workflows, remove non-linux platforms</p></li>
+</ul>
+</li>
+<li><p>Update tox deps and pre-commit hooks, cleanup some lint. [Stephen L
+Arnold]</p></li>
+<li><p>Add doorstop parent document, update readme and workflow. [Stephen L
+Arnold]</p></li>
+</ul>
+</section>
+<section id="id15">
+<h3>Other<a class="headerlink" href="#id15" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>[create-pull-request] automated change. [github-actions[bot]]</p></li>
+<li><p>[create-pull-request] automated change. [github-actions[bot]]</p></li>
+</ul>
+</section>
+</section>
+<section id="id16">
+<h2>0.0.0 (2025-07-16)<a class="headerlink" href="#id16" title="Link to this heading">¶</a></h2>
+<section id="id17">
+<h3>Changes<a class="headerlink" href="#id17" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Initial un-template commit, add config for pep8speaks. [Stephen L
+Arnold]</p></li>
+</ul>
+</section>
+<section id="id18">
+<h3>Other<a class="headerlink" href="#id18" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Initial commit. [Steve Arnold]</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+</div>
+        </article>
+        <aside class="nftt-toc my-3">
+          
+          <div class="my-sm-1 my-lg-0 ps-xl-3 text-muted">
+            <button class="btn btn-link p-lg-0 mb-2 mb-lg-0 text-decoration-none nftt-toc-toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#tocContents" aria-expanded="false" aria-controls="tocContents"
+            >On this page <i class="ms-2 bi bi-chevron-expand"></i></button>
+            <div class="title d-none d-lg-block">
+              <i class="bi bi-file-earmark-text"></i>&nbsp;&nbsp;<span class="small">On this page</span>
+            </div>
+            <div class="collapse nftt-toc-collapse" id="tocContents">
+              <nav id="TableOfContents">
+                <ul>
+<li><a class="reference internal" href="#">Changelog</a><ul>
+<li><a class="reference internal" href="#id1">0.3.3 (2025-10-27)</a><ul>
+<li><a class="reference internal" href="#changes">Changes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id2">0.3.2 (2025-10-01)</a><ul>
+<li><a class="reference internal" href="#fixes">Fixes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id3">0.3.1 (2025-10-01)</a><ul>
+<li><a class="reference internal" href="#id4">Changes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id5">0.3.0 (2025-09-28)</a><ul>
+<li><a class="reference internal" href="#new">New</a></li>
+<li><a class="reference internal" href="#id6">Changes</a></li>
+<li><a class="reference internal" href="#id7">Fixes</a></li>
+<li><a class="reference internal" href="#other">Other</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id8">0.2.0 (2025-09-06)</a><ul>
+<li><a class="reference internal" href="#id9">New</a></li>
+<li><a class="reference internal" href="#id10">Changes</a></li>
+<li><a class="reference internal" href="#id11">Fixes</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id12">0.1.0 (2025-08-24)</a><ul>
+<li><a class="reference internal" href="#id13">New</a></li>
+<li><a class="reference internal" href="#id14">Changes</a></li>
+<li><a class="reference internal" href="#id15">Other</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#id16">0.0.0 (2025-07-16)</a><ul>
+<li><a class="reference internal" href="#id17">Changes</a></li>
+<li><a class="reference internal" href="#id18">Other</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </nav>
+            </div>
+          </div>
+          
+        </aside>
+      </div>
+    </div>
+
+    <footer class="nftt-footer">
+      <nav id="paginator" class="py-4" aria-label="Documentation navigation">
+    <div class="container">
+      <ul class="pagination justify-content-between mb-0"><li class="d-flex page-item">
+            <a href="dev/pre-commit-usage.html" class="d-flex px-5 align-items-end" rel="prev" aria-label="Previous page: Using Pre-Commit">
+              <span class="prev-page"><i class="bi bi-caret-left"></i></span>
+              <div class="d-none d-sm-flex flex-column">
+                <span class="text-small text-start text-muted">Previous</span>
+                <span class="underline">Using Pre-Commit</span>
+              </div>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </nav>
+
+      <div class="py-5 px-4 px-md-3">
+  <div class="container">
+    
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <a class="brand-text d-inline-flex align-items-center mb-2 text-decoration-none" href="/" aria-label="rpmget">
+          <span class="fs-6 fw-bold">rpmget</span>
+        </a>
+        
+          <ul class="list-unstyled small text-muted">
+            <li>2025 Stephen Arnold</li>
+          </ul>
+        
+        <div class="built-with pt-2">
+          Built with <a href="http://sphinx-doc.org">Sphinx 7.4.7</a> and <a href="https://github.com/danirus/sphinx-nefertiti">Nefertiti 0.9.1</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    </footer>
+
+    <div class="modal modal-xl fade" id="nftt-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen-xxl-down modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="nftt-modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="nftt-modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <script src="_static/documentation_options.js?v=5ec7d421"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/colorsets.js?v=58f89e02"></script>
+    <script src="_static/docs-versions.js?v=c7fa2eac"></script>
+    <script src="_static/sphinx-nefertiti.min.js?v=732b5b51"></script>
+    <script src="_static/bootstrap.bundle.min.js?v=e96d90d1"></script>
+  </body>
+</html>

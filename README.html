@@ -1,0 +1,859 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head>
+    <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="colorset-reset" content="86400000" />
+    <meta name="docsearch:name" content="rpmget" />
+    <meta name="docsearch:package_type" content="" />
+    <meta name="docsearch:release" content="0.3.2.post17" />
+    <meta name="docsearch:version" content="0.3.2.post17" />
+    
+      <meta name="theme-color" content="#CFE2FF" media="(prefers-color-scheme: light)" />
+      <meta name="theme-color" content="#031633" media="(prefers-color-scheme: dark)" />
+    
+    
+      <title>RPMGet &mdash; rpmget 0.3.2.post17 documentation</title>
+    
+    <link rel="canonical" href="README" />
+          <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=55b73dce" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/sphinx-nefertiti-blue.min.css?v=8c7e6259" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/fonts/nunito/stylesheet.css?v=abf98f06" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/fonts/ubuntu-sans-mono/stylesheet.css?v=8616a587" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/pygments-dark.css?v=f21207c5" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/pygments-light.css?v=6c104457" /><!-- add (1) -->
+          <link rel="stylesheet" type="text/css" href="_static/bootstrap-icons.min.css?v=44730005" /><!-- add (1) -->
+        <link rel="index" title="Index" href="genindex.html" />
+        <link rel="search" title="Search" href="search.html" />
+        <link rel="top" title="rpmget 0.3.2.post17 documentation" href="#" />
+        <link rel="next" title="rpmget" href="api/modules.html" />
+        <link rel="prev" title="1.0 Automated Tests {#TST001}" href="ds/unit_tests.html" />
+    <style>
+      :root {
+        --nftt-body-font-family: "Nunito", var(--nftt-font-sans-serif) !important;
+        --nftt-font-monospace: "Ubuntu Sans Mono", var(--nftt-font-family-monospace) !important;
+        --nftt-project-name-font: var(--nftt-body-font-family);
+        --nftt-documentation-font: var(--nftt-body-font-family);
+        --nftt-doc-headers-font: "Georgia", var(--nftt-documentation-font);--nftt-monospace-font-size: .90rem;}
+
+      h1 *,
+      h2 *,
+      h3 *,
+      h4 *,
+      h5 *,
+      h6 * {
+        font-size: inherit;
+      }
+
+      .light pre,
+      .dark pre {
+        line-height: var(--nftt-pre-line-height, 140%);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="back-to-top-container" class="position-fixed start-50 translate-middle-x">
+      <button id="back-to-top" type="button" class="d-none btn btn-neutral btn-sm shadow px-4" data-bs-toggle="button">Back to top</button>
+    </div>
+    <header id="snftt-nav-bar" class="navbar navbar-expand-xl neutral nftt-navbar flex-column fixed-top">
+      <div class="skip-links container-fluid visually-hidden-focusable overflow-hidden justify-content-start flex-grow-1">
+        <div class="border-bottom mb-2 pb-2 w-100">
+          <a class="d-none d-md-inline-flex p-2 m-1" href="#sidebar-filter">Skip to index filter</a>
+          <a class="d-inline-flex p-2 m-1" href="#content">Skip to main content</a>
+        </div>
+      </div>
+      <nav class="container-xxl nftt-gutter flex-nowrap" aria-label="Main navigation">
+        <div class="nftt-navbar-toggler">
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebar" aria-controls="sidebar" aria-label="Toggle documentation navigation">
+            <i class="bi bi-list"></i>
+          </button>
+        </div>
+          <a href="index.html"
+             class="navbar-brand"
+          ><span class="brand-text">rpmget</span><span class="brand-short-text">rpmget</span></a>
+        
+        
+        <div class="d-flex d-xl-none">
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#nfttSearch" aria-controls="nfttSearch" aria-label="Search">
+            <i class="bi bi-search"></i>
+          </button>
+          <button class="navbar-toggler p-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#nfttNavbar" aria-controls="nfttNavbar" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+        </div>
+        
+<div class="offcanvas-xl offcanvas-end flex-grow-1" tabindex="-1" id="nfttSearch" aria-labelledby="nfttSearchOffcanvasLabel" data-bs-scroll="true">
+  <div class="offcanvas-header px-4 pb-0">
+    <h5 class="offcanvas-title fw-bold" id="nfttSearchOffcanvasLabel">Search the documentation</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#nfttSearch"></button>
+  </div>
+  <div class="offcanvas-body p-4 pt-0 p-xl-0 ps-xl-4">
+    <hr class="d-xl-none text-white-50">
+    <ul class="navbar-nav flex-row align-items-center flex-wrap ms-md-auto">
+      <li class="nav-item col-12 col-xl-auto">
+        <form id="nftt-search-form" action="search.html" method="get">
+          <div class="input-group">
+            <input type="text" name="q" class="form-control search-input" placeholder="Search" aria-label="Search" aria-describedby="button-search">
+            <input type="hidden" name="check_keywords" value="yes" />
+            <input type="hidden" name="area" value="default" />
+            <button class="btn btn-primary" type="submit" id="button-search" aria-label="Search"><i class="bi bi-search"></i></button>
+          </div>
+        </form>
+      </li>
+    </ul>
+  </div>
+</div>
+
+        <div class="offcanvas-xl offcanvas-end" tabindex="-1" id="nfttNavbar" aria-labelledby="nfttNavbarOffcanvasLabel" data-bs-scroll="true">
+          <div class="offcanvas-header px-4 pb-0">
+            <div class="offcanvas-title navbar-brand" id="nfttNavbarOffcanvasLabel"><span class="brand-short-text">rpmget</span></div>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#nfttNavbar"></button>
+          </div>
+          <div class="offcanvas-body p-4 pt-0 p-xl-0 px-xl-3">
+            <hr class="d-xl-none text-white-50">
+            <ul class="navbar-nav flex-row align-items-center flex-wrap ms-lg-auto">
+              
+              
+              <li class="nav-item col-12 col-xl-auto">
+                <a class="nav-link py-2 py-xl-0 px-0 px-xl-2" href="https://github.com/sarnold/rpmget" target="_blank" rel="noopener">
+                  <div class="d-flex align-items-center">
+                    <div class="me-2">
+                      <i class="bi bi-git size-24"></i>
+                    </div>
+                    <div class="repo d-flex flex-column align-items-center" data-snftt-repo-url="https://github.com/sarnold/rpmget">
+                      rpmget
+                      <div class="d-flex justify-content-center" data-snftt-repo-metrics>
+                        <span class="pe-2 d-flex justify-content-center align-items-center">
+                          <i class="bi bi-tag size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-tag></span>
+                        </span>
+                        <span class="pe-2 d-flex justify-content-center align-items-center">
+                          <i class="bi bi-star size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-stars></span>
+                        </span>
+                        <span class="d-flex justify-content-center align-items-center">
+                          <i class="bi bi-diagram-2 size-14"></i>
+                          <span class="repo-metric" data-snftt-repo-forks></span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </li>
+              <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+                <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+                <hr class="d-xl-none text-white-50">
+              </li>
+              
+              
+  <li class="nav-item dropdown">
+    <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-version" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-label="Select version">
+      <span id="snftt-version-text" class="d-xl-none">rpmget</span>
+      <span class="ms-2" data-snftt-version-active="latest">latest</span>
+    </a>
+    
+    <ul class="dropdown-menu dropdown-menu-end dropdown-limit-max-height" aria-labelledby="snftt-version-text" id="versions-dropdown-menu">
+      <li>
+        <h6 class="dropdown-header">Versions</h6>
+      </li>
+    </ul>
+  </li>
+  <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+    <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+    <hr class="d-xl-none text-white-50">
+  </li>
+
+              
+  <!-- colorssets-dropdown.html -->
+  <li class="nav-item dropdown">
+    <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-color" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Change base color">
+      <i class="bi bi-palette"></i>
+      <span id="snftt-color-text" class="d-xl-none ms-2">Change base color</span>
+    </a>
+    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="snftt-color-text">
+      <li>
+        <h6 class="dropdown-header">Change base color</h6>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center active" data-snftt-colorset="blue" href="#" aria-pressed="false">
+          <span class="blue">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Blue</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="indigo" href="#" aria-pressed="false">
+          <span class="indigo">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Indigo</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="purple" href="#" aria-pressed="false">
+          <span class="purple">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Purple</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="pink" href="#" aria-pressed="false">
+          <span class="pink">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Pink</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="red" href="#" aria-pressed="false">
+          <span class="red">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Red</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="orange" href="#" aria-pressed="false">
+          <span class="orange">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Orange</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="yellow" href="#" aria-pressed="false">
+          <span class="yellow">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Yellow</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="green" href="#" aria-pressed="false">
+          <span class="green">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Green</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="teal" href="#" aria-pressed="false">
+          <span class="teal">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Teal</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li>
+        <a class="dropdown-item d-flex align-items-center " data-snftt-colorset="default" href="#" aria-pressed="false">
+          <span class="cyan">
+            <i class="bi bi-circle-fill"></i>
+          </span>
+          <span class="ms-3">Cyan</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+      
+      <li><hr class="dropdown-divider" /></li>
+      <li>
+        <h6 class="dropdown-header">Header style</h6>
+      </li>
+      <li>
+        <a class="dropdown-item d-flex align-items-center active current" data-snftt-colorset-neutral="on" href="#" aria-pressed="false">
+          <i class="bi bi-noise-reduction"></i>
+          <span class="ms-3">Neutral</span>
+          <i class="bi bi-check ms-auto"></i>
+        </a>
+      </li>
+    </ul>
+  </li>
+
+  <li class="nav-item col-12 col-xl-auto h-100" aria-hidden="true">
+    <div class="vr d-none d-xl-flex h-100 mx-xl-2 text-white-50"></div>
+    <hr class="d-lg-none text-white-50">
+  </li>
+
+              
+              <!-- lightdark-dropdown.html -->
+<li class="nav-item dropdown">
+  <a class="nav-link d-flex py-2 px-0 px-xl-2 dropdown-toggle align-items-center" id="snftt-luz" href="#" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false" aria-label="Change appearance">
+    <i class="bi bi-circle-half" data-snftt-luz-icon-active></i>
+    <span id="snftt-luz-text" class="d-xl-none ms-2">Change appearance</span>
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="snftt-luz-text">
+    <li>
+      <h6 class="dropdown-header">Change appearance</h6>
+    </li>
+    <li>
+      <a class="dropdown-item d-flex align-items-center" data-snftt-luz="light" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-sun" data-snftt-luz-icon="light"></i>
+        </span>
+        <span class="ms-3">Light</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item d-flex align-items-center" data-snftt-luz="dark" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-moon-stars" data-snftt-luz-icon="dark"></i>
+        </span>
+        <span class="ms-3">Dark</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+    <li>
+      <a class="dropdown-item current d-flex align-items-center" data-snftt-luz="default" href="#" aria-pressed="false">
+        <span>
+          <i class="bi bi-circle-half" data-snftt-luz-icon="default"></i>
+        </span>
+        <span class="ms-3">Automatic</span>
+        <i class="bi bi-check ms-auto"></i>
+      </a>
+    </li>
+  </ul>
+</li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+      
+    </header>
+
+    <div class="container-fluid flex-grow-1">
+      <div class="nftt-gutter nftt-page">
+        <aside class="nftt-sidebar ">
+          <div class="nftt-sidebar-content">
+            
+            <div class="title d-none d-xl-none">
+              <i class="bi bi-book"></i>&nbsp;&nbsp;<span>Index</span>
+            </div>
+            <div id="sidebar" tabindex="-1" class="offcanvas-xl offcanvas-start" aria-labelledby="nfttSidebarOffcanvasLabel">
+                <!-- sidebartemplate: "globaltoc.html" --><div class="offcanvas-header border-bottom">
+  <h5 class="offcanvas-title fw-bold" id="nfttSidebarOffcanvasLabel">
+    Index
+  </h5>
+  <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close" data-bs-target="#sidebar"></button>
+</div>
+
+<div class="offcanvas-body">
+  <nav class="toc" aria-label="Main menu">
+    <div class="mb-3 p-1 pb-4 border-bottom">
+      <input id="sidebar-filter" type="text" name="filter" class="form-control form-control-sm" placeholder="index filter" aria-label="index filter">
+    </div>
+    <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ds/reqs_tree.html">1.0 Requirements {#REQ001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ds/sw_design.html">1.0 Design Elements {#SDD001}</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ds/unit_tests.html">1.0 Automated Tests {#TST001}</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RPMGet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">rpmget</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/rpmget.html">rpmget package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/rpmget.rpmget.html">rpmget.rpmget module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/rpmget.utils.html">rpmget.utils module</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dev/generate-changelog.html">Changelog Generation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/pre-commit-config.html">Contents of the <code class="docutils literal notranslate"><span class="pre">.pre-commit-config.yaml</span></code> file</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/pre-commit-usage.html">Using Pre-Commit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CHANGELOG.html">Changelog</a></li>
+</ul>
+
+  </nav>
+  <template data-toggle-item-template>
+    <button class="btn btn-sm btn-link toctree-expand" type="button">
+      <i class="bi bi-caret-right"></i>
+      <span class="visually-hidden">Toggle menu contents</span>
+    </button>
+  </template>
+</div>
+            </div>
+            
+          </div>
+        </aside>
+        <article id="content" class="nftt-content" role="main">
+          <div><div class="d-flex flex-row justify-content-between">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="index.html">Start</a></li>
+      <li class="breadcrumb-item active" aria-current="page">RPMGet</li>
+    </ol>
+  </nav>
+  
+    <div class="fs085">
+        <a href="_sources/README.rst.txt"  rel="nofollow" aria-label="Show source of this document"><i class="bi bi-file-earmark-code"></i></a>
+    </div>
+  
+</div>
+            
+    <section id="rpmget">
+<h1>RPMGet<a class="headerlink" href="#rpmget" title="Link to this heading">¶</a></h1>
+<p>RPMGet uses an ini-style config file to manage an arbitrary set of
+development dependencies or releases as RPM packages. Either install
+these packages in RHEL development environment or create a local
+package repo.</p>
+<p><a class="reference external" href="https://github.com/sarnold/rpmget/actions/workflows/ci.yml"><img alt="CI Status" src="https://github.com/sarnold/rpmget/actions/workflows/ci.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/sarnold/rpmget/actions/workflows/wheels.yml"><img alt="Wheel Status" src="https://github.com/sarnold/rpmget/actions/workflows/wheels.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/sarnold/rpmget/actions/workflows/bandit.yml"><img alt="Security check - Bandit" src="https://github.com/sarnold/rpmget/actions/workflows/bandit.yml/badge.svg" /></a> <a class="reference external" href="https://github.com/sarnold/rpmget/actions/workflows/release.yml"><img alt="Release Status" src="https://github.com/sarnold/rpmget/actions/workflows/release.yml/badge.svg" /></a></p>
+<p><a class="reference external" href="https://github.com/pre-commit/pre-commit"><img alt="pre-commit" src="https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&amp;logoColor=white" /></a> <a class="reference external" href="https://github.com/sarnold/rpmget/actions/workflows/coverage.yml"><img alt="Test coverage" src="https://raw.githubusercontent.com/sarnold/rpmget/badges/main/test-coverage.svg" /></a> <a class="reference external" href="https://github.com/sarnold/rpmget/actions/workflows/pylint.yml"><img alt="Pylint Score" src="https://raw.githubusercontent.com/sarnold/rpmget/badges/main/pylint-score.svg" /></a></p>
+<p><a class="reference external" href="https://github.com/sarnold/rpmget/releases"><img alt="GitHub tag" src="https://img.shields.io/github/v/tag/sarnold/rpmget?color=green&amp;include_prereleases&amp;label=latest%20release" /></a> <a class="reference external" href="https://github.com/sarnold/rpmget/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-blue" /></a> <a class="reference external" href="https://reuse.software/spec-3.3/"><img alt="REUSE status" src="https://img.shields.io/badge/REUSE-compliant-blue.svg" /></a> <a class="reference external" href="https://www.python.org/downloads/"><img alt="Python" src="https://img.shields.io/badge/python-3.9+-blue.svg" /></a></p>
+<p>Things you can do now:</p>
+<ul class="simple">
+<li><p>validate configuration files and URLs</p></li>
+<li><p>download configured rpm files to a single directory or rpm tree</p></li>
+<li><p>automatically skip downloading files that match size checks</p></li>
+<li><p>download one or more URL arguments to current directory (no config)</p></li>
+<li><p>dump a sample config file</p></li>
+<li><p>create an rpm repository from rpm tree layout</p></li>
+</ul>
+<p>As stated above, the primary use cases (in the <a class="reference external" href="https://en.wikipedia.org/wiki/Use_case#Definition">user experience
+sense</a>) are intended to support managing/using a set of RPMs in
+development workflows targeting older-but-still-supported Enterprise
+Linux environments, eg, RHEL9 or similar.</p>
+<p>The initial package metadata for RPMGet itself has been back-ported to
+<code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> which is compatible with el9 versions of packaging tools
+when using the newer pyproject macros. For more details, see the <a class="reference external" href="https://sarnold.github.io/rpmget">built
+documentation</a>, as well as the <a class="reference external" href="https://github.com/VCTLabs/el9-rpm-toolbox">el9-rpm-toolbox</a> repo for the latest
+RPM package release.</p>
+<div class="admonition important">
+<p class="admonition-title">Important</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--update</span></code> argument requires an existing set of rpms
+downloaded in the “tree” layout, so you will need to run
+the initial download command with your config layout set
+to “tree” <em>before</em> using <code class="docutils literal notranslate"><span class="pre">--update</span></code>.</p>
+</div>
+<section id="quick-start">
+<h2>Quick Start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Install from GH release page, eg in a Tox file or venv</p></li>
+<li><p>Clone from GH and install in a venv</p></li>
+<li><p>Write a minimal config file (see below)</p>
+<ul>
+<li><p>Using one of these file extensions: [.conf, .ini, .cfg]</p></li>
+<li><p>Using at least one option with one or more URL strings</p></li>
+</ul>
+</li>
+</ul>
+<p>From a venv run <code class="docutils literal notranslate"><span class="pre">rpmget</span> <span class="pre">-c</span> <span class="pre">&lt;filename&gt;</span></code> with your config file to download
+rpm files in the config. The initial download will create a manifest file
+in the XDG user cache directory, ie <code class="docutils literal notranslate"><span class="pre">~/.cache/rpmget/my_config.ini.json</span></code>.
+Running the above command again without changing the config or deleting the
+downloaded rpms should skip the downloading since the remote and local sizes
+should all match.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rpmget -c el9-toolbox-all.ini
+INFO:rpmget:Using input file el9-toolbox-all.ini
+INFO:root:Processing 13 valid url(s)
+INFO:root:Downloaded 0 file(s)
+INFO:root:Skipped 13 file(s)
+</pre></div>
+</div>
+<p>To force downloading again, simply delete the <code class="docutils literal notranslate"><span class="pre">top_dir</span></code> directory and
+run the rpmget command again.</p>
+<section id="examples">
+<h3>Examples<a class="headerlink" href="#examples" title="Link to this heading">¶</a></h3>
+<p>From a venv, run the following commands to validate your config and download
+rpms:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rpmget -c my_config.ini --validate
+INFO:rpmget:Using input file my_config.ini
+INFO:rpmget:User config is valid: True
+$ rpmget -c my_config.ini
+INFO:rpmget:Using input file my_config.ini
+INFO:root:Processing 3 valid url(s)
+INFO:rpmget.utils:python3-py3tftp-1.3.0-1.el9.noarch.rpm size: 35486
+100%|███████████████████████████████████████| 34.7k/34.7k [00:00&lt;00:00, 422kB/s]
+...
+</pre></div>
+</div>
+<p>Or, download URL arguments to the current directory with no config file
+required:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ rpmget https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/diskcache-5.6.3/python3-diskcache-5.6.3-1.el9.noarch.rpm
+INFO:root:Processing 1 valid url(s)
+INFO:rpmget.utils:Processing file: python3-diskcache-5.6.3-1.el9.noarch.rpm
+INFO:rpmget.utils:python3-diskcache-5.6.3-1.el9.noarch.rpm size: 76875
+100%|███████████████████████████████████████| 75.1k/75.1k [00:00&lt;00:00, 508kB/s]
+INFO:root:Downloaded 1 file(s)
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="#tox-workflows">Tox workflows</a> section below <em>and</em> the <code class="docutils literal notranslate"><span class="pre">tox.ini</span></code> file for more
+details.</p>
+</section>
+<section id="install-requirements">
+<h3>Install requirements<a class="headerlink" href="#install-requirements" title="Link to this heading">¶</a></h3>
+<p>Python and tox are required for development or testing workflows (the
+following Python dependencies are installed automatically).</p>
+<p>Python dependencies:</p>
+<ul class="simple">
+<li><p>httpx</p></li>
+<li><p>munch</p></li>
+<li><p>tqdm</p></li>
+<li><p>Cerberus</p></li>
+<li><p>platformdirs</p></li>
+</ul>
+<p>Non-Python dependencies:</p>
+<ul class="simple">
+<li><p>at least one of [‘rpm’, ‘yum’, ‘dnf’] is required to install rpms</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">createrepo_c</span></code> is required to create/maintain a common metadata
+repository from a tree of rpm packages</p></li>
+</ul>
+</section>
+<section id="command-interface">
+<h3>Command Interface<a class="headerlink" href="#command-interface" title="Link to this heading">¶</a></h3>
+<p>The minimum usage requirement is an INI-style configuration file with URLs
+pointing to <a class="reference external" href="https://en.wikipedia.org/wiki/RPM_Package_Manager#Binary_format">RPM</a> files. Use the <code class="docutils literal notranslate"><span class="pre">--dump-config</span></code> argument shown below for
+a small example config. You <em>must</em> provide your own config file, either via
+argument as shown below, or set in the RPMGET_CFG environment variable.</p>
+<p>Most of the arguments are orthogonal to the <code class="docutils literal notranslate"><span class="pre">--configfile</span></code> argument; you
+can even omit the latter argument if you set the environment variable.</p>
+<p>Note each of the rpm URLs in the example point to GitHub release pages.
+The CLI uses the standard Python <code class="docutils literal notranslate"><span class="pre">argparse</span></code> module:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tox -e dev
+$ source .venv/bin/activate
+$ rpmget -h
+usage: rpmget [-h] [--version] [-S] [-t] [-u] [-v] [-d] [-q] [-D] [-c FILE]
+              [URL ...]
+
+Download manager for rpm files
+
+positional arguments:
+  URL                   download (valid) URLs to current directory with no
+                        config (default: None)
+
+options:
+  -h, --help            show this help message and exit
+  --version             show program&#39;s version number and exit
+  -S, --show            display user config (default: False)
+  -t, --test            run sanity checks (default: False)
+  -u, --update          update repos with createrepo (default: False)
+  -v, --validate        run schema validation on active config (default:
+                        False)
+  -d, --debug           display more processing info (default: False)
+  -q, --quiet           display less processing info (default: False)
+  -D, --dump-config     dump active configuration to stdout (default: False)
+  -c, --configfile FILE
+                        path to ini-style configuration file (default: None)
+</pre></div>
+</div>
+<p>The example config uses extended interpolation and ${VAR} style notation
+but the simplest example config requires only an option value with a URL
+string. Note the simple example below has the minimum required keys and
+options; the <code class="docutils literal notranslate"><span class="pre">repo_args</span></code> key is the only one allowed to have an empty
+value.</p>
+<p>A simple example might look something like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">rpmget</span><span class="p">]</span>
+<span class="n">repo_dir</span> <span class="o">=</span> <span class="o">~/</span><span class="n">repos</span><span class="o">/</span><span class="n">el9</span>
+<span class="n">top_dir</span> <span class="o">=</span> <span class="n">rpmbuild</span>
+<span class="n">layout</span> <span class="o">=</span> <span class="n">tree</span>
+<span class="n">pkg_tool</span> <span class="o">=</span> <span class="n">dnf</span>
+<span class="n">repo_tool</span> <span class="o">=</span> <span class="n">createrepo_c</span>
+<span class="n">repo_args</span> <span class="o">=</span>
+
+<span class="p">[</span><span class="n">my</span> <span class="n">stuff</span><span class="p">]</span>
+<span class="n">packages</span> <span class="o">=</span>
+    <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">VCTLabs</span><span class="o">/</span><span class="n">el9</span><span class="o">-</span><span class="n">rpm</span><span class="o">-</span><span class="n">toolbox</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="n">hexdump</span><span class="o">-</span><span class="mf">3.5.3</span><span class="o">/</span><span class="n">python3</span><span class="o">-</span><span class="n">hexdump</span><span class="o">-</span><span class="mf">3.5.3</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
+    <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">VCTLabs</span><span class="o">/</span><span class="n">el9</span><span class="o">-</span><span class="n">rpm</span><span class="o">-</span><span class="n">toolbox</span><span class="o">/</span><span class="n">releases</span><span class="o">/</span><span class="n">download</span><span class="o">/</span><span class="n">diskcache</span><span class="o">-</span><span class="mf">5.6.3</span><span class="o">/</span><span class="n">python3</span><span class="o">-</span><span class="n">diskcache</span><span class="o">-</span><span class="mf">5.6.3</span><span class="o">-</span><span class="mf">1.</span><span class="n">el9</span><span class="o">.</span><span class="n">noarch</span><span class="o">.</span><span class="n">rpm</span>
+</pre></div>
+</div>
+<p>To install the above downloaded rpms in a RockyLinux9 environment, run
+something like the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo dnf install -y rpmbuild/*.rpm
+</pre></div>
+</div>
+<p>Note the above example could easily use a separate option-key for each URL
+but the default configparser allows multiline strings, so we take advantage
+of that.</p>
+</section>
+</section>
+<section id="dev-tools">
+<h2>Dev tools<a class="headerlink" href="#dev-tools" title="Link to this heading">¶</a></h2>
+<p>Local tool dependencies to aid in development; install them for
+maximum enjoyment.</p>
+<section id="doorstop">
+<h3>Doorstop<a class="headerlink" href="#doorstop" title="Link to this heading">¶</a></h3>
+<p>Document configurations and corresponding YAML or markdown items are
+maintained in the following directory structure:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tree reqs/ docs/swd/ tests/docs/
+reqs/
+├── .doorstop.yml
+└── REQ001.yml
+docs/swd/
+├── assets
+│   ├── .gitkeep
+│   └── rpmget_dependency_graph.svg
+├── .doorstop.yml
+└── SDD001.md
+tests/docs/
+├── .doorstop.yml
+└── TST001.yml
+</pre></div>
+</div>
+<p>The <a class="reference external" href="https://doorstop.readthedocs.io/en/latest/index.html">doorstop</a> tool has been added to project [dev] “extras” as well as the
+tox dev and docs environments. If a doorstop package is not available for
+your environment, then use the “dev” environment for working with <a class="reference external" href="https://doorstop.readthedocs.io/en/latest/index.html">doorstop</a>
+documents, eg:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>tox -e dev
+source .venv/bin/activate
+(.venv) doorstop
+building tree...
+loading documents...
+validating items...
+
+REQ
+│
+├── TST
+│
+└── SDD
+</pre></div>
+</div>
+<p>Please see the <a class="reference external" href="https://doorstop.readthedocs.io/en/latest/getting-started/quickstart.html">doorstop Quick Start</a> for an overview of the relevant
+doorstop commands.</p>
+</section>
+<section id="tox-workflows">
+<h3>Tox workflows<a class="headerlink" href="#tox-workflows" title="Link to this heading">¶</a></h3>
+<p>As long as you have git and at least Python 3.8, then you can install
+and use <a class="reference external" href="https://github.com/tox-dev/tox">tox</a>.  After cloning the repository, you can run the repo
+checks with the <code class="docutils literal notranslate"><span class="pre">tox</span></code> command.  It will build a virtual python
+environment for each installed version of python with all the python
+dependencies and run the specified commands, eg:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/sarnold/rpmget
+$ cd rpmget/
+$ tox -e py
+</pre></div>
+</div>
+<p>The above will run the default test command using the (local) default
+Python version.  To specify the Python version and host OS type, run
+something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tox -e py311-linux
+</pre></div>
+</div>
+<p>To build and check the Python package, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tox -e build,check
+</pre></div>
+</div>
+<p>Full list of additional <code class="docutils literal notranslate"><span class="pre">tox</span></code> commands:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">dev</span></code> build a python venv and install in editable mode</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">build</span></code> build the python packages and run package checks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">check</span></code> install the wheel package from above</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">lint</span></code> run <code class="docutils literal notranslate"><span class="pre">pylint</span></code> (somewhat less permissive than PEP8/flake8 checks)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">mypy</span></code> run mypy import and type checking</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">style</span></code> run flake8 style checks</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">reuse</span></code> run the <code class="docutils literal notranslate"><span class="pre">reuse</span> <span class="pre">lint</span></code> command and install sbom4python</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">changes</span></code> generate a new changelog file</p></li>
+</ul>
+<p>To build/lint the api docs, use the following tox commands:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">docs</span></code> build the documentation using sphinx and the api-doc plugin</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">ldocs</span></code> run the Sphinx doc-link checking</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tox</span> <span class="pre">-e</span> <span class="pre">cdocs</span></code> run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">clean</span></code> in the docs build</p></li>
+</ul>
+</section>
+<section id="gitchangelog">
+<h3>Gitchangelog<a class="headerlink" href="#gitchangelog" title="Link to this heading">¶</a></h3>
+<p>We use <a class="reference external" href="https://github.com/sarnold/gitchangelog">gitchangelog</a>  to generate a changelog and/or release notes, as
+well as the gitchangelog message format to help it categorize/filter
+commits for tidier output.  Please use the appropriate ACTION modifiers
+for important changes in Pull Requests.</p>
+</section>
+<section id="pre-commit">
+<h3>Pre-commit<a class="headerlink" href="#pre-commit" title="Link to this heading">¶</a></h3>
+<p>This repo is also <a class="reference external" href="http://pre-commit.com/">pre-commit</a> enabled for various linting and format
+checks.  The checks run automatically on commit and will fail the
+commit (if not clean) with some checks performing simple file corrections.</p>
+<p>If other checks fail on commit, the failure display should explain the error
+types and line numbers. Note you must fix any fatal errors for the
+commit to succeed; some errors should be fixed automatically (use
+<code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">status</span></code> and <code class="docutils literal notranslate"><span class="pre">git</span> <span class="pre">diff</span></code> to review any changes).</p>
+<p>See the following sections in the built docs for more information on
+gitchangelog and pre-commit.</p>
+<p>You will need to install pre-commit before contributing any changes;
+installing it using your system’s package manager is recommended,
+otherwise install with pip into your usual virtual environment using
+something like:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ sudo emerge pre-commit  --or--
+$ pip install pre-commit
+</pre></div>
+</div>
+<p>then install it into the repo you just cloned:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:sarnold/rpmget.git
+$ cd rpmget/
+$ pre-commit install
+</pre></div>
+</div>
+<p>It’s usually a good idea to update the hooks to the latest version:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pre</span><span class="o">-</span><span class="n">commit</span> <span class="n">autoupdate</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="sbom-and-license-info">
+<h2>SBOM and license info<a class="headerlink" href="#sbom-and-license-info" title="Link to this heading">¶</a></h2>
+<p>This project is now compliant with the REUSE Specification Version 3.3, so the
+corresponding license information for all files can be found in the <code class="docutils literal notranslate"><span class="pre">REUSE.toml</span></code>
+configuration file with license text(s) in the <code class="docutils literal notranslate"><span class="pre">LICENSES/</span></code> folder.</p>
+<p>Related metadata can be (re)generated with the following tools and command
+examples.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/fsfe/reuse-tool">reuse-tool</a> - <a class="reference external" href="https://reuse.software/spec-3.3/">REUSE</a> compliance linting and sdist (source files) SBOM generation</p></li>
+<li><p><a class="reference external" href="https://github.com/anthonyharrison/sbom4python">sbom4python</a> - generate SBOM with full dependency chain</p></li>
+</ul>
+<section id="commands">
+<h3>Commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h3>
+<p>Use tox to create the environment and run the lint command:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ tox -e reuse                      # --or--
+$ tox -e reuse -- spdx &gt; sbom.txt   # generate sdist files sbom
+</pre></div>
+</div>
+<p>Note you can pass any of the other reuse commands after the <code class="docutils literal notranslate"><span class="pre">--</span></code> above.</p>
+<p>Use the above environment to generate the full SBOM in text format:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ source .tox/reuse/bin/activate
+$ sbom4python --system --use-pip -o &lt;file_name&gt;.txt
+</pre></div>
+</div>
+<p>Be patient; the last command above may take several minutes. See the
+doc links above for more detailed information on the tools and
+specifications.</p>
+</section>
+</section>
+</section>
+
+</div>
+        </article>
+        <aside class="nftt-toc my-3">
+          
+          <div class="my-sm-1 my-lg-0 ps-xl-3 text-muted">
+            <button class="btn btn-link p-lg-0 mb-2 mb-lg-0 text-decoration-none nftt-toc-toggle d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#tocContents" aria-expanded="false" aria-controls="tocContents"
+            >On this page <i class="ms-2 bi bi-chevron-expand"></i></button>
+            <div class="title d-none d-lg-block">
+              <i class="bi bi-file-earmark-text"></i>&nbsp;&nbsp;<span class="small">On this page</span>
+            </div>
+            <div class="collapse nftt-toc-collapse" id="tocContents">
+              <nav id="TableOfContents">
+                <ul>
+<li><a class="reference internal" href="#">RPMGet</a><ul>
+<li><a class="reference internal" href="#quick-start">Quick Start</a><ul>
+<li><a class="reference internal" href="#examples">Examples</a></li>
+<li><a class="reference internal" href="#install-requirements">Install requirements</a></li>
+<li><a class="reference internal" href="#command-interface">Command Interface</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dev-tools">Dev tools</a><ul>
+<li><a class="reference internal" href="#doorstop">Doorstop</a></li>
+<li><a class="reference internal" href="#tox-workflows">Tox workflows</a></li>
+<li><a class="reference internal" href="#gitchangelog">Gitchangelog</a></li>
+<li><a class="reference internal" href="#pre-commit">Pre-commit</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sbom-and-license-info">SBOM and license info</a><ul>
+<li><a class="reference internal" href="#commands">Commands</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </nav>
+            </div>
+          </div>
+          
+        </aside>
+      </div>
+    </div>
+
+    <footer class="nftt-footer">
+      <nav id="paginator" class="py-4" aria-label="Documentation navigation">
+    <div class="container">
+      <ul class="pagination justify-content-between mb-0"><li class="d-flex page-item">
+            <a href="ds/unit_tests.html" class="d-flex px-5 align-items-end" rel="prev" aria-label="Previous page: 1.0 Automated Tests {#TST001}">
+              <span class="prev-page"><i class="bi bi-caret-left"></i></span>
+              <div class="d-none d-sm-flex flex-column">
+                <span class="text-small text-start text-muted">Previous</span>
+                <span class="underline">1.0 Automated Tests {#TST001}</span>
+              </div>
+            </a>
+          </li>
+        <li class="d-flex page-item ms-auto">
+            <a href="api/modules.html" class="d-flex px-5 align-items-end" rel="next" aria-label="Next page: rpmget">
+              <div class="d-flex flex-column">
+                <span class="text-small text-end text-start text-muted">Next</span>
+                <span class="underline">rpmget</span>
+              </div>
+              <span class="next-page"><i class="bi bi-caret-right"></i></span>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </nav>
+
+      <div class="py-5 px-4 px-md-3">
+  <div class="container">
+    
+
+    <div class="row">
+      <div class="col-lg-12 text-center">
+        <a class="brand-text d-inline-flex align-items-center mb-2 text-decoration-none" href="/" aria-label="rpmget">
+          <span class="fs-6 fw-bold">rpmget</span>
+        </a>
+        
+          <ul class="list-unstyled small text-muted">
+            <li>2025 Stephen Arnold</li>
+          </ul>
+        
+        <div class="built-with pt-2">
+          Built with <a href="http://sphinx-doc.org">Sphinx 7.4.7</a> and <a href="https://github.com/danirus/sphinx-nefertiti">Nefertiti 0.9.1</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    </footer>
+
+    <div class="modal modal-xl fade" id="nftt-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen-xxl-down modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="nftt-modal-title"></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body" id="nftt-modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+    <script src="_static/documentation_options.js?v=5ec7d421"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/colorsets.js?v=58f89e02"></script>
+    <script src="_static/docs-versions.js?v=c7fa2eac"></script>
+    <script src="_static/sphinx-nefertiti.min.js?v=732b5b51"></script>
+    <script src="_static/bootstrap.bundle.min.js?v=e96d90d1"></script>
+  </body>
+</html>
