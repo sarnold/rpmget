@@ -13,11 +13,11 @@ level: 1.11
 links: []
 normative: true
 ref: ''
-reviewed: VbbByqX-gavzXKv2H0FICHYoqnTHO_2O9H4939ndzu8=
+reviewed: AAIZhiGP0VUr7NsZKeOjPpYg0_VnqGV8MyEKxY4VdUw=
 short-name: ''
 text: |
   The rpm manifest **Shall**  contain the configuration name and metadata
-  for aech downloaded rpm file. The minimum file metadata should include the
+  for each downloaded rpm file. The minimum file metadata should include the
   following:
 
   - file name
