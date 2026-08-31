@@ -41,7 +41,7 @@ SCHEMA = {
 CFG = """
 [rpmget]
 top_dir = rpmbuild
-layout = flat
+layout = tree
 pkg_tool = rpm
 repo_dir = ext/rpmrepos
 repo_tool = createrepo_c
@@ -158,7 +158,7 @@ def check_url_str(str_val: str) -> bool:
     return str_val.startswith('http') and str_val.endswith('.rpm')
 
 
-def create_layout(topdir: str, layout: str):
+def create_layout(topdir: str, layout: str, temp_path: Optional[Path] = None):
     """
     Create layout for destination directory based on the ``layout`` cfg
     parameter, either flat or the standard RPM tree. Satisfies all of
@@ -166,9 +166,15 @@ def create_layout(topdir: str, layout: str):
 
     :param topdir: destination directory for downloaded rpms
     :param layout: type of destination directory layout
+    :param temp_path: prepended to config paths (mainly for testing)
     """
     if layout == 'flat':
+        macro_path = temp_path / topdir if temp_path else Path.home()
+        macros = macro_path / '.rpmmacros'
         Path(topdir).mkdir(parents=True, exist_ok=True)
+        if not macros.exists():
+            text = create_macros(topdir)
+            macros.write_text(text)
     if layout == 'tree':
         macros = Path(topdir) / '.rpmmacros'
         for name in RPM_TREE:

@@ -368,7 +368,8 @@ def process_file_manifest(
 def manage_repo(config: CfgParser, debug: bool = False, temp_path: Optional[Path] = None):
     """
     Create or update rpm repository using createrepo tool. Requires an
-    existing rpm tree with one or more packages. Satisfies REQ009.
+    existing rpm directory with one or more packages. Satisfies REQ009
+    and REQ014.
 
     :param config: loaded CfgParser instance
     :param debug: enables verbose on ``repo_tool``
@@ -386,22 +387,32 @@ def manage_repo(config: CfgParser, debug: bool = False, temp_path: Optional[Path
     cfg_repo = os.path.expanduser(config['rpmget']['repo_dir'])
     repo_path = str(temp_path / cfg_repo) if temp_path else cfg_repo
 
-    top_src = Path(top_path) / 'SRPMS'
-    top_bin = Path(top_path) / 'RPMS'
+    if config['rpmget']['layout'] == 'tree' and top_path != repo_path:  # REQ015
 
-    rpm_paths = [p for p in (top_src, top_bin) if p.exists() and get_filelist(str(p))]
-    logger.info('Found rpm src paths: %s', rpm_paths)
+        top_src = Path(top_path) / 'SRPMS'
+        top_bin = Path(top_path) / 'RPMS'
 
-    for path in rpm_paths:
-        copy_rpms(
-            str(path),
-            os.path.join(os.path.join(repo_path, path.stem), 'Packages'),
+        rpm_paths = [p for p in (top_src, top_bin) if p.exists() and get_filelist(str(p))]
+        logger.info('Found rpm paths: %s', rpm_paths)
+
+        for path in rpm_paths:
+            copy_rpms(
+                str(path),
+                os.path.join(os.path.join(repo_path, path.stem), 'Packages'),
+            )
+
+        cr_srcs_path = Path(repo_path) / top_src.stem
+        cr_bins_path = Path(repo_path) / top_bin.stem
+
+        cr_paths = [p for p in (cr_srcs_path, cr_bins_path) if p.exists()]
+
+    elif cfg_top == cfg_repo and config['rpmget']['layout'] == 'flat':  # REQ016
+        cr_paths = [Path(repo_path)]
+    else:
+        logger.warning(
+            "createrepo disabled: top_dir and repo_dir must match when layout is flat!"
         )
-
-    cr_srcs_path = Path(repo_path) / top_src.stem
-    cr_bins_path = Path(repo_path) / top_bin.stem
-
-    cr_paths = [p for p in (cr_srcs_path, cr_bins_path) if p.exists()]
+        return
 
     for path in cr_paths:
         cr_str = config['rpmget']['repo_args']

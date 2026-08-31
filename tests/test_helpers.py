@@ -206,12 +206,13 @@ def test_create_layout_flat(tmp_path):
     Test layout = tree as part of REQ006 validation.
     """
     d = tmp_path / 'rpmbuild'
-    create_layout(str(d), 'flat')
+    create_layout(str(d), 'flat', tmp_path)
     print(d)
     for root, dirs, files in os.walk(str(d)):
         print(root)
         assert dirs == []
-        assert files == []
+        print(files)
+        assert files == ['.rpmmacros']
 
 
 def test_create_layout_tree(tmp_path):
