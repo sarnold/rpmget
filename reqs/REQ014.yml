@@ -9,11 +9,11 @@ doc:
   ref: ''
   title: Requirements for _rpmget_
 header: ''
-level: '1.13'
+level: 1.13
 links: []
 normative: true
 ref: ''
-reviewed: null
+reviewed: r41SM_z-R22QdDXaDudiP6wd9rI4DocJmm3OiuHsr40=
 short-name: ''
 text: |
   The software **Shall** create a repository from both flat and tree

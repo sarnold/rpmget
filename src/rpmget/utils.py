@@ -409,9 +409,7 @@ def manage_repo(config: CfgParser, debug: bool = False, temp_path: Optional[Path
     elif cfg_top == cfg_repo and config['rpmget']['layout'] == 'flat':  # REQ016
         cr_paths = [Path(repo_path)]
     else:
-        logger.warning(
-            "createrepo disabled: top_dir and repo_dir must match when layout is flat!"
-        )
+        logger.warning("Incompatible layout with paths: %s, %s", cfg_top, cfg_repo)
         return
 
     for path in cr_paths:

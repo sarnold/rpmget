@@ -9,11 +9,11 @@ doc:
   ref: ''
   title: Requirements for _rpmget_
 header: ''
-level: '1.14'
+level: 1.14
 links: []
 normative: true
 ref: ''
-reviewed: null
+reviewed: 8yhMZHDMDDJwWKpUt7h7B3DU9v5Z8d8guZjl_IkYgO4=
 short-name: ''
 text: |
   The software **Shall** replicate the RPM tree under `repo_dir`

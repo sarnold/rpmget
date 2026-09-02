@@ -9,11 +9,11 @@ doc:
   ref: ''
   title: Requirements for _rpmget_
 header: ''
-level: '1.15'
+level: 1.15
 links: []
 normative: true
 ref: ''
-reviewed: null
+reviewed: xDjFK3o5PyfxFLQR2j7Vvf9SuPYXfD82-mT6XP4MjYk=
 short-name: ''
 text: |
   The software **Shall** support an in-place repo under `repo_dir`
