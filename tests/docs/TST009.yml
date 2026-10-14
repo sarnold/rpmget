@@ -1,0 +1,26 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: REQ Integration and Unit Tests
+header: ''
+level: 1.8
+links:
+- REQ014: r41SM_z-R22QdDXaDudiP6wd9rI4DocJmm3OiuHsr40=
+- REQ016: xDjFK3o5PyfxFLQR2j7Vvf9SuPYXfD82-mT6XP4MjYk=
+normative: true
+ref: ''
+references:
+- keyword: test_manage_repo_flat
+  path: tests/test_rpmget.py
+  sha: 1d8afc3385b8c162b6208a21ca481228f42ff5e676aa1984ae95809da3d60607
+  type: file
+reviewed: L8u1RJNdsonQJ-Y8s8sBZHU-gCjrFCDc60DzswXSOT4=
+short-name: ''
+text: |
+  Test manage_repo flat layout:

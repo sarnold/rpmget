@@ -1,0 +1,25 @@
+active: true
+derived: false
+doc:
+  by: sarnold
+  copyright: sarnold
+  major: '1'
+  minor: A
+  name: rpmget
+  ref: ''
+  title: REQ Integration and Unit Tests
+header: ''
+level: 1.9
+links:
+- REQ015: 8yhMZHDMDDJwWKpUt7h7B3DU9v5Z8d8guZjl_IkYgO4=
+normative: true
+ref: ''
+references:
+- keyword: test_manage_repo_tree
+  path: tests/test_rpmget.py
+  sha: 1d8afc3385b8c162b6208a21ca481228f42ff5e676aa1984ae95809da3d60607
+  type: file
+reviewed: 1wfP0QlfHsRYGb5VF0kKJ9OjEVzp1ebvT_MqLVRsEzI=
+short-name: ''
+text: |
+  Test manage_repo tree layout:

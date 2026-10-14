@@ -19,7 +19,7 @@ Things you can do now:
 * automatically skip downloading files that match size checks
 * download one or more URL arguments to current directory (no config)
 * dump a sample config file
-* create an rpm repository from rpm tree layout
+* create an rpm repository from downloaded RPMs
 
 As stated above, the primary use cases (in the `user experience
 sense`_) are intended to support managing/using a set of RPMs in
@@ -33,9 +33,15 @@ documentation`_, as well as the el9-rpm-toolbox_ repo for the latest
 RPM package release.
 
 .. important:: The ``--update`` argument requires an existing set of rpms
-               downloaded in the "tree" layout, so you will need to run
-               the initial download command with your config layout set
-               to "tree" *before* using ``--update``.
+               downloaded in either layout:
+
+               * If your layout is "tree" then rpm files will be copied
+                 from ``top_dir`` to ``repo_dir``
+               * If your layout is "flat" then ``top_dir`` and ``repo_dir``
+                 *must be the same path* for the repo to be created in-place
+
+               You will need to run the initial download command *before*
+               using ``--update``.
 
 .. _user experience sense: https://en.wikipedia.org/wiki/Use_case#Definition
 .. _built documentation: https://sarnold.github.io/rpmget

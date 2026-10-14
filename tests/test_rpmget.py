@@ -55,6 +55,40 @@ files =
     https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/pygtail-0.14.0.3/python-pygtail-0.14.0.3-1.el9.src.rpm
 """
 
+RPMFILES_FLAT = """
+[rpmget]
+repo_dir = repos/el9
+top_dir = repos/el9
+layout = flat
+pkg_tool = yum
+repo_tool = createrepo_c
+repo_args = --compatibility
+httpx_timeout = 15.0
+
+[stuff]
+files =
+    https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm
+    https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/procman-0.6.1/python3-procman-0.6.1-1.el9.noarch.rpm
+    https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/pygtail-0.14.0.3/python-pygtail-0.14.0.3-1.el9.src.rpm
+"""
+
+RPMFILES_WARN = """
+[rpmget]
+repo_dir = repos/el9
+top_dir = my/rpms
+layout = flat
+pkg_tool = yum
+repo_tool = createrepo_c
+repo_args = --compatibility
+httpx_timeout = 15.0
+
+[stuff]
+files =
+    https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/py3tftp-1.3.0/python3-py3tftp-1.3.0-1.el9.noarch.rpm
+    https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/procman-0.6.1/python3-procman-0.6.1-1.el9.noarch.rpm
+    https://github.com/VCTLabs/el9-rpm-toolbox/releases/download/pygtail-0.14.0.3/python-pygtail-0.14.0.3-1.el9.src.rpm
+"""
+
 MAN_DATA = """
 {
   "config": "test_file_manifest.ini",
@@ -181,6 +215,26 @@ def test_process_config_loop(tmpdir_session):
     print(res2)
 
 
+@pytest.mark.dependency()
+@pytest.mark.network()
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_process_config_loop_flat(tmpdir_session):
+    """
+    Tests implementation of main processing loop.
+    """
+    parser = CfgParser()
+    cfg_str = RPMFILES_FLAT
+    parser.read_string(cfg_str)
+    d = tmpdir_session / "flat"
+    res = process_config_loop(config=parser, mdata={}, temp_path=d)
+    print(res)
+    assert len(res) == 3
+    for file in res:
+        assert Path(file).is_absolute()
+    res2 = process_config_loop(config=parser, mdata=MAN_DICT, temp_path=d)
+    print(res2)
+
+
 def test_process_config_loop_invalid(tmpdir_session):
     """
     Tests implementation of main processing loop.
@@ -280,9 +334,9 @@ def test_load_manifest(tmpdir_session, caplog):
 
 @pytest.mark.dependency(depends=["test_process_config_loop"])
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
-def test_manage_repo(tmpdir_session, caplog):
+def test_manage_repo_tree(tmpdir_session, caplog):
     """
-    Verifies REQ009
+    Verifies REQ009 and REQ015
     """
     parser = CfgParser()
     cfg_str = RPMFILES
@@ -302,6 +356,48 @@ def test_manage_repo(tmpdir_session, caplog):
     # print(caplog.text)
     rpms = [f for f in get_filelist(d) if 'rpmrepo' in f]
     print(f"rpm files: {rpms}")
+
+
+@pytest.mark.dependency(depends=["test_process_config_loop_flat"])
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_manage_repo_flat(tmpdir_session, caplog):
+    """
+    Verifies REQ009 and REQ016
+    """
+    parser = CfgParser()
+    cfg_str = RPMFILES_FLAT
+    parser.read_string(cfg_str)
+    d = tmpdir_session / "flat"
+    caplog.clear()
+    caplog.set_level(logging.DEBUG)
+    manage_repo(parser, debug=True, temp_path=d)
+    assert "cmdline: createrepo_c --compatibility --verbose" in caplog.text
+    print(caplog.text)
+    dirlist = os.listdir(d / 'repos/el9')
+    print(f'\ncreaterepo generated repodata: {dirlist}')
+    assert 'repodata' in dirlist
+    caplog.clear()
+    manage_repo(config=parser, debug=True, temp_path=d)
+    assert "cmdline: createrepo_c --compatibility --update" in caplog.text
+    # print(caplog.text)
+    rpms = [f for f in get_filelist(d) if 'rpmrepo' in f]
+    print(f"rpm files: {rpms}")
+
+
+@pytest.mark.dependency(depends=["test_process_config_loop_flat"])
+@pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")
+def test_manage_repo_warn(tmpdir_session, caplog):
+    """
+    Verifies warning
+    """
+    parser = CfgParser()
+    parser.read_string(RPMFILES_WARN)
+    d = tmpdir_session / "flat"
+    caplog.clear()
+    caplog.set_level(logging.WARNING)
+    manage_repo(parser, debug=True, temp_path=d)
+    assert "Incompatible layout" in caplog.text
+    print(caplog.text)
 
 
 @pytest.mark.skipif(sys.platform != "linux", reason="Linux-only")

@@ -37,18 +37,18 @@ jobs:
       fail-fast: false
       matrix:
         image:
-          - debian:bookworm
+          - debian:trixie
           - debian:sid
           - fedora:latest
           - fedora:rawhide
           - rockylinux:9
         include:
-          - image: debian:bookworm
-            pkgs: python3.11-venv
-            py3: python3
-          - image: debian:sid
+          - image: debian:trixie
             pkgs: python3.13-venv
             py3: python3
+          - image: debian:sid
+            pkgs: python3.14-venv
+            py3: python3.14
           - image: fedora:latest
             pkgs: python3-devel python3-pip
             py3: python3
@@ -86,13 +86,13 @@ jobs:
     # Work-around for https://github.com/actions/runner-images/issues/6775
     - name: Change Owner of Container Working Directory
       if: matrix.image
-      run: chown root.root .
+      run: chown root:root .
 
     - name: Deps for python (debs)
       if: startsWith(matrix.image, 'deb')
       run: |
         apt-get -qq update
-        apt-get install -yqq git wget sudo ${{matrix.pkgs}} python-is-python3 python3 python3-pip
+        apt-get install -yqq git wget libcap2-bin sudo ${{matrix.pkgs}} python-is-python3 python3 python3-pip
 
     - name: Deps for python (rh/rocky)
       if: (startsWith(matrix.image, 'roc') || startsWith(matrix.image, 'fed'))
