@@ -118,7 +118,7 @@ jobs:
         cache-name: cache-pip
       with:
         path: ~/.cache
-        key: ${{ matrix.image }}-${{ env.cache-name }}-${{ hashFiles('**/pyproject.toml') }}
+        key: ${{ matrix.image }}-${{ env.cache-name }}-${{ hashFiles('pyproject.toml') }}
         restore-keys: |
           ${{ matrix.image }}-${{ env.cache-name }}-
 
